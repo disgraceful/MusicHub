@@ -3,7 +3,7 @@ package com.mymedia.web.mvc.controller;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,16 +19,16 @@ import com.mymedia.web.utils.SpringBeanProvider;
 public class AuthUserController {
 
 	private static final Logger LOG = LogManager.getLogger(AuthUserController.class);
-	
-	private static AuthUserService getService(){
+
+	private static AuthUserService getService() {
 		return SpringBeanProvider.getBean(AuthUserService.class);
 	}
-	
+
 	@RequestMapping(value = "/getuser/{id}", method = RequestMethod.GET)
 	public @ResponseBody AuthUser getAuthUserByID(@PathVariable int id) {
 		AuthUser a = getService().getAuthUser(id);
 		LOG.info(a.toString());
-						
+
 		return a;
 	}
 
@@ -37,5 +37,10 @@ public class AuthUserController {
 		return getService().getAllAuthUsers();
 	}
 
-	
+	public @ResponseBody AuthUser postUser(String string) {
+		AuthUser u = new AuthUser();
+		u.setUserName(string);
+		return getService().addAuthUser(u);
+	}
+
 }

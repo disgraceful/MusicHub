@@ -16,9 +16,9 @@ import com.mymedia.web.mvc.model.AuthUser;
 @Service
 @EnableTransactionManagement
 public class AuthUserService {
-	
+
 	private static final Logger LOG = LogManager.getLogger(AuthUserController.class);
-	
+
 	@Autowired
 	AuthUserDAO authUserDAO;
 
@@ -33,5 +33,9 @@ public class AuthUserService {
 		return authUserDAO.getAuthUser(id);
 	}
 
+	@Transactional
+	public AuthUser addAuthUser(AuthUser user) {
+		return authUserDAO.addAuthUser(user);
+	}
 
 }

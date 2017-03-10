@@ -14,14 +14,14 @@ import com.mymedia.web.mvc.model.AuthUser;
 @Repository
 @EnableTransactionManagement
 public class AuthUserDAO {
-	
+
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sf) {
 		this.sessionFactory = sf;
 	}
-	
+
 	@Transactional
 	public List<AuthUser> getAllAuthUsers() {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -32,6 +32,14 @@ public class AuthUserDAO {
 	@Transactional
 	public AuthUser getAuthUser(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.get(AuthUser.class,new Integer(id));
+		return session.get(AuthUser.class, new Integer(id));
+	}
+
+	@Transactional
+	public AuthUser addAuthUser(AuthUser user) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(user);
+		return user;
+
 	}
 }

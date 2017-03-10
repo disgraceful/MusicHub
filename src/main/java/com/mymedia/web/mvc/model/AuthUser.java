@@ -33,16 +33,15 @@ public class AuthUser implements Serializable {
 	private String email;
 
 	public AuthUser() {
-		super();
+		
 	}
 
-	public AuthUser(int id, String userName, String password, String email) {
-		super();
-		this.id = id;
+	public AuthUser(String userName, String password, String email) {
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
 	}
+	
 
 	public int getId() {
 		return id;
