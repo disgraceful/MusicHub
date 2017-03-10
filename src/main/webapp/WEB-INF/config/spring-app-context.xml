@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd  
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd  
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
+	
+	<annotation-driven />
+	
+	<context:component-scan base-package="com.mymedia.web" />
+	
+	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/mymedia" expected-type="javax.sql.DataSource" /> 
+  
+    <!-- Hibernate 5 SessionFactory Bean definition -->  
+    <beans:bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+	    <beans:property name="dataSource" ref="dataSource" />
+	    <beans:property name="packagesToScan" value="com.mymedia.web.mvc.model"/>
+	    <beans:property name="hibernateProperties">
+	        <beans:props>
+	            <beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</beans:prop>
+	            <beans:prop key="hibernate.show_sql">true</beans:prop>
+	            <beans:prop key="hibernate.format_sql">true</beans:prop>
+	        </beans:props>
+	    </beans:property>
+	</beans:bean>
+	
+	<beans:bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+	    <beans:property name="sessionFactory" ref="sessionFactory" />
+	</beans:bean>
+    
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans:beans>  
