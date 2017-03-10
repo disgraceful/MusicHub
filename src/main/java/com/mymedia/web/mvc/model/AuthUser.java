@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "AUTH_USERS")
 public class AuthUser implements Serializable {
-	//asdasdasdad
+	
 	private static final long serialVersionUID = 1310900715889157339L;
 
 	@Id

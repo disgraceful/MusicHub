@@ -32,7 +32,6 @@ public class AuthUserController {
 		return a;
 	}
 
-	//adasd
 	@RequestMapping(value = "/listusers", method = RequestMethod.GET)
 	public @ResponseBody List<AuthUser> listAuthUsers() {
 		return getService().getAllAuthUsers();
