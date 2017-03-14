@@ -8,30 +8,35 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd  
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
-	
+
 	<annotation-driven />
-	
+
 	<context:component-scan base-package="com.mymedia.web" />
-	
-	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/mymedia" expected-type="javax.sql.DataSource" /> 
-  
-    <!-- Hibernate 5 SessionFactory Bean definition -->  
-    <beans:bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-	    <beans:property name="dataSource" ref="dataSource" />
-	    <beans:property name="packagesToScan" value="com.mymedia.web.mvc.model"/>
-	    <beans:property name="hibernateProperties">
-	        <beans:props>
-	            <beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</beans:prop>
-	            <beans:prop key="hibernate.show_sql">true</beans:prop>
-	            <beans:prop key="hibernate.format_sql">true</beans:prop>
-	        </beans:props>
-	    </beans:property>
+
+	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/mymedia"
+		expected-type="javax.sql.DataSource" />
+
+	<!-- Hibernate 5 SessionFactory Bean definition -->
+	<beans:bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<beans:property name="dataSource" ref="dataSource" />
+		<beans:property name="packagesToScan" value="com.mymedia.web.mvc.model" />
+		<beans:property name="hibernateProperties">
+			<beans:props>
+				<beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
+				</beans:prop>
+				<beans:prop key="hibernate.hbm2ddl.auto">create-drop</beans:prop>
+				<beans:prop key="hibernate.show_sql">true</beans:prop>
+				<beans:prop key="hibernate.format_sql">true</beans:prop>
+			</beans:props>
+		</beans:property>
 	</beans:bean>
-	
-	<beans:bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-	    <beans:property name="sessionFactory" ref="sessionFactory" />
+
+	<beans:bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<beans:property name="sessionFactory" ref="sessionFactory" />
 	</beans:bean>
-    
-    <tx:annotation-driven transaction-manager="transactionManager" />
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
 
 </beans:beans>  

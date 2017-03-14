@@ -1,0 +1,3 @@
+#import.sql file
+INSERT INTO AUTH_USERS (USER_NAME,PASSWORD,EMAIL)VALUES("Nail","1234","xd.gmail.com");
+INSERT INTO AUTH_USERS (USER_NAME,PASSWORD,EMAIL)VALUES("Nazar","4321","nazar.gmail.com");

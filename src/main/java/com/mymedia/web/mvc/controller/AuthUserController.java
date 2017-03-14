@@ -3,12 +3,16 @@ package com.mymedia.web.mvc.controller;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.apache.logging.log4j.Logger;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 
 import com.mymedia.web.mvc.model.AuthUser;
 import com.mymedia.web.service.AuthUserService;
@@ -37,10 +41,9 @@ public class AuthUserController {
 		return getService().getAllAuthUsers();
 	}
 
-	public @ResponseBody AuthUser postUser(String string) {
-		AuthUser u = new AuthUser();
-		u.setUserName(string);
-		return getService().addAuthUser(u);
+	@RequestMapping(value="/adduser",method=RequestMethod.POST)
+	public @ResponseBody AuthUser postUser(@RequestBody AuthUser user) {
+		return getService().addAuthUser(user);
 	}
 
 }
