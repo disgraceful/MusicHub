@@ -2,6 +2,8 @@ package com.mymedia.web.mvc.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
@@ -45,5 +47,5 @@ public class AuthUserController {
 	public @ResponseBody AuthUser postUser(@RequestBody AuthUser user) {
 		return getService().addAuthUser(user);
 	}
-
+	
 }
