@@ -13,16 +13,14 @@
 	<!-- spring mvc initialization context parameters -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
- 		<param-value>/WEB-INF/config/spring-app-context.xml</param-value> 
+		<param-value>/WEB-INF/config/spring-app-context.xml, /WEB-INF/config/spring-security.xml</param-value>
 	</context-param>
-
-
 
 	<!-- listeners (webapp start-up triggered) -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	
+
 
 	<!-- spring dispatcher -->
 	<servlet>
@@ -38,8 +36,8 @@
 		<servlet-name>springDispatcher</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
-	
-<!-- data source -->
+
+	<!-- data source -->
 	<resource-ref>
 		<description>MyMedia MySQL DataSource</description>
 		<res-ref-name>jdbc/mymedia</res-ref-name>
@@ -47,17 +45,27 @@
 		<res-auth>Container</res-auth>
 	</resource-ref>
 
+	<!-- Spring Security -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
 
-
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
 	<!-- Enabling CORS filter -->
 	<filter>
-	  <filter-name>cors</filter-name>
-	  <filter-class>com.mymedia.web.filters.CORSFilter</filter-class>
+		<filter-name>cors</filter-name>
+		<filter-class>com.mymedia.web.filters.CORSFilter</filter-class>
 	</filter>
-	  
+
 	<filter-mapping>
-	  <filter-name>cors</filter-name>
-	  <url-pattern>/*</url-pattern>
+		<filter-name>cors</filter-name>
+		<url-pattern>/asd</url-pattern>
 	</filter-mapping>
+
 
 </web-app>
