@@ -1,11 +1,11 @@
 package com.mymedia.web.mvc.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,9 +27,16 @@ public class Album {
 	@Column(name = "ALBUM_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
 	@Column(name = "NAME")
 	private String name;
 
+	@Column(name = "BIRTH_DATE")
+	private Date BirthDate;
+	
+	@Column(name = "RATING")
+	private double rating;
+	
 	@ManyToOne
     @JoinColumn(name = "AUTHOUR_ID")
 	private Authour authour;
@@ -68,6 +75,22 @@ public class Album {
 
 	public void setSongs(List<Song> songs) {
 		this.songs = songs;
+	}
+
+	public Date getBirthDate() {
+		return BirthDate;
+	}
+
+	public void setBirthDate(Date birthDate) {
+		BirthDate = birthDate;
+	}
+
+	public double getRating() {
+		return rating;
+	}
+
+	public void setRating(double rating) {
+		this.rating = rating;
 	}
 	
 	

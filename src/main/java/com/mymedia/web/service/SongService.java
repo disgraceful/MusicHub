@@ -1,5 +1,6 @@
 package com.mymedia.web.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,7 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mymedia.web.dao.AlbumDAO;
+import com.mymedia.web.dao.AuthourDAO;
 import com.mymedia.web.dao.SongDAO;
+import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.mvc.model.Album;
+import com.mymedia.web.mvc.model.Authour;
 import com.mymedia.web.mvc.model.Song;
 
 @Service
@@ -19,19 +25,71 @@ public class SongService {
 
 	@Autowired
 	SongDAO songDAO;
-
+	
+	@Autowired
+	AuthourDAO authourDAO;
+	
+	@Autowired
+	AlbumDAO albumDAO;
+	
 	@Transactional
-	public List<Song> getAllSongs() {
-		return songDAO.getAllSongs();
+	public List<SongBeanEntity> getAllSongs() {
+		List<Song> songs = songDAO.getAllSongs();
+		List<SongBeanEntity> songEntities = new ArrayList<>();
+		SongBeanEntity entity = new SongBeanEntity();
+		for (Song song : songs) {
+			songEntities.add(songToSongEntity(song));
+		}
+		return songEntities;
 	}
 
 	@Transactional
-	public Song getSong(int id) {
-		return songDAO.getSong(id);
+	public SongBeanEntity getSong(int id) {
+		Song song = songDAO.getSong(id);
+		return songToSongEntity(song);
 	}
 
 	@Transactional
-	public Song addSong(Song song) {
-		return songDAO.addSong(song);
+	public SongBeanEntity addSong(SongBeanEntity entity) {
+		Song song = songEntityToSong(entity);
+		songDAO.addSong(song);
+		return entity;
+	}
+	
+	@Transactional
+	public List<SongBeanEntity>getSongsByAuthourId(int id){
+		Authour a = authourDAO.getAuthour(id);
+		List<SongBeanEntity> list = new ArrayList<>();
+		for(Song s:a.getSongs()){
+			list.add(songToSongEntity(s));	
+		}
+		return list;
+	}
+	
+	@Transactional
+	public List<SongBeanEntity> getSongsByAlbumId(int id){
+		Album a = albumDAO.getAlbum(id);
+		List<SongBeanEntity> list = new ArrayList<>();
+		for(Song s:a.getSongs()){
+			list.add(songToSongEntity(s));	
+		}
+		return list;
+	}
+
+	public Song songEntityToSong(SongBeanEntity entity) {
+		Song song = new Song();
+		song.setName(entity.getName());
+		song.setBirthDate(entity.getBirthDate());
+		song.setRating(entity.getRating());
+		return song;
+	}
+
+	public SongBeanEntity songToSongEntity(Song song) {
+		SongBeanEntity entity = new SongBeanEntity();
+		entity.setId(song.getId());
+		entity.setName(song.getName());
+		entity.setBirthDate(song.getBirthDate());
+		entity.setRating(song.getRating());
+		return entity;
 	}
 }

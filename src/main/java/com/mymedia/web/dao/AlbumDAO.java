@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.mvc.model.Album;
-import com.mymedia.web.mvc.model.AuthUser;
 
 @Repository
 @EnableTransactionManagement
@@ -46,6 +45,24 @@ public class AlbumDAO {
 		LOG.info(album.getName() + " " + album.getAuthour());
 		session.save(album);
 		return album;
-
 	}
+	
+	@Transactional
+	public Album updateAlbum(Album album) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.update(album);
+		return album;
+	}
+
+	@Transactional
+	public void deleteAlbum(Album album) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.delete(album);
+	}
+	
+	@Transactional
+	public void deleteAlbumById(int id){
+		deleteAlbum(getAlbum(id));
+	}
+	
 }

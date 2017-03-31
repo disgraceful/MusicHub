@@ -13,7 +13,7 @@
 	<!-- spring mvc initialization context parameters -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/config/spring-app-context.xml, /WEB-INF/config/spring-security.xml</param-value>
+		<param-value>/WEB-INF/config/spring-app-context.xml</param-value>
 	</context-param>
 
 	<!-- listeners (webapp start-up triggered) -->
@@ -45,17 +45,6 @@
 		<res-auth>Container</res-auth>
 	</resource-ref>
 
-	<!-- Spring Security -->
-	<filter>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
-
-	<filter-mapping>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	
 	<!-- Enabling CORS filter -->
 	<filter>
 		<filter-name>cors</filter-name>
@@ -64,8 +53,6 @@
 
 	<filter-mapping>
 		<filter-name>cors</filter-name>
-		<url-pattern>/asd</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
-
 </web-app>

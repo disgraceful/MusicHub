@@ -11,41 +11,57 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mymedia.web.mvc.controller.AuthUserController;
-import com.mymedia.web.mvc.model.AuthUser;
+import com.mymedia.web.mvc.model.Genre;
 
 @Repository
 @EnableTransactionManagement
-public class AuthUserDAO {
-
+public class GenreDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	private static final Logger LOG = LogManager.getLogger(AuthUserDAO.class);
-	
+	private static final Logger LOG = LogManager.getLogger(GenreDAO.class);
+
 	public void setSessionFactory(SessionFactory sf) {
 		this.sessionFactory = sf;
 	}
 
 	@Transactional
-	public List<AuthUser> getAllAuthUsers() {
+	public List<Genre> getAllGenres() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<AuthUser> authUserList = session.createQuery("from AuthUser").list();
-		return authUserList;
+		List<Genre> genreList = session.createQuery("from Genre").list();
+		return genreList;
 	}
 
 	@Transactional
-	public AuthUser getAuthUser(int id) {
+	public Genre getGenre(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.get(AuthUser.class, new Integer(id));
+		return session.get(Genre.class, new Integer(id));
 	}
 
 	@Transactional
-	public AuthUser addAuthUser(AuthUser user) {
+	public Genre addGenre(Genre genre) {
 		Session session = this.sessionFactory.getCurrentSession();
-		LOG.info(user.getUserName() + " " + user.getPassword() + " " + user.getEmail());
-		session.save(user);
-		return user;
+		session.save(genre);
+		return genre;
 
 	}
+
+	@Transactional
+	public Genre updateGenre(Genre genre) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.update(genre);
+		return genre;
+	}
+
+	@Transactional
+	public void deleteGenre(Genre Genre) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.delete(Genre);
+	}
+	
+	@Transactional
+	public void deleteGenreById(int id){
+		deleteGenre(getGenre(id));
+	}
+	
 }

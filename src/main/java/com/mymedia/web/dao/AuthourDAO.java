@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mymedia.web.mvc.model.AuthUser;
 import com.mymedia.web.mvc.model.Authour;
 
 @Repository
@@ -21,7 +20,7 @@ public class AuthourDAO {
 	private SessionFactory sessionFactory;
 
 	private static final Logger LOG = LogManager.getLogger(AuthourDAO.class);
-	
+
 	public void setSessionFactory(SessionFactory sf) {
 		this.sessionFactory = sf;
 	}
@@ -47,4 +46,23 @@ public class AuthourDAO {
 		return authour;
 
 	}
+
+	@Transactional
+	public Authour updateAuthour(Authour authour) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.update(authour);
+		return authour;
+	}
+
+	@Transactional
+	public void deleteAuthour(Authour authour) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.delete(authour);
+	}
+	
+	@Transactional
+	public void deleteAuthourById(int id){
+		deleteAuthour(getAuthour(id));
+	}
+	
 }

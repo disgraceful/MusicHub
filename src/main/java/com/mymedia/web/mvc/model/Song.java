@@ -1,11 +1,11 @@
 package com.mymedia.web.mvc.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,16 +32,22 @@ public class Song {
 	@Column(name = "NAME")
 	private String name;
 
+	@Column(name = "RATING")
+	private double rating;
+	
+	@Column(name = "LYRICS")
+	private String lyrics;
+	
+	@Column(name = "BIRTH_DATE")
+	private Date birthDate;
+	
+	@ManyToOne
+	@Column(name = "GENRE")
+	private Genre genre;
+	
 	@ManyToOne
 	@JoinColumn(name = "ALBUM_ID")
 	private Album album;
-
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "SONG_AUTHOURS", joinColumns = {
-			@JoinColumn(name = "SONG_ID", nullable = false, updatable = false) }, inverseJoinColumns = {
-					@JoinColumn(name = "AUTHOUR_ID", nullable = false, updatable = false) })
-	private List<Authour> authours;
 
 	public int getId() {
 		return id;
@@ -67,12 +73,36 @@ public class Song {
 		this.album = album;
 	}
 
-	public List<Authour> getAuthours() {
-		return authours;
+	public double getRating() {
+		return rating;
 	}
 
-	public void setAuthours(List<Authour> authours) {
-		this.authours = authours;
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+
+	public String getLyrics() {
+		return lyrics;
+	}
+
+	public void setLyrics(String lyrics) {
+		this.lyrics = lyrics;
+	}
+
+	public Date getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public Genre getGenre() {
+		return genre;
+	}
+
+	public void setGenre(Genre genre) {
+		this.genre = genre;
 	}
 
 }

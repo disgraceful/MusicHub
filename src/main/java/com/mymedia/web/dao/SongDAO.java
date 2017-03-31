@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.mvc.model.Album;
+import com.mymedia.web.mvc.model.Authour;
 import com.mymedia.web.mvc.model.Song;
 
 @Repository
@@ -47,4 +48,23 @@ public class SongDAO {
 		return song;
 
 	}
+	
+	@Transactional
+	public Song updateSong(Song song) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.update(song);
+		return song;
+	}
+
+	@Transactional
+	public void deleteSong(Song song) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.delete(song);
+	}
+	
+	@Transactional
+	public void deleteSongById(int id){
+		deleteSong(getSong(id));
+	}
+	
 }
