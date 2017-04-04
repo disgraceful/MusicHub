@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mymedia.web.dto.AuthourBeanEntity;
 import com.mymedia.web.mvc.model.Authour;
 import com.mymedia.web.service.AuthourService;
 import com.mymedia.web.utils.SpringBeanProvider;
@@ -26,19 +27,19 @@ public class AuthourController {
 	}
 
 	@RequestMapping(value = "/getauthour/{id}", method = RequestMethod.GET)
-	public @ResponseBody Authour getAuthourByID(@PathVariable int id) {
-		Authour a = getService().getAuthour(id);
+	public @ResponseBody AuthourBeanEntity getAuthourByID(@PathVariable int id) {
+		AuthourBeanEntity a = getService().getAuthour(id);
 		LOG.info(a.toString());
 		return a;
 	}
 
 	@RequestMapping(value = "/listauthours", method = RequestMethod.GET)
-	public @ResponseBody List<Authour> listAuthours() {
+	public @ResponseBody List<AuthourBeanEntity> listAuthours() {
 		return getService().getAllAuthours();
 	}
 
 	@RequestMapping(value="/addauthour",method=RequestMethod.POST)
-	public @ResponseBody Authour postUser(@RequestBody Authour authour) {
+	public @ResponseBody AuthourBeanEntity postUser(@RequestBody AuthourBeanEntity authour) {
 		return getService().addAuthour(authour);
 	}
 }

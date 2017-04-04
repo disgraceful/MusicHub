@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.mvc.model.Song;
 import com.mymedia.web.service.SongService;
 import com.mymedia.web.utils.SpringBeanProvider;
@@ -24,19 +25,19 @@ public class SongController {
 	}
 
 	@RequestMapping(value = "/getsong/{id}", method = RequestMethod.GET)
-	public @ResponseBody Song getSongById(@PathVariable int id) {
-		Song a = getService().getSong(id);
+	public @ResponseBody SongBeanEntity getSongById(@PathVariable int id) {
+		SongBeanEntity a = getService().getSong(id);
 		LOG.info(a.toString());
 		return a;
 	}
 
 	@RequestMapping(value = "/listsongs", method = RequestMethod.GET)
-	public @ResponseBody List<Song> listSongs() {
+	public @ResponseBody List<SongBeanEntity> listSongs() {
 		return getService().getAllSongs();
 	}
 
 	@RequestMapping(value="/addsong",method=RequestMethod.POST)
-	public @ResponseBody Song addUser(@RequestBody Song song) {
+	public @ResponseBody SongBeanEntity addUser(@RequestBody SongBeanEntity song) {
 		return getService().addSong(song);
 	}
 }

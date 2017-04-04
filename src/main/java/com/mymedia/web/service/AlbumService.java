@@ -28,9 +28,6 @@ public class AlbumService {
 	@Autowired
 	AuthourDAO authourDAO;
 
-	@Autowired
-	SongService songService;
-
 	@Transactional
 	public List<Album> getAllAlbums() {
 		return albumDAO.getAllAlbums();
@@ -46,10 +43,7 @@ public class AlbumService {
 		return albumDAO.addAlbum(album);
 	}
 
-	@Transactional
-	public List<SongBeanEntity> getSongs(int id) {
-		return songService.getSongsByAlbumId(id);
-	}
+	
 
 	public Album albumBeanEntityToAlbum(AlbumBeanEntity entity) {
 		Album album = new Album();

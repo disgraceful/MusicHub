@@ -32,7 +32,7 @@ public class Song {
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "RATING")
+	@Column(name = "RATING",nullable = true)
 	private double rating;
 	
 	@Column(name = "LYRICS")
@@ -42,12 +42,18 @@ public class Song {
 	private Date birthDate;
 	
 	@ManyToOne
-	@Column(name = "GENRE")
+	@JoinColumn(name = "GENRE_ID")
 	private Genre genre;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = "ALBUM_ID")
 	private Album album;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "SONG_AUTHOURS",
+	joinColumns = {@JoinColumn(name = "SONG_ID") },
+	inverseJoinColumns = { @JoinColumn(name = "AUTHOUR_ID")})
+	private List<Authour> authours;
 
 	public int getId() {
 		return id;
@@ -103,6 +109,14 @@ public class Song {
 
 	public void setGenre(Genre genre) {
 		this.genre = genre;
+	}
+
+	public List<Authour> getAuthours() {
+		return authours;
+	}
+
+	public void setAuthours(List<Authour> authours) {
+		this.authours = authours;
 	}
 
 }

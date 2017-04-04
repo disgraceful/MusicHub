@@ -34,10 +34,10 @@ public class Album {
 	@Column(name = "BIRTH_DATE")
 	private Date BirthDate;
 	
-	@Column(name = "RATING")
+	@Column(name = "RATING",nullable = true)
 	private double rating;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "AUTHOUR_ID")
 	private Authour authour;
 	

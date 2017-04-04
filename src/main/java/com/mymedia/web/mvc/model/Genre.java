@@ -23,7 +23,7 @@ public class Genre {
 	@Column(name = "GENRE_NAME")
 	private String name;
 
-	@OneToMany(mappedBy = "Genrer", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
 	public List<Song> songList;
 
 	public int getId() {

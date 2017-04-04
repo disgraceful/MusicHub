@@ -13,15 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mymedia.web.dao.AuthourDAO;
 import com.mymedia.web.dto.AuthourBeanEntity;
 import com.mymedia.web.dto.SongBeanEntity;
-import com.mymedia.web.mvc.controller.AuthUserController;
-import com.mymedia.web.mvc.model.Album;
 import com.mymedia.web.mvc.model.Authour;
-import com.mymedia.web.mvc.model.Song;
 
 @Service
 @EnableTransactionManagement
 public class AuthourService {
-	private static final Logger LOG = LogManager.getLogger(AuthUserController.class);
+	private static final Logger LOG = LogManager.getLogger(AuthourService.class);
 
 	@Autowired
 	AuthourDAO authourDAO;

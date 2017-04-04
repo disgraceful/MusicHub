@@ -43,12 +43,13 @@ public class Authour {
 	private List<Album> albums;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany(mappedBy = "authours")
+	@ManyToMany(mappedBy = "authours", cascade = CascadeType.ALL)
 	private List<Song> songs;
 
 	@Column(name = "BIRTH_DATE")
 	private Date birthDate;
-	@Column(name = "RATING")
+	
+	@Column(name = "RATING",nullable = true)
 	private double rating;
 
 	public int getId() {
