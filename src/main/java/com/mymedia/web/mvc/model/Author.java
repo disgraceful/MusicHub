@@ -24,11 +24,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
-@Table(name = "AUTHOURS")
-public class Authour {
+@Table(name = "AUTHORS")
+public class Author {
 
 	@Id
-	@Column(name = "AUTHOUR_ID")
+	@Column(name = "AUTHOR_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
@@ -39,11 +39,11 @@ public class Authour {
 	private String surName;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "authour", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
 	private List<Album> albums;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany(mappedBy = "authours", cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "authors", cascade = CascadeType.ALL)
 	private List<Song> songs;
 
 	@Column(name = "BIRTH_DATE")

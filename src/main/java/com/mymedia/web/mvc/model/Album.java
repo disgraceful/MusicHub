@@ -38,8 +38,8 @@ public class Album {
 	private double rating;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "AUTHOUR_ID")
-	private Authour authour;
+    @JoinColumn(name = "AUTHOR_ID")
+	private Author author;
 	
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
@@ -61,12 +61,12 @@ public class Album {
 		this.name = name;
 	}
 
-	public Authour getAuthour() {
-		return authour;
+	public Author getAuthor() {
+		return author;
 	}
 
-	public void setAuthour(Authour authour) {
-		this.authour = authour;
+	public void setAuthor(Author author) {
+		this.author = author;
 	}
 
 	public List<Song> getSongs() {

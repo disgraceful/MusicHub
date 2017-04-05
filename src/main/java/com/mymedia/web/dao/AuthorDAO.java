@@ -11,58 +11,58 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mymedia.web.mvc.model.Authour;
+import com.mymedia.web.mvc.model.Author;
 
 @Repository
 @EnableTransactionManagement
-public class AuthourDAO {
+public class AuthorDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	private static final Logger LOG = LogManager.getLogger(AuthourDAO.class);
+	private static final Logger LOG = LogManager.getLogger(AuthorDAO.class);
 
 	public void setSessionFactory(SessionFactory sf) {
 		this.sessionFactory = sf;
 	}
 
 	@Transactional
-	public List<Authour> getAllAuthours() {
+	public List<Author> getAllAuthors() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Authour> authourList = session.createQuery("from Authour").list();
-		return authourList;
+		List<Author> authorList = session.createQuery("from Author").list();
+		return authorList;
 	}
 
 	@Transactional
-	public Authour getAuthor(int id) {
+	public Author getAuthor(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.get(Authour.class, new Integer(id));
+		return session.get(Author.class, new Integer(id));
 	}
 
 	@Transactional
-	public Authour addAuhtour(Authour authour) {
+	public Author addAuthor(Author author) {
 		Session session = this.sessionFactory.getCurrentSession();
-		LOG.info(authour.getName() + " " + authour.getAlbums());
-		session.save(authour);
-		return authour;
+		LOG.info(author.getName() + " " + author.getAlbums());
+		session.save(author);
+		return author;
 
 	}
 
 	@Transactional
-	public Authour updateAuthour(Authour authour) {
+	public Author updateAuthor(Author author) {
 		Session session = this.sessionFactory.getCurrentSession();
-		session.update(authour);
-		return authour;
+		session.update(author);
+		return author;
 	}
 
 	@Transactional
-	public void deleteAuthour(Authour authour) {
+	public void deleteAuthor(Author author) {
 		Session session = this.sessionFactory.getCurrentSession();
-		session.delete(authour);
+		session.delete(author);
 	}
 	
 	@Transactional
-	public void deleteAuthourById(int id){
-		deleteAuthour(getAuthor(id));
+	public void deleteAuthorById(int id){
+		deleteAuthor(getAuthor(id));
 	}
 	
 }

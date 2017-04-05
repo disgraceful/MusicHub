@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mymedia.web.mvc.model.Album;
-import com.mymedia.web.mvc.model.Authour;
 import com.mymedia.web.mvc.model.Song;
 
 @Repository

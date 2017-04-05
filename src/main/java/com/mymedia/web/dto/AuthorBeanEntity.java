@@ -3,7 +3,7 @@ package com.mymedia.web.dto;
 import java.util.Date;
 import java.util.List;
 
-public class AuthourBeanEntity {
+public class AuthorBeanEntity {
 
 	private int id;
 	private String name;

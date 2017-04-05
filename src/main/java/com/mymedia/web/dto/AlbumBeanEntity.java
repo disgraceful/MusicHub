@@ -8,7 +8,7 @@ public class AlbumBeanEntity {
 	private String name;
 	private Date birthDate;
 	private double rating;
-	private int authourId;
+	private int authorId;
 	
 	public int getId() {
 		return id;
@@ -34,11 +34,11 @@ public class AlbumBeanEntity {
 	public void setRating(double rating) {
 		this.rating = rating;
 	}
-	public int getAuthourId() {
-		return authourId;
+	public int getAuthorId() {
+		return authorId;
 	}
-	public void setAuthourId(int authourId) {
-		this.authourId = authourId;
+	public void setAuthorId(int authorId) {
+		this.authorId = authorId;
 	}
 	
 	

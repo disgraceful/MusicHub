@@ -15,9 +15,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -50,10 +47,10 @@ public class Song {
 	private Album album;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "SONG_AUTHOURS",
+	@JoinTable(name = "SONG_AUTHORS",
 	joinColumns = {@JoinColumn(name = "SONG_ID") },
-	inverseJoinColumns = { @JoinColumn(name = "AUTHOUR_ID")})
-	private List<Authour> authours;
+	inverseJoinColumns = { @JoinColumn(name = "AUTHOR_ID")})
+	private List<Author> authors;
 
 	public int getId() {
 		return id;
@@ -111,12 +108,12 @@ public class Song {
 		this.genre = genre;
 	}
 
-	public List<Authour> getAuthours() {
-		return authours;
+	public List<Author> getAuthors() {
+		return authors;
 	}
 
-	public void setAuthours(List<Authour> authours) {
-		this.authours = authours;
+	public void setAuthors(List<Author> authors) {
+		this.authors = authors;
 	}
 
 }

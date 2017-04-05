@@ -4,43 +4,35 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import com.mymedia.web.dto.AuthorBeanEntity;
 import com.mymedia.web.service.AuthorService;
-import com.mymedia.web.utils.SpringBeanProvider;
 
-@Controller
-@RequestMapping("/authours")
-public class AuthourController {
+@RestController
+@RequestMapping("/author")
+public class AuthorController {
 
-	private static final Logger LOG = LogManager.getLogger(AuthourController.class);
+    private static final Logger LOG = LogManager.getLogger(AuthorController.class);
 
-	private static AuthorService getService() {
-		return SpringBeanProvider.getBean(AuthorService.class);
-	}
+    @Autowired
+    private AuthorService authorService;
 
-	@RequestMapping(value = "/getauthour/{id}", method = RequestMethod.GET)
-	public @ResponseBody
-	AuthorBeanEntity getAuthourByID(@PathVariable int id) {
-		AuthorBeanEntity a = getService().getAuthor(id);
-		LOG.info(a.toString());
-		return a;
-	}
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public @ResponseBody AuthorBeanEntity getAuthorById(@PathVariable int id) {
+        AuthorBeanEntity author = authorService.getAuthor(id);
+        LOG.info(author.toString());
+        return author;
+    }
 
-	@RequestMapping(value = "/listauthours", method = RequestMethod.GET)
-	public @ResponseBody List<AuthorBeanEntity> listAuthours() {
-		return getService().getAllAuthours();
-	}
+    @RequestMapping(method = RequestMethod.GET)
+    public @ResponseBody List<AuthorBeanEntity> getAuthors() {
+        return authorService.getAllAuthors();
+    }
 
-	@RequestMapping(value="/addauthour",method=RequestMethod.POST)
-	public @ResponseBody
-	AuthorBeanEntity postUser(@RequestBody AuthorBeanEntity authour) {
-		return getService().addAuthor(authour);
-	}
+    @RequestMapping(method = RequestMethod.POST)
+    public @ResponseBody AuthorBeanEntity postAuthor(@RequestBody AuthorBeanEntity author) {
+        return authorService.addAuthor(author);
+    }
 }

@@ -10,50 +10,50 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mymedia.web.dao.AuthourDAO;
-import com.mymedia.web.dto.AuthourBeanEntity;
+import com.mymedia.web.dao.AuthorDAO;
+import com.mymedia.web.dto.AuthorBeanEntity;
 import com.mymedia.web.dto.SongBeanEntity;
-import com.mymedia.web.mvc.model.Authour;
+import com.mymedia.web.mvc.model.Author;
 
 @Service
 @EnableTransactionManagement
-public class AuthourService {
-	private static final Logger LOG = LogManager.getLogger(AuthourService.class);
+public class AuthorService {
+	private static final Logger LOG = LogManager.getLogger(AuthorService.class);
 
 	@Autowired
-	AuthourDAO authourDAO;
+	AuthorDAO authorDAO;
 	
 	@Autowired
 	SongService songService;
 
 	@Transactional
-	public List<AuthourBeanEntity> getAllAuthours() {
-		List<Authour> list = authourDAO.getAllAuthours();
-		List<AuthourBeanEntity> entityList = new ArrayList<>();
-		for (Authour authour : list) {
-			entityList.add(authourToAuthourBeanEntity(authour));
+	public List<AuthorBeanEntity> getAllAuthors() {
+		List<Author> list = authorDAO.getAllAuthors();
+		List<AuthorBeanEntity> entityList = new ArrayList<>();
+		for (Author author : list) {
+			entityList.add(authorToAuthorBeanEntity(author));
 		}
 		return entityList;
 	}
 
 	@Transactional
-	public AuthourBeanEntity getAuthour(int id) {
-		return authourToAuthourBeanEntity(authourDAO.getAuthour(id));
+	public AuthorBeanEntity getAuthor(int id) {
+		return authorToAuthorBeanEntity(authorDAO.getAuthor(id));
 	}
 
 	@Transactional
-	public AuthourBeanEntity addAuthour(AuthourBeanEntity entity) {
-		authourDAO.addAuhtour(authourBeanEntityToAuthour(entity));
+	public AuthorBeanEntity addAuthor(AuthorBeanEntity entity) {
+		authorDAO.addAuthor(authorBeanEntityToAuthor(entity));
 		return entity;
 	}
 	
 	@Transactional
-	public List<SongBeanEntity>getSongs(int id){
+	public List<SongBeanEntity> getSongs(int id){
 		return songService.getSongsByAuthourId(id);
 	}
 
-	private Authour authourBeanEntityToAuthour(AuthourBeanEntity entity) {
-		Authour a = new Authour();
+	private Author authorBeanEntityToAuthor(AuthorBeanEntity entity) {
+		Author a = new Author();
 		a.setId(entity.getId());
 		a.setName(entity.getName());
 		a.setSurName(entity.getSurName());
@@ -62,13 +62,13 @@ public class AuthourService {
 		return a;
 	}
 
-	private AuthourBeanEntity authourToAuthourBeanEntity(Authour authour) {
-		AuthourBeanEntity entity = new AuthourBeanEntity();
-		entity.setId(authour.getId());
-		entity.setName(authour.getName());
-		entity.setSurName(authour.getSurName());
-		entity.setRating(authour.getRating());
-		entity.setBirthDate(authour.getBirthDate());
+	private AuthorBeanEntity authorToAuthorBeanEntity(Author author) {
+		AuthorBeanEntity entity = new AuthorBeanEntity();
+		entity.setId(author.getId());
+		entity.setName(author.getName());
+		entity.setSurName(author.getSurName());
+		entity.setRating(author.getRating());
+		entity.setBirthDate(author.getBirthDate());
 		return entity;
 	}
 }
