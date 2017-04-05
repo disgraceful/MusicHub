@@ -18,6 +18,7 @@ import com.mymedia.web.mvc.model.Album;
 @Service
 @EnableTransactionManagement
 public class AlbumService {
+
 	private static final Logger LOG = LogManager.getLogger(AlbumService.class);
 
 	@Autowired
@@ -43,8 +44,8 @@ public class AlbumService {
 
 	@Transactional
 	public AlbumBeanEntity addAlbum(AlbumBeanEntity entity) {
-		albumDAO.addAlbum(albumEntityToAlbum(entity));
-		return entity;
+		Album result = albumDAO.addAlbum(albumEntityToAlbum(entity));
+		return albumToAlbumEntity(result);
 	}
 
 	public Album albumEntityToAlbum(AlbumBeanEntity entity) {
@@ -57,6 +58,7 @@ public class AlbumService {
 	}
 
 	public AlbumBeanEntity albumToAlbumEntity(Album album) {
+		LOG.info(album.getId());
 		AlbumBeanEntity entity = new AlbumBeanEntity();
 		entity.setId(album.getId());
 		entity.setName(album.getName());

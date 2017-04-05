@@ -18,6 +18,7 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-orm:4.3.5.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-jdbc:4.3.5.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-tx:4.3.5.RELEASE" />
+          <element id="library" level="project" name="Maven: javax.servlet:servlet-api:2.5" />
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-web:4.0.4.RELEASE" />
           <element id="library" level="project" name="Maven: aopalliance:aopalliance:1.0" />
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-core:4.0.4.RELEASE" />
@@ -50,8 +51,6 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.5.0" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.5.0" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.5.0" />
-          <element id="library" level="project" name="Maven: javax.servlet:jstl:1.2" />
-          <element id="library" level="project" name="Maven: org.glassfish.web:jstl-impl:1.2" />
         </element>
       </element>
       <element id="directory" name="META-INF">

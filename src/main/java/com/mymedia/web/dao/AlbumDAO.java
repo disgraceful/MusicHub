@@ -43,9 +43,10 @@ public class AlbumDAO {
 	public Album addAlbum(Album album) {
 		Session session = this.sessionFactory.getCurrentSession();
 		LOG.info(album.getName() + " " + album.getAuthor());
-		//int i = (Integer)session.save(album);
-		//return getAlbum(i);
-		return album;
+		int i = (Integer)session.save(album);
+		LOG.info(session.save(album));
+		return getAlbum(i);
+//		return album;
 	}
 	
 	@Transactional
