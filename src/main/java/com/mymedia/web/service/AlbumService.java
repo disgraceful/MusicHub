@@ -29,23 +29,27 @@ public class AlbumService {
 	AuthourDAO authourDAO;
 
 	@Transactional
-	public List<Album> getAllAlbums() {
-		return albumDAO.getAllAlbums();
+	public List<AlbumBeanEntity> getAllAlbums() {
+		List<Album> albums = albumDAO.getAllAlbums();
+		List<AlbumBeanEntity> albumEntities = new ArrayList<>();
+		for (Album album : albums) {
+			albumEntities.add(albumToAlbumEntity(album));
+		}
+		return albumEntities;
 	}
 
 	@Transactional
-	public Album getAlbum(int id) {
-		return albumDAO.getAlbum(id);
+	public AlbumBeanEntity getAlbum(int id) {
+		return albumToAlbumEntity(albumDAO.getAlbum(id));
 	}
 
 	@Transactional
-	public Album addAlbum(Album album) {
-		return albumDAO.addAlbum(album);
+	public AlbumBeanEntity addAlbum(AlbumBeanEntity entity) {
+		albumDAO.addAlbum(albumEntityToAlbum(entity));
+		return entity;
 	}
 
-	
-
-	public Album albumBeanEntityToAlbum(AlbumBeanEntity entity) {
+	public Album albumEntityToAlbum(AlbumBeanEntity entity) {
 		Album album = new Album();
 		album.setName(entity.getName());
 		album.setBirthDate(entity.getBirthDate());
@@ -54,13 +58,13 @@ public class AlbumService {
 		return album;
 	}
 
-	public Album AlbumToAlbumBeanEntity(Album album) {
+	public AlbumBeanEntity albumToAlbumEntity(Album album) {
 		AlbumBeanEntity entity = new AlbumBeanEntity();
 		entity.setId(album.getId());
 		entity.setName(album.getName());
 		entity.setBirthDate(album.getBirthDate());
 		entity.setRating(album.getRating());
 		entity.setAuthourId(album.getAuthour().getId());
-		return album;
+		return entity;
 	}
 }

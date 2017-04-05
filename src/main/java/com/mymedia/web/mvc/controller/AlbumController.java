@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mymedia.web.dto.AlbumBeanEntity;
 import com.mymedia.web.mvc.model.Album;
 import com.mymedia.web.service.AlbumService;
 import com.mymedia.web.utils.SpringBeanProvider;
@@ -25,20 +26,20 @@ public class AlbumController {
 		return SpringBeanProvider.getBean(AlbumService.class);
 	}
 
-	@RequestMapping(value = "/getalbum/{id}", method = RequestMethod.GET)
-	public @ResponseBody Album getAlbumByID(@PathVariable int id) {
-		Album a = getAlbumService().getAlbum(id);
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public @ResponseBody AlbumBeanEntity getAlbumByID(@PathVariable int id) {
+		AlbumBeanEntity a = getAlbumService().getAlbum(id);
 		LOG.info(a.toString());
-		return a;
+		return new AlbumBeanEntity();
 	}
 
-	@RequestMapping(value = "/listalbums", method = RequestMethod.GET)
-	public @ResponseBody List<Album> listAlbums() {
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public @ResponseBody List<AlbumBeanEntity> listAlbums() {
 		return getAlbumService().getAllAlbums();
 	}
 
-	@RequestMapping(value="/addalbums",method=RequestMethod.POST)
-	public @ResponseBody Album postUser(@RequestBody Album album) {
+	@RequestMapping(value="/add",method=RequestMethod.POST)
+	public @ResponseBody AlbumBeanEntity postUser(@RequestBody AlbumBeanEntity album) {
 		return getAlbumService().addAlbum(album);
 	}
 }
