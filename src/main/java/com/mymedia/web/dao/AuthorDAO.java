@@ -33,7 +33,7 @@ public class AuthourDAO {
 	}
 
 	@Transactional
-	public Authour getAuthour(int id) {
+	public Authour getAuthor(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.get(Authour.class, new Integer(id));
 	}
@@ -62,7 +62,7 @@ public class AuthourDAO {
 	
 	@Transactional
 	public void deleteAuthourById(int id){
-		deleteAuthour(getAuthour(id));
+		deleteAuthour(getAuthor(id));
 	}
 	
 }

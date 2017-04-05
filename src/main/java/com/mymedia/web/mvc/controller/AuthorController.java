@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.mymedia.web.dto.AuthourBeanEntity;
-import com.mymedia.web.mvc.model.Authour;
-import com.mymedia.web.service.AuthourService;
+import com.mymedia.web.dto.AuthorBeanEntity;
+import com.mymedia.web.service.AuthorService;
 import com.mymedia.web.utils.SpringBeanProvider;
 
 @Controller
@@ -22,24 +21,26 @@ public class AuthourController {
 
 	private static final Logger LOG = LogManager.getLogger(AuthourController.class);
 
-	private static AuthourService getService() {
-		return SpringBeanProvider.getBean(AuthourService.class);
+	private static AuthorService getService() {
+		return SpringBeanProvider.getBean(AuthorService.class);
 	}
 
 	@RequestMapping(value = "/getauthour/{id}", method = RequestMethod.GET)
-	public @ResponseBody AuthourBeanEntity getAuthourByID(@PathVariable int id) {
-		AuthourBeanEntity a = getService().getAuthour(id);
+	public @ResponseBody
+	AuthorBeanEntity getAuthourByID(@PathVariable int id) {
+		AuthorBeanEntity a = getService().getAuthor(id);
 		LOG.info(a.toString());
 		return a;
 	}
 
 	@RequestMapping(value = "/listauthours", method = RequestMethod.GET)
-	public @ResponseBody List<AuthourBeanEntity> listAuthours() {
+	public @ResponseBody List<AuthorBeanEntity> listAuthours() {
 		return getService().getAllAuthours();
 	}
 
 	@RequestMapping(value="/addauthour",method=RequestMethod.POST)
-	public @ResponseBody AuthourBeanEntity postUser(@RequestBody AuthourBeanEntity authour) {
-		return getService().addAuthour(authour);
+	public @ResponseBody
+	AuthorBeanEntity postUser(@RequestBody AuthorBeanEntity authour) {
+		return getService().addAuthor(authour);
 	}
 }
