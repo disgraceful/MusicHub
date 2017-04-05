@@ -25,13 +25,13 @@ public class SongService {
 
 	@Autowired
 	SongDAO songDAO;
-	
+
 	@Autowired
 	AuthorDAO authorDAO;
-	
+
 	@Autowired
 	AlbumDAO albumDAO;
-	
+
 	@Transactional
 	public List<SongBeanEntity> getAllSongs() {
 		List<Song> songs = songDAO.getAllSongs();
@@ -51,33 +51,55 @@ public class SongService {
 
 	@Transactional
 	public SongBeanEntity addSong(SongBeanEntity entity) {
-		Song song = songEntityToSong(entity);
-		songDAO.addSong(song);
-		return entity;
+		Song song = songDAO.addSong(songEntityToSong(entity));
+		return songToSongEntity(song);
 	}
-	
+
 	@Transactional
-	public List<SongBeanEntity>getSongsByAuthourId(int id){
+	public SongBeanEntity updateSong(SongBeanEntity entity) {
+		Song song = songDAO.updateSong(songEntityToSong(entity));
+		return songToSongEntity(song);
+	}
+
+	@Transactional
+	public void deleteSong(int id) {
+		songDAO.deleteSongById(id);
+	}
+
+	@Transactional
+	public List<SongBeanEntity> getSongsByAuthorId(int id) {
 		Author a = authorDAO.getAuthor(id);
 		List<SongBeanEntity> list = new ArrayList<>();
-		for(Song s:a.getSongs()){
-			list.add(songToSongEntity(s));	
+		for (Song s : a.getSongs()) {
+			list.add(songToSongEntity(s));
 		}
 		return list;
 	}
-	
+
 	@Transactional
-	public List<SongBeanEntity> getSongsByAlbumId(int id){
+	public List<SongBeanEntity> getSongsByAlbumId(int id) {
 		Album a = albumDAO.getAlbum(id);
 		List<SongBeanEntity> list = new ArrayList<>();
-		for(Song s:a.getSongs()){
-			list.add(songToSongEntity(s));	
+		for (Song s : a.getSongs()) {
+			list.add(songToSongEntity(s));
+		}
+		return list;
+	}
+
+	@Transactional
+	public List<SongBeanEntity> getSongsByGenreId(int id) {
+		List<SongBeanEntity> list = new ArrayList<>();
+		for (SongBeanEntity s : getAllSongs()) {
+			if (s.getGenreId() == id) {
+				list.add(s);
+			}
 		}
 		return list;
 	}
 
 	public Song songEntityToSong(SongBeanEntity entity) {
 		Song song = new Song();
+		song.setId(entity.getId());
 		song.setName(entity.getName());
 		song.setBirthDate(entity.getBirthDate());
 		song.setRating(entity.getRating());

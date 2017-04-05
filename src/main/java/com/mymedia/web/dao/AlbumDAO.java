@@ -46,14 +46,13 @@ public class AlbumDAO {
 		int i = (Integer)session.save(album);
 		LOG.info(session.save(album));
 		return getAlbum(i);
-//		return album;
 	}
 	
 	@Transactional
 	public Album updateAlbum(Album album) {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.update(album);
-		return album;
+		return getAlbum(album.getId());
 	}
 
 	@Transactional
@@ -63,7 +62,7 @@ public class AlbumDAO {
 	}
 	
 	@Transactional
-	public void deleteAlbumById(int id){
+	public void deleteAlbum(int id){
 		deleteAlbum(getAlbum(id));
 	}
 	

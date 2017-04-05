@@ -11,9 +11,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.dao.AuthorDAO;
+import com.mymedia.web.dao.SongDAO;
 import com.mymedia.web.dto.AuthorBeanEntity;
-import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.mvc.model.Author;
+import com.mymedia.web.mvc.model.Song;
 
 @Service
 @EnableTransactionManagement
@@ -22,37 +23,53 @@ public class AuthorService {
 
 	@Autowired
 	AuthorDAO authorDAO;
-	
+
 	@Autowired
-	SongService songService;
+	SongDAO songDAO;
 
 	@Transactional
 	public List<AuthorBeanEntity> getAllAuthors() {
 		List<Author> list = authorDAO.getAllAuthors();
 		List<AuthorBeanEntity> entityList = new ArrayList<>();
 		for (Author author : list) {
-			entityList.add(authorToAuthorBeanEntity(author));
+			entityList.add(authorToAuthorEntity(author));
 		}
 		return entityList;
 	}
 
 	@Transactional
 	public AuthorBeanEntity getAuthor(int id) {
-		return authorToAuthorBeanEntity(authorDAO.getAuthor(id));
+		return authorToAuthorEntity(authorDAO.getAuthor(id));
 	}
 
 	@Transactional
 	public AuthorBeanEntity addAuthor(AuthorBeanEntity entity) {
-		authorDAO.addAuthor(authorBeanEntityToAuthor(entity));
-		return entity;
-	}
-	
-	@Transactional
-	public List<SongBeanEntity> getSongs(int id){
-		return songService.getSongsByAuthourId(id);
+		Author author = authorDAO.addAuthor(authorEntityToAuthor(entity));
+		return authorToAuthorEntity(author);
 	}
 
-	private Author authorBeanEntityToAuthor(AuthorBeanEntity entity) {
+	@Transactional
+	public AuthorBeanEntity updateAuthor(AuthorBeanEntity entity) {
+		Author author = authorDAO.updateAuthor(authorEntityToAuthor(entity));
+		return authorToAuthorEntity(author);
+	}
+
+	@Transactional
+	public void deleteAuthor(int id) {
+		authorDAO.deleteAuthor(id);
+	}
+
+	@Transactional
+	public List<AuthorBeanEntity> getAuthorsBySongId(int id) {
+		List<AuthorBeanEntity> list = new ArrayList<>();
+		Song song = songDAO.getSong(id);
+		for (Author author : song.getAuthors()) {
+			list.add(authorToAuthorEntity(author));
+		}
+		return list;
+	}
+
+	private Author authorEntityToAuthor(AuthorBeanEntity entity) {
 		Author a = new Author();
 		a.setId(entity.getId());
 		a.setName(entity.getName());
@@ -62,7 +79,7 @@ public class AuthorService {
 		return a;
 	}
 
-	private AuthorBeanEntity authorToAuthorBeanEntity(Author author) {
+	private AuthorBeanEntity authorToAuthorEntity(Author author) {
 		AuthorBeanEntity entity = new AuthorBeanEntity();
 		entity.setId(author.getId());
 		entity.setName(author.getName());

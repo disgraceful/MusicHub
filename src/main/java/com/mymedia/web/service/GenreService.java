@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mymedia.web.dao.GenreDAO;
 import com.mymedia.web.dto.GenreBeanEntity;
 import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.mvc.model.Album;
 import com.mymedia.web.mvc.model.Genre;
 import com.mymedia.web.mvc.model.Song;
 
@@ -40,32 +41,24 @@ public class GenreService {
 
 	@Transactional
 	public GenreBeanEntity addGenre(GenreBeanEntity entity) {
-		Genre genre = genreEntityToGenre(entity);
-		genreDAO.addGenre(genre);
-		
-		return entity;
+		Genre genre = genreDAO.addGenre(genreEntityToGenre(entity));
+		return genreToGenreEntity(genre);
 	}
 	
 	@Transactional
 	public GenreBeanEntity updateGenre(GenreBeanEntity entity) {
-		Genre genre = genreEntityToGenre(entity);
-		genreDAO.updateGenre(genre);
-		return entity;
+		Genre genre = genreDAO.updateGenre(genreEntityToGenre(entity));
+		return genreToGenreEntity(genre);
 	}	
 	
 	@Transactional
-	public List<SongBeanEntity>getSongsByGenreId(int id){
-		genreDAO.getGenre(id);
-		List<SongBeanEntity> songEntities = new ArrayList<>();
-		for(Song s:genreDAO.getGenre(id).getSongList()){
-			//songEntities.add(songService.songToSongEntity(s));
-		}
-		return songEntities;
+	public void deleteGenre(int id){
+		genreDAO.deleteGenre(id);
 	}
-	
 	
 	private Genre genreEntityToGenre(GenreBeanEntity entity) {
 		Genre genre = new Genre();
+		genre.setId(entity.getId());
 		genre.setName(entity.getName());
 		return genre;
 	}

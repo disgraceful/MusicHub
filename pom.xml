@@ -51,11 +51,6 @@
 			<artifactId>spring-tx</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-		</dependency>
 
 		<!-- Spring Security -->
 		<dependency>
@@ -129,7 +124,14 @@
 			<version>2.5.0</version>
 		</dependency>
 
-		</dependencies>
+		<!-- Java Servlet for CORS Filter -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+	</dependencies>
 	<build>
 		<finalName>web</finalName>
 	</build>

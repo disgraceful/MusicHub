@@ -42,16 +42,15 @@ public class SongDAO {
 	public Song addSong(Song song) {
 		Session session = this.sessionFactory.getCurrentSession();
 		LOG.info(song.getName() + " ");
-		session.save(song);
-		return song;
-
+		int id = (Integer)session.save(song);
+		return getSong(id);
 	}
 	
 	@Transactional
 	public Song updateSong(Song song) {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.update(song);
-		return song;
+		return getSong(song.getId());
 	}
 
 	@Transactional

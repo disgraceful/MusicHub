@@ -18,7 +18,6 @@ import com.mymedia.web.mvc.model.Album;
 @Service
 @EnableTransactionManagement
 public class AlbumService {
-
 	private static final Logger LOG = LogManager.getLogger(AlbumService.class);
 
 	@Autowired
@@ -44,12 +43,33 @@ public class AlbumService {
 
 	@Transactional
 	public AlbumBeanEntity addAlbum(AlbumBeanEntity entity) {
-		Album result = albumDAO.addAlbum(albumEntityToAlbum(entity));
-		return albumToAlbumEntity(result);
+		Album album = albumDAO.addAlbum(albumEntityToAlbum(entity));
+		return albumToAlbumEntity(album);
+	}
+	
+	@Transactional
+	public AlbumBeanEntity updateAlbum(AlbumBeanEntity entity){
+		Album album = albumDAO.updateAlbum(albumEntityToAlbum(entity));
+		return albumToAlbumEntity(album);
+	}
+	
+	@Transactional
+	public void updateAlbum(int id){
+		albumDAO.deleteAlbum(id);
 	}
 
+	@Transactional
+	public List<AlbumBeanEntity> getAlbumsByAuthorId(int id){
+		List<AlbumBeanEntity>list = new ArrayList<>();
+		for(Album album : authorDAO.getAuthor(id).getAlbums()){
+			list.add(albumToAlbumEntity(album));
+		}
+		return list;
+	}
+	
 	public Album albumEntityToAlbum(AlbumBeanEntity entity) {
 		Album album = new Album();
+		album.setId(entity.getId());
 		album.setName(entity.getName());
 		album.setBirthDate(entity.getBirthDate());
 		album.setRating(entity.getRating());
@@ -58,7 +78,6 @@ public class AlbumService {
 	}
 
 	public AlbumBeanEntity albumToAlbumEntity(Album album) {
-		LOG.info(album.getId());
 		AlbumBeanEntity entity = new AlbumBeanEntity();
 		entity.setId(album.getId());
 		entity.setName(album.getName());
