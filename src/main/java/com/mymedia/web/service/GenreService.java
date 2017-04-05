@@ -21,9 +21,6 @@ public class GenreService {
 	@Autowired
 	GenreDAO genreDAO;
 	
-	@Autowired
-	SongService songService;
-	
 	@Transactional
 	public List<GenreBeanEntity> getAllGenres() {
 		List<Genre> genres = genreDAO.getAllGenres();
@@ -45,15 +42,23 @@ public class GenreService {
 	public GenreBeanEntity addGenre(GenreBeanEntity entity) {
 		Genre genre = genreEntityToGenre(entity);
 		genreDAO.addGenre(genre);
+		
 		return entity;
 	}
+	
+	@Transactional
+	public GenreBeanEntity updateGenre(GenreBeanEntity entity) {
+		Genre genre = genreEntityToGenre(entity);
+		genreDAO.updateGenre(genre);
+		return entity;
+	}	
 	
 	@Transactional
 	public List<SongBeanEntity>getSongsByGenreId(int id){
 		genreDAO.getGenre(id);
 		List<SongBeanEntity> songEntities = new ArrayList<>();
 		for(Song s:genreDAO.getGenre(id).getSongList()){
-			songEntities.add(songService.songToSongEntity(s));
+			//songEntities.add(songService.songToSongEntity(s));
 		}
 		return songEntities;
 	}
