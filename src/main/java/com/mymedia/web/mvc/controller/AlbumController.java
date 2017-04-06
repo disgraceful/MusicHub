@@ -14,22 +14,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.AlbumBeanEntity;
 import com.mymedia.web.dto.AuthorBeanEntity;
+import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.service.AlbumService;
 import com.mymedia.web.service.AuthorService;
+import com.mymedia.web.service.SongService;
 
 @RestController
 @RequestMapping("/album")
 public class AlbumController {
+private static final Logger LOG = LogManager.getLogger(AlbumController.class);
 
-    private static final Logger LOG = LogManager.getLogger(AlbumController.class);
-
-//    private static AlbumService albumService() {
-//        return SpringBeanProvider.getBean(AlbumService.class);
-//    }
-    @Autowired
+	@Autowired
     private AlbumService albumService;
+    
     @Autowired
     private AuthorService authorService;
+    
+    @Autowired
+    private SongService songService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody AlbumBeanEntity getAlbumById(@PathVariable int id) {
@@ -51,13 +53,12 @@ public class AlbumController {
     
     @RequestMapping(method = RequestMethod.PATCH)
     public @ResponseBody AlbumBeanEntity updateAlbum(@RequestBody AlbumBeanEntity album){
-    	//TODO service update
-    	return null;
+    	return albumService.updateAlbum(album);
     }
     
     @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
     public @ResponseBody void deleteAlbum(@RequestBody int id){
-    	//TODO service delete
+    	albumService.deleteAlbum(id);
     }
     
     @RequestMapping(value = "/{id}/author", method = RequestMethod.GET)
@@ -67,5 +68,10 @@ public class AlbumController {
         AuthorBeanEntity author = authorService.getAuthor(album.getAuthorId());
         LOG.info(author.toString());
         return author;
+    }
+    
+    @RequestMapping(value = "/{id}/songs", method = RequestMethod.GET)
+    public @ResponseBody List<SongBeanEntity> getSongsByAlbumId(@PathVariable int id) {
+        return songService.getSongsByAlbumId(id);
     }
 }

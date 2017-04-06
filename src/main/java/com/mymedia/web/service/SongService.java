@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.dao.AlbumDAO;
 import com.mymedia.web.dao.AuthorDAO;
+import com.mymedia.web.dao.PlaylistDAO;
 import com.mymedia.web.dao.SongDAO;
 import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.mvc.model.Album;
@@ -32,6 +33,9 @@ public class SongService {
 	@Autowired
 	AlbumDAO albumDAO;
 
+	@Autowired
+	PlaylistDAO playlistDAO;
+	
 	@Transactional
 	public List<SongBeanEntity> getAllSongs() {
 		List<Song> songs = songDAO.getAllSongs();
@@ -94,6 +98,13 @@ public class SongService {
 				list.add(s);
 			}
 		}
+		return list;
+	}
+	
+	@Transactional
+	public List<SongBeanEntity>getSongsByPlaylistId(int id){
+		List<SongBeanEntity> list = new ArrayList<>();
+		playlistDAO.getPlaylist(id).getSongs().stream().forEach(e->list.add(songToSongEntity(e)));
 		return list;
 	}
 

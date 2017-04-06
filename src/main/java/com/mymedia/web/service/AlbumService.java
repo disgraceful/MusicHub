@@ -54,7 +54,7 @@ public class AlbumService {
 	}
 	
 	@Transactional
-	public void updateAlbum(int id){
+	public void deleteAlbum(int id){
 		albumDAO.deleteAlbum(id);
 	}
 
