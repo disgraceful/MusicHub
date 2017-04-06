@@ -55,7 +55,7 @@ public class PlaylistController {
 	    	playlistService.deletePlaylist(id);
 	    }
 	    
-	    @RequestMapping(value = "/{id}/sogs",method = RequestMethod.GET)
+	    @RequestMapping(value = "/{id}/songs",method = RequestMethod.GET)
 	    public @ResponseBody void getSongs(@RequestBody int id){
 	    	songService.getSongsByPlaylistId(id);
 	    }
