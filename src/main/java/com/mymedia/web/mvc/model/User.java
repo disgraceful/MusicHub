@@ -22,7 +22,7 @@ public class User {
     @Column(name = "PASSWORD")
     private String password;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ROLE_ID")
     private Role role;
 
@@ -46,7 +46,9 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) { this.password = password; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Role getRole() {
         return role;
@@ -56,3 +58,4 @@ public class User {
         this.role = role;
     }
 }
+
