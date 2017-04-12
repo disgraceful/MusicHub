@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mymedia.web.utils.TokenUtils;
+import com.mymedia.web.auth.TokenService;
 
 @RestController
 @RequestMapping("/test")
@@ -16,8 +16,8 @@ public class TestController {
 	public void test(){
 		String userName = "Username";
 		String password = "pass123";
-		String token = TokenUtils.createJWT(userName, password);
-		TokenUtils.validateJWT(token);
+		//String token = TokenUtils.createJWT(userName, password);
+		//TokenUtils.validateJWT(token);
 		
 	}
 }
