@@ -1,9 +1,13 @@
 package com.mymedia.web.auth;
 
+import java.security.Principal;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,6 +53,8 @@ public class LoginController {
 	
 	@RequestMapping(value="/test",method = RequestMethod.GET)
 	public String get(){
+		
+		
 		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 }

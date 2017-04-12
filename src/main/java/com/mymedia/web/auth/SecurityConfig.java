@@ -29,8 +29,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
 
-		http.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/**/*").hasAuthority("ROLE_USER").and()
-				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling()
-				.authenticationEntryPoint(jwtAuthEntryPoint);
+		http.authorizeRequests()
+		.antMatchers("/login")
+		.permitAll()
+		.antMatchers("/**/*")
+		.hasAuthority("ROLE_USER")
+		.and()
+		.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling()
+		.authenticationEntryPoint(jwtAuthEntryPoint);
 	}
 }

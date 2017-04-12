@@ -50,9 +50,28 @@
 		<filter-name>cors</filter-name>
 		<filter-class>com.mymedia.web.filters.CORSFilter</filter-class>
 	</filter>
-
 	<filter-mapping>
 		<filter-name>cors</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	<!-- Enabling CORS filter
+	<filter>
+		<filter-name>jwt</filter-name>
+		<filter-class>com.mymedia.web.auth.JwtAuthFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>jwt</filter-name>
+		<url-pattern>/login</url-pattern>
+	</filter-mapping> -->
+	
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+
 </web-app>
