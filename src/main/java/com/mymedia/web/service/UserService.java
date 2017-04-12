@@ -4,6 +4,9 @@ import com.mymedia.web.dao.RoleDAO;
 import com.mymedia.web.dao.UserDAO;
 import com.mymedia.web.dto.UserBeanEntity;
 import com.mymedia.web.mvc.model.User;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -22,7 +25,7 @@ public class UserService {
     UserDAO userDAO;
     @Autowired
     RoleDAO roleDAO;
-
+    private static final Logger LOG = LogManager.getLogger(UserService.class);
 
     @Transactional
     public List<UserBeanEntity> getAllUsers() {
@@ -45,10 +48,12 @@ public class UserService {
     public User getByUsername(String username) {
         List<User> users = userDAO.getAllUsers();
         for (User user: users) {
-            if(user.getUsername() == username){
+            if(user.getUsername().trim().equals(username.trim())){         	
+            LOG.info("found");
                 return user;
             }
         }
+        LOG.info("not found");
         return new User();
     }
 

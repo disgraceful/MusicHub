@@ -33,7 +33,8 @@ public class TokenService {
 			Date now = new Date(nowMillis);
 
 			JwtBuilder builder = Jwts.builder().claim("username", user.getUsername())
-					.claim("password", user.getPassword()).claim("role", user.getRole().getName()).claim("date", now)
+					.claim("password", user.getPassword())
+					//.claim("role", user.getRole().getName()).claim("date", now)
 					.signWith(signatureAlgorithm, key);
 
 			return builder.compact();
@@ -49,7 +50,7 @@ public class TokenService {
 			Jws<Claims> claims = Jwts.parser().setSigningKey("secret".getBytes("UTF-8")).parseClaimsJws(jwt);
 			LOG.info("UserName : " + claims.getBody().get("username"));
 			LOG.info("Password : " + claims.getBody().get("password"));
-			LOG.info("JWT Send Date : " + claims.getBody().get("date"));
+		//	LOG.info("JWT Send Date : " + claims.getBody().get("date"));
 			return userService.getByUsername(claims.getBody().get("username").toString());
 		} catch (Exception e) {
 			LOG.error("Error while parsing a JWT", e);
