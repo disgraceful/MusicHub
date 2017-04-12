@@ -40,6 +40,7 @@ public class UserService {
         User user = userDAO.getUser(id);
         return userToUserEntity(user);
     }
+    
     @Transactional
     public User getByUsername(String username) {
         List<User> users = userDAO.getAllUsers();
@@ -67,9 +68,6 @@ public class UserService {
     public void deleteUser(int id){
         userDAO.deleteUser(id);
     }
-
-
-
 
     public User userEntityToUser(UserBeanEntity entity) {
         User user = new User();

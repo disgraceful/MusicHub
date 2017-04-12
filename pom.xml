@@ -144,27 +144,6 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.3.2</version>
 		</dependency>
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-            <version>1.6</version>
-		</dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.tomcat/catalina -->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>catalina</artifactId>
-            <version>6.0.16</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>9.0.0.M1</version>
-        </dependency>
-
-
-
-
 
     </dependencies>
 	<build>
