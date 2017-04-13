@@ -30,9 +30,9 @@ public class RoleDAO {
     }
 
     @Transactional
-    public List<User> getAllRoles() {
+    public List<Role> getAllRoles() {
         Session session = this.sessionFactory.getCurrentSession();
-        List<User> roles = session.createQuery("from Role").list();
+        List<Role> roles = session.createQuery("from Role").list();
         return roles;
     }
 

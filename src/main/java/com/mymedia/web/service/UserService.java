@@ -1,9 +1,7 @@
 package com.mymedia.web.service;
 
-import com.mymedia.web.dao.RoleDAO;
-import com.mymedia.web.dao.UserDAO;
-import com.mymedia.web.dto.UserBeanEntity;
-import com.mymedia.web.mvc.model.User;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,8 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.mymedia.web.dao.RoleDAO;
+import com.mymedia.web.dao.UserDAO;
+import com.mymedia.web.dto.UserBeanEntity;
+import com.mymedia.web.mvc.model.Role;
+import com.mymedia.web.mvc.model.User;
+import com.mymedia.web.requestmodel.CreateUserRequestModel;
 
 /**
  * Created by Nazar on 11.04.2017.
@@ -26,6 +28,25 @@ public class UserService {
 	@Autowired
 	RoleDAO roleDAO;
 	private static final Logger LOG = LogManager.getLogger(UserService.class);
+
+	@Transactional
+	public User createUser(CreateUserRequestModel model) {
+		if (model.getPassword().trim().equals(model.getConfirmPassword().trim())) {
+			User user = new User();
+			user.setPassword(model.getPassword());
+			user.setUsername(model.getUsername());
+			return userDAO.addUser(user);
+		}
+		LOG.info("FAILED TO CREATE USER");
+		return null;
+	}
+
+	@Transactional
+	public User addRole(User user, String roleName) {
+		Role role = roleDAO.getAllRoles().stream().filter(e -> e.getName() == roleName).findFirst().get();
+		user.setRole(role);
+		return userDAO.updateUser(user);
+	}
 
 	@Transactional
 	public List<UserBeanEntity> getAllUsers() {
@@ -59,6 +80,11 @@ public class UserService {
 	public UserBeanEntity addUser(UserBeanEntity entity) {
 		User user = userDAO.addUser(userEntityToUser(entity));
 		return userToUserEntity(user);
+	}
+
+	@Transactional
+	public User addUser(User user) {
+		return userDAO.addUser(user);
 	}
 
 	@Transactional
