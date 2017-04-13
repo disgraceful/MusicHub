@@ -7,7 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mymedia.web.auth.TokenService;
 import com.mymedia.web.mvc.model.User;
@@ -65,6 +67,12 @@ public class AccountController {
 		LOG.info("pass : " + model.getPassword());
 		LOG.info("confirm : " + model.getConfirmPassword());
 		consumerService.createConsumer(model);
+	}
+	
+	@RequestMapping(value="/register/anus",method = RequestMethod.POST)
+	public void upload(@RequestPart MultipartFile file){
+		LOG.info(file);
+		
 	}
 	
 	@RequestMapping(value="/register/publisher",method = RequestMethod.POST)
