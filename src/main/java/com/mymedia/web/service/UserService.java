@@ -42,9 +42,11 @@ public class UserService {
 	}
 
 	@Transactional
-	public User addRole(User user, String roleName) {
-		Role role = roleDAO.getAllRoles().stream().filter(e -> e.getName() == roleName).findFirst().get();
+	public User addRole(User user, int id) {
+		//Role role = roleDAO.getAllRoles().stream().filter(e -> e.getName().trim().equals(roleName.trim())).findAny().orElse(null);//.get();
+		Role role = roleDAO.getRole(id);
 		user.setRole(role);
+		
 		return userDAO.updateUser(user);
 	}
 

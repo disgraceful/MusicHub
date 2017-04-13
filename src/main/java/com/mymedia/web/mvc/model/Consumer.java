@@ -28,10 +28,6 @@ public class Consumer {
 	@OneToOne
 	@JoinColumn(name = "USER_ID")
 	private User user;
-	@Column(name = "NAME")
-	private String name;
-	@Column(name = "SURNAME")
-	private String surName;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	List<Playlist> playlsits;
@@ -54,21 +50,7 @@ public class Consumer {
 		this.user = user;
 	}
 
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSurName() {
-		return surName;
-	}
-
-	public void setSurName(String surName) {
-		this.surName = surName;
-	}
 
 	public List<Playlist> getPlaylsits() {
 		return playlsits;

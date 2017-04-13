@@ -25,7 +25,7 @@ public class PublisherService {
 	@Transactional
 	public Publisher createPublisher(CreatePublisherRequestModel model){
 		User user = userService.createUser(model);
-		userService.addRole(user, "PUBLISHER");
+		userService.addRole(user, 1);
 		
 		Author author = new Author();
 		author.setName(model.getAuthorName());

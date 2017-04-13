@@ -54,7 +54,9 @@ public class UserDAO {
     public User updateUser(User user) {
         Session session = this.sessionFactory.getCurrentSession();
         session.update(user);
+        LOG.info("wroks "+ user.getRole().getName());
         return getUser(user.getId());
+        
     }
 
     @Transactional
