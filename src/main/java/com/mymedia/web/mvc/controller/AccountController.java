@@ -47,6 +47,7 @@ public class AccountController {
 
 	@RequestMapping(value="/login",method = RequestMethod.POST)
 	public TokenResponseModel login(@RequestBody LoginRequestModel model) {
+		LOG.info(model.getUsername() + " " + model.getPassword());
 		User u = userService.getByUsername(model.getUsername());
 		if(u.getPassword().trim().equals(model.getPassword().trim())){
 			String token = tokenService.createJWT(u);
@@ -59,12 +60,15 @@ public class AccountController {
 	}
 	
 	@RequestMapping(value="/register",method = RequestMethod.POST)
-	public void register(CreateConsumerRequestModel model){
+	public void register(@RequestBody CreateConsumerRequestModel model){
+		LOG.info("username : " + model.getUsername());
+		LOG.info("pass : " + model.getPassword());
+		LOG.info("confirm : " + model.getConfirmPassword());
 		consumerService.createConsumer(model);
 	}
 	
 	@RequestMapping(value="/register/publisher",method = RequestMethod.POST)
-	public void register(CreatePublisherRequestModel model){
+	public void register(@RequestBody CreatePublisherRequestModel model){
 		publisherService.createPublisher(model);
 	}
 	
