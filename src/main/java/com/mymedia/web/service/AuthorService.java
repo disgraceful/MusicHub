@@ -47,6 +47,12 @@ public class AuthorService {
 		Author author = authorDAO.addAuthor(authorEntityToAuthor(entity));
 		return authorToAuthorEntity(author);
 	}
+	
+	@Transactional
+	public Author addAuthor(Author author) {
+		return authorDAO.addAuthor(author);
+		
+	}
 
 	@Transactional
 	public AuthorBeanEntity updateAuthor(AuthorBeanEntity entity) {

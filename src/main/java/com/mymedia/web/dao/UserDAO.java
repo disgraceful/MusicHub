@@ -22,7 +22,7 @@ public class UserDAO {
     @Autowired
     private SessionFactory sessionFactory;
 
-    private static final Logger LOG = LogManager.getLogger(SongDAO.class);
+    private static final Logger LOG = LogManager.getLogger(UserDAO.class);
 
     public void setSessionFactory(SessionFactory sf) {
         this.sessionFactory = sf;
