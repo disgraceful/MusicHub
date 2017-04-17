@@ -37,12 +37,8 @@
 		<beans:property name="sessionFactory" ref="sessionFactory" />
 	</beans:bean>
 
-
 	<beans:bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<beans:property name="maxUploadSize" value="10000000" />
-	</beans:bean>
-
+		  class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
 </beans:beans>  

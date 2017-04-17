@@ -1,4 +1,4 @@
-package com.mymedia.web.auth;
+package com.mymedia.web.service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mymedia.web.mvc.model.User;
-import com.mymedia.web.service.UserService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

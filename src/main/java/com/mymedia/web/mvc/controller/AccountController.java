@@ -7,11 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mymedia.web.auth.TokenService;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateConsumerRequestModel;
 import com.mymedia.web.requestmodel.CreatePublisherRequestModel;
@@ -19,6 +18,7 @@ import com.mymedia.web.requestmodel.LoginRequestModel;
 import com.mymedia.web.responsemodel.TokenResponseModel;
 import com.mymedia.web.service.ConsumerService;
 import com.mymedia.web.service.PublisherService;
+import com.mymedia.web.service.TokenService;
 import com.mymedia.web.service.UserService;
 
 @RestController
@@ -69,9 +69,10 @@ public class AccountController {
 		consumerService.createConsumer(model);
 	}
 	
-	@RequestMapping(value="/register/anus",method = RequestMethod.POST)
-	public void upload(@RequestPart MultipartFile file){
-		LOG.info(file);
+	@RequestMapping(value="/register/upload",method = RequestMethod.POST)
+	public void upload(@RequestBody MultipartFile file){
+		LOG.info("we got file name! " + file.getName());
+		LOG.info("we got file org name! " + file.getOriginalFilename());
 		
 	}
 	

@@ -7,6 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import com.mymedia.web.mvc.model.User;
+import com.mymedia.web.service.TokenService;
 
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration monitorInterval="5" status="info">
+
+	<appenders>
+		<!-- Simple console appender -->
+		<console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d %5p [%c] - %m%n" />
+		</console>
+
+		<!-- Simple file appender for device counter service -->
+		<!-- 
+		<rollingfile name="file" fileName="xstore.log" filePattern="xstore.%d.log">
+			<PatternLayout pattern="%d %5p [%c] - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="10000KB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</rollingfile>
+		 -->
+	</appenders>
+
+	<loggers>
+		<logger name="com.mymedia.web" additivity="false" level="debug">
+			<appender-ref ref="console" />
+		</logger>
+
+		<logger name="org.springframefork" additivity="false" level="info">
+			<appender-ref ref="console" />
+		</logger>
+		<logger name="org.hibernate" additivity="false" level="info">
+			<appender-ref ref="console" />
+		</logger>
+		
+		<root level="info">
+			<appender-ref ref="console" />
+		</root>
+	</loggers>
+</configuration>
