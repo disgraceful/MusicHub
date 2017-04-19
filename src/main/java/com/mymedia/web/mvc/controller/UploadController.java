@@ -10,12 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,14 +24,20 @@ public class UploadController {
 	ServletContext servletContext;
 	private static final Logger LOG = LogManager.getLogger(UploadController.class);
 
-	@RequestMapping(value = "/register/upload", method = RequestMethod.POST)
+	@PostMapping(value = "/upload")
 	public void upload(@RequestBody MultipartFile file, HttpServletRequest request) {
-		LOG.info("we got file name! " + file.getName());
-		LOG.info("we got file org name! " + file.getOriginalFilename());
-		String path = servletContext.getRealPath("/music");
+		LOG.info("we got file name! " + file.getOriginalFilename());
+		String path = servletContext.getRealPath("WEB-INF/music");
 		LOG.info(path);
-
+		File f = new File(path);
+		LOG.info(f.exists());
+		if(!f.exists()){
+			f.mkdir();
+			LOG.info("making dir " + f.getName());
+		}
+		LOG.info(f.exists());
 		try {
+			LOG.info(path + "/" + file.getOriginalFilename());
 			File convFile = new File(path + "/" + file.getOriginalFilename());
 			convFile.createNewFile();
 			FileOutputStream fos = new FileOutputStream(convFile);
@@ -45,13 +49,15 @@ public class UploadController {
 		}
 	}
 
-	@GetMapping(value = "/register/getup/{filename:.+}")
-	public void getUploadedFile(@PathVariable String filename) {
-		String path = servletContext.getRealPath("/music");
+	@GetMapping(value = "/getup/{filename:.+}")
+	public String getUploadedFile(@PathVariable String filename) {
+		String path = servletContext.getRealPath("WEB-INF/music");
 		LOG.info(filename);
 		LOG.info(path);
 		LOG.info(new File(path).exists());
-		LOG.info(new File(path+"/"+filename).getAbsolutePath());
+		File f = new File(path+"/"+filename);
 		LOG.info(new File(path+"/"+filename).exists());
+		String serverPath = "http://localhost:8080/"+path.substring(path.lastIndexOf("/")) + "/"+f.getName(); 
+		return serverPath;
 	}
 }
