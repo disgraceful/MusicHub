@@ -22,20 +22,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class UploadController {
-	
 	@Autowired
 	ServletContext servletContext;
-	
-	private static final Logger LOG = LogManager.getLogger(AccountController.class);
-	
+	private static final Logger LOG = LogManager.getLogger(UploadController.class);
+
 	@RequestMapping(value = "/register/upload", method = RequestMethod.POST)
 	public void upload(@RequestBody MultipartFile file, HttpServletRequest request) {
 		LOG.info("we got file name! " + file.getName());
 		LOG.info("we got file org name! " + file.getOriginalFilename());
-		LOG.info(AccountController.class.getClassLoader().getResource("music").getPath());
-		String path = servletContext.getRealPath("/WEB-INF/music");
-		
-		
+		String path = servletContext.getRealPath("/music");
+		LOG.info(path);
+
 		try {
 			File convFile = new File(path + "/" + file.getOriginalFilename());
 			convFile.createNewFile();
@@ -46,20 +43,15 @@ public class UploadController {
 		} catch (IOException e) {
 			LOG.info("caught exception {}", e);
 		}
-		// LOG.info(servletContext.getRealPath("/WEB-INF/music"));
 	}
 
-	@GetMapping(value = "/register/getup/{filename}")
+	@GetMapping(value = "/register/getup/{filename:.+}")
 	public void getUploadedFile(@PathVariable String filename) {
-		final DefaultResourceLoader loader = new DefaultResourceLoader();
-		try {
-			LOG.info(loader.getResource("classpath:WEB-INF/music/{filename}").exists());
-			Resource resource = loader.getResource("classpath:WEB-INF/music/{filename}");
-			File file = resource.getFile();
-			LOG.info("file name: {}", file);
-		} catch (IOException e) {
-			LOG.info("caught exception {}", e);
-		}
-
+		String path = servletContext.getRealPath("/music");
+		LOG.info(filename);
+		LOG.info(path);
+		LOG.info(new File(path).exists());
+		LOG.info(new File(path+"/"+filename).getAbsolutePath());
+		LOG.info(new File(path+"/"+filename).exists());
 	}
 }
