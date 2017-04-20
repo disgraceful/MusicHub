@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mymedia.web.utils.Mp3Utils;
+
 @RestController
 public class UploadController {
 	@Autowired
@@ -59,5 +61,16 @@ public class UploadController {
 		LOG.info(new File(path+"/"+filename).exists());
 		String serverPath = "http://localhost:8080/"+path.substring(path.lastIndexOf("/")) + "/"+f.getName(); 
 		return serverPath;
+	}
+	
+	@GetMapping(value = "/parse/{filename:.+}")
+	public void parseMp3(@PathVariable String filename) {
+		String path = servletContext.getRealPath("WEB-INF/music");
+		LOG.info(filename);
+		LOG.info(path);
+		LOG.info(new File(path).exists());
+		File f = new File(path+"/"+filename);
+		LOG.info(new File(path+"/"+filename).exists()); 
+		Mp3Utils.parseMp3(f);
 	}
 }
