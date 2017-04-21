@@ -43,9 +43,12 @@ public class UploadController {
 
 	@Autowired
 	private PublisherService publisherService;
+	
+	@Autowired
+	private Mp3Utils mp3utils;
 
-	@PostMapping(value = "/upload")
-	public void upload(@RequestBody MultipartFile file, int albumId) {
+	@PostMapping(value = "/upload/{albumId}")
+	public void upload(@RequestBody MultipartFile file, @PathVariable int albumId) {
 		LOG.info("we got file name! " + file.getOriginalFilename());
 		String path = servletContext.getRealPath("WEB-INF/music");
 		LOG.info(path);
@@ -63,13 +66,16 @@ public class UploadController {
 			FileOutputStream fos = new FileOutputStream(convFile);
 			fos.write(file.getBytes());
 			fos.close();
-			SongBeanEntity entity = Mp3Utils.fileToSongBeanEntity(convFile, path);
+			SongBeanEntity entity = mp3utils.fileToSongBeanEntity(convFile, path);
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			LOG.info("user:" + auth.getName());
 			User u = userService.getByUsername(auth.getName());
 			Role r = u.getRole();
-			if (r.getName() == "PUBLISHER") {
+			LOG.info(r.getName());
+			if (r.getName().trim().equals("PUBLISHER")) {
 				Publisher pub = publisherService.getPublisher(u.getId());
+				LOG.info(pub.getAuthor().getId());
+				
 				entity.setAuthorId(pub.getAuthor().getId());
 				entity.setAlbumId(albumId);
 				songService.addSong(entity);

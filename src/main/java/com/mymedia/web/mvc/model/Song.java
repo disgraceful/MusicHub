@@ -30,9 +30,7 @@ public class Song {
 	@Column(name = "RATING",nullable = true)
 	private double rating;
 	
-	@Column(name = "LYRICS")
-	private String lyrics;
-	
+
 	@Column(name = "BIRTH_DATE")
 	private Date birthDate;
 	
@@ -84,14 +82,6 @@ public class Song {
 
 	public void setRating(double rating) {
 		this.rating = rating;
-	}
-
-	public String getLyrics() {
-		return lyrics;
-	}
-
-	public void setLyrics(String lyrics) {
-		this.lyrics = lyrics;
 	}
 
 	public String getUrl() {

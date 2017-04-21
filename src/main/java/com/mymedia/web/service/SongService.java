@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.dao.AlbumDAO;
 import com.mymedia.web.dao.AuthorDAO;
+import com.mymedia.web.dao.GenreDAO;
 import com.mymedia.web.dao.PlaylistDAO;
 import com.mymedia.web.dao.SongDAO;
 import com.mymedia.web.dto.SongBeanEntity;
@@ -35,6 +36,9 @@ public class SongService {
 
 	@Autowired
 	PlaylistDAO playlistDAO;
+	
+	@Autowired
+	GenreDAO genreDAO;
 	
 	@Transactional
 	public List<SongBeanEntity> getAllSongs() {
@@ -114,6 +118,11 @@ public class SongService {
 		song.setName(entity.getName());
 		song.setBirthDate(entity.getBirthDate());
 		song.setRating(entity.getRating());
+		song.setDuration(entity.getDuration());
+		song.setUrl(entity.getUrl());
+		song.setAuthor(authorDAO.getAuthor(entity.getAuthorId()));
+		song.setAlbum(albumDAO.getAlbum(entity.getAlbumId()));
+		song.setGenre(genreDAO.getGenre(entity.getGenreId()));
 		return song;
 	}
 
@@ -123,6 +132,11 @@ public class SongService {
 		entity.setName(song.getName());
 		entity.setBirthDate(song.getBirthDate());
 		entity.setRating(song.getRating());
+		entity.setDuration(song.getDuration());
+		entity.setUrl(song.getUrl());
+		entity.setAuthorId(song.getAuthor().getId());
+		entity.setAlbumId(song.getAlbum().getId());
+		entity.setGenreId(song.getGenre().getId());
 		return entity;
 	}
 }

@@ -10,19 +10,28 @@ import org.apache.logging.log4j.Logger;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.mp3.LyricsHandler;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
 import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.mvc.model.Genre;
+import com.mymedia.web.service.GenreService;
+import com.mymedia.web.service.SongService;
 
+@Service
 public class Mp3Utils {
 
 	private static final Logger LOG = LogManager.getLogger(Mp3Utils.class);
+	@Autowired
+	GenreService genreService;
+	
+	@Autowired
+	 SongService songService;
 
-	public static SongBeanEntity fileToSongBeanEntity(File file,String path) {
+	public SongBeanEntity fileToSongBeanEntity(File file, String path) {
 		if (!file.exists()) {
 			LOG.info("file not exists");
 			return null;
@@ -34,13 +43,23 @@ public class Mp3Utils {
 
 			Mp3Parser mp3Parser = new Mp3Parser();
 			mp3Parser.parse(inputstream, handler, metadata, pcontext);
-		
+
+			for (String name : metadata.names()) {
+				LOG.info(name + ":" + metadata.get(name));
+			}
+
 			SongBeanEntity entity = new SongBeanEntity();
 			entity.setName(metadata.get("title"));
 			entity.setBirthDate(new Date());
-			entity.setDuration(metadata.get("xpmDM:duration"));
-			entity.setUrl(getFileURL(file,path));
+			entity.setDuration(metadata.get("xmpDM:duration"));
+			String genreName = metadata.get("xmpDM:genre");
+			Genre genre = genreService.getGenreByName(genreName);
+			LOG.info("genre id" + genre.getId());	
+			genre.getSongList().add(songService.songEntityToSong(entity));
 			
+			entity.setGenreId(genre.getId());
+			entity.setUrl(getFileURL(file, path));
+
 			LOG.info(entity.getName() + " " + entity.getBirthDate());
 			return entity;
 
@@ -50,7 +69,7 @@ public class Mp3Utils {
 		return null;
 	}
 
-	public static String getFileURL(File file,String path) {
+	public  String getFileURL(File file, String path) {
 		LOG.info(file.exists());
 		if (!file.exists()) {
 			return "";
