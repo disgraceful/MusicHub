@@ -27,7 +27,7 @@ public class UploadController {
 	private static final Logger LOG = LogManager.getLogger(UploadController.class);
 	@Autowired
 	private ServletContext servletContext;
-	
+
 	@Autowired
 	private SongService songService;
 
@@ -50,8 +50,8 @@ public class UploadController {
 			FileOutputStream fos = new FileOutputStream(convFile);
 			fos.write(file.getBytes());
 			fos.close();
-			SongBeanEntity entity = new SongBeanEntity();
-			songService.addSong(entity);
+
+			songService.addSong(Mp3Utils.fileToSongBeanEntity(convFile, path));
 			LOG.info(convFile.getAbsolutePath());
 		} catch (IOException e) {
 			LOG.info("caught exception {}", e);
@@ -78,6 +78,6 @@ public class UploadController {
 		LOG.info(new File(path).exists());
 		File f = new File(path + "/" + filename);
 		LOG.info(new File(path + "/" + filename).exists());
-		Mp3Utils.parseMp3(f);
+		// Mp3Utils.parseMp3(f);
 	}
 }

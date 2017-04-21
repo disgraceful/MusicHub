@@ -46,7 +46,7 @@ public class Song {
 	private String url;
 	
 	@Column(name="SONG_DURATION")
-	private Date duration;
+	private String duration;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = "ALBUM_ID")
@@ -106,11 +106,11 @@ public class Song {
 		this.url = url;
 	}
 
-	public Date getDuration() {
+	public String getDuration() {
 		return duration;
 	}
 
-	public void setDuration(Date duration) {
+	public void setDuration(String duration) {
 		this.duration = duration;
 	}
 

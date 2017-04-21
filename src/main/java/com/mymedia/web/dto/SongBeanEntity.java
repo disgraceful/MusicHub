@@ -12,7 +12,7 @@ public class SongBeanEntity {
 	private Date birthDate;
 	private int genreId;
 	private String url;
-	private Date duration;
+	private String duration;
 	
 
 	public int getId() {
@@ -79,11 +79,11 @@ public class SongBeanEntity {
 		this.url = url;
 	}
 
-	public Date getDuration() {
+	public String getDuration() {
 		return duration;
 	}
 
-	public void setDuration(Date duration) {
+	public void setDuration(String duration) {
 		this.duration = duration;
 	}
 
