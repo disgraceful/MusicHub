@@ -1,7 +1,6 @@
 package com.mymedia.web.mvc.model;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,11 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.drew.lang.annotations.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -52,11 +50,9 @@ public class Song {
 	@JoinColumn(name = "ALBUM_ID")
 	private Album album;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "SONG_AUTHORS",
-	joinColumns = {@JoinColumn(name = "SONG_ID") },
-	inverseJoinColumns = { @JoinColumn(name = "AUTHOR_ID")})
-	private List<Author> authors;
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name = "AUTHOR_ID")
+	private Author author;
 
 	public int getId() {
 		return id;
@@ -130,12 +126,12 @@ public class Song {
 		this.genre = genre;
 	}
 
-	public List<Author> getAuthors() {
-		return authors;
+	public Author getAuthor() {
+		return author;
 	}
 
-	public void setAuthors(List<Author> authors) {
-		this.authors = authors;
+	public void setAuthor(Author author) {
+		this.author = author;
 	}
 
 }

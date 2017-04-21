@@ -34,19 +34,7 @@ public class Mp3Utils {
 
 			Mp3Parser mp3Parser = new Mp3Parser();
 			mp3Parser.parse(inputstream, handler, metadata, pcontext);
-			LyricsHandler lyrics = new LyricsHandler(inputstream, handler);
-
-			 while (lyrics.hasLyrics()) {
-			 LOG.info(lyrics.toString());
-			 }
-			
-			 LOG.info("Contents of the document:" + handler.toString());
-			 LOG.info("Metadata of the document:");
-			 String[] metadataNames = metadata.names();
-			 for (String name : metadataNames) {
-			 LOG.info(name + ": " + metadata.get(name));
-			 }
-
+		
 			SongBeanEntity entity = new SongBeanEntity();
 			entity.setName(metadata.get("title"));
 			entity.setBirthDate(new Date());

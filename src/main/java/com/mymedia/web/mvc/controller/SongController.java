@@ -75,8 +75,8 @@ public class SongController {
 		return albumService.getAlbum(songService.getSong(id).getAlbumId());
 	}
 	
-	@RequestMapping(value = "/{id}/authors", method = RequestMethod.GET)
-	public @ResponseBody List<AuthorBeanEntity> getAuthors(@PathVariable int id){
-		return authorService.getAuthorsBySongId(id);
+	@RequestMapping(value = "/{id}/author", method = RequestMethod.GET)
+	public @ResponseBody AuthorBeanEntity getAuthor(@PathVariable int id){
+		return authorService.getAuthorBySongId(id);
 	}
 }

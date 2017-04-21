@@ -7,13 +7,13 @@ public class SongBeanEntity {
 	private int id;
 	private String name;
 	private int albumId;
+	private int authorId;
 	private double rating;
 	private String lyrics;
 	private Date birthDate;
 	private int genreId;
 	private String url;
 	private String duration;
-	
 
 	public int getId() {
 		return id;
@@ -37,6 +37,14 @@ public class SongBeanEntity {
 
 	public void setAlbumId(int albumId) {
 		this.albumId = albumId;
+	}
+
+	public int getAuthorId() {
+		return authorId;
+	}
+
+	public void setAuthorId(int authorId) {
+		this.authorId = authorId;
 	}
 
 	public double getRating() {

@@ -18,19 +18,24 @@ public class PublisherService {
 
 	@Autowired
 	private AuthorService authorService;
-	
+
 	@Autowired
 	private PublisherDAO publisherDAO;
 
 	@Transactional
-	public Publisher createPublisher(CreatePublisherRequestModel model){
+	public Publisher getPublisher(int id) {
+		return publisherDAO.getPublisher(id);
+	}
+
+	@Transactional
+	public Publisher createPublisher(CreatePublisherRequestModel model) {
 		User user = userService.createUser(model);
 		userService.addRole(user, 1);
-		
+
 		Author author = new Author();
 		author.setName(model.getAuthorName());
 		authorService.addAuthor(author);
-		
+
 		Publisher publisher = new Publisher();
 		publisher.setUser(user);
 		publisher.setAuthor(author);

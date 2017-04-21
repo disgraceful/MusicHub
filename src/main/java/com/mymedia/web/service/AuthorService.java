@@ -66,13 +66,9 @@ public class AuthorService {
 	}
 
 	@Transactional
-	public List<AuthorBeanEntity> getAuthorsBySongId(int id) {
-		List<AuthorBeanEntity> list = new ArrayList<>();
+	public AuthorBeanEntity getAuthorBySongId(int id) {
 		Song song = songDAO.getSong(id);
-		for (Author author : song.getAuthors()) {
-			list.add(authorToAuthorEntity(author));
-		}
-		return list;
+		return authorToAuthorEntity(song.getAuthor());
 	}
 
 	private Author authorEntityToAuthor(AuthorBeanEntity entity) {

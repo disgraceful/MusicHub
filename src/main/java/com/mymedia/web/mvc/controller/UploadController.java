@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.mvc.model.Publisher;
+import com.mymedia.web.mvc.model.Role;
+import com.mymedia.web.mvc.model.User;
+import com.mymedia.web.service.PublisherService;
 import com.mymedia.web.service.SongService;
+import com.mymedia.web.service.UserService;
 import com.mymedia.web.utils.Mp3Utils;
 
 @RestController
@@ -31,8 +38,14 @@ public class UploadController {
 	@Autowired
 	private SongService songService;
 
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private PublisherService publisherService;
+
 	@PostMapping(value = "/upload")
-	public void upload(@RequestBody MultipartFile file, HttpServletRequest request) {
+	public void upload(@RequestBody MultipartFile file, int albumId) {
 		LOG.info("we got file name! " + file.getOriginalFilename());
 		String path = servletContext.getRealPath("WEB-INF/music");
 		LOG.info(path);
@@ -50,8 +63,18 @@ public class UploadController {
 			FileOutputStream fos = new FileOutputStream(convFile);
 			fos.write(file.getBytes());
 			fos.close();
+			SongBeanEntity entity = Mp3Utils.fileToSongBeanEntity(convFile, path);
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			LOG.info("user:" + auth.getName());
+			User u = userService.getByUsername(auth.getName());
+			Role r = u.getRole();
+			if (r.getName() == "PUBLISHER") {
+				Publisher pub = publisherService.getPublisher(u.getId());
+				entity.setAuthorId(pub.getAuthor().getId());
+				entity.setAlbumId(albumId);
+				songService.addSong(entity);
+			}
 
-			songService.addSong(Mp3Utils.fileToSongBeanEntity(convFile, path));
 			LOG.info(convFile.getAbsolutePath());
 		} catch (IOException e) {
 			LOG.info("caught exception {}", e);

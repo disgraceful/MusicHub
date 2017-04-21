@@ -39,7 +39,7 @@ public class Author {
 	private List<Album> albums;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany(mappedBy = "authors", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
 	private List<Song> songs;
 
 	@Column(name = "BIRTH_DATE")
