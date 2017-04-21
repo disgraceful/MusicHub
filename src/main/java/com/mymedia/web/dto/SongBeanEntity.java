@@ -11,6 +11,9 @@ public class SongBeanEntity {
 	private String lyrics;
 	private Date birthDate;
 	private int genreId;
+	private String url;
+	private Date duration;
+	
 
 	public int getId() {
 		return id;
@@ -66,6 +69,22 @@ public class SongBeanEntity {
 
 	public void setGenreId(int genreId) {
 		this.genreId = genreId;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public Date getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Date duration) {
+		this.duration = duration;
 	}
 
 }

@@ -14,17 +14,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.service.SongService;
 import com.mymedia.web.utils.Mp3Utils;
 
 @RestController
 public class UploadController {
-	@Autowired
-	ServletContext servletContext;
+
 	private static final Logger LOG = LogManager.getLogger(UploadController.class);
+	@Autowired
+	private ServletContext servletContext;
+	
+	@Autowired
+	private SongService songService;
 
 	@PostMapping(value = "/upload")
 	public void upload(@RequestBody MultipartFile file, HttpServletRequest request) {
@@ -33,7 +38,7 @@ public class UploadController {
 		LOG.info(path);
 		File f = new File(path);
 		LOG.info(f.exists());
-		if(!f.exists()){
+		if (!f.exists()) {
 			f.mkdir();
 			LOG.info("making dir " + f.getName());
 		}
@@ -45,6 +50,8 @@ public class UploadController {
 			FileOutputStream fos = new FileOutputStream(convFile);
 			fos.write(file.getBytes());
 			fos.close();
+			SongBeanEntity entity = new SongBeanEntity();
+			songService.addSong(entity);
 			LOG.info(convFile.getAbsolutePath());
 		} catch (IOException e) {
 			LOG.info("caught exception {}", e);
@@ -52,25 +59,25 @@ public class UploadController {
 	}
 
 	@GetMapping(value = "/getup/{filename:.+}")
-	public String getUploadedFile(@PathVariable String filename) {
+	public String getUploadedFileURL(@PathVariable String filename) {
 		String path = servletContext.getRealPath("WEB-INF/music");
 		LOG.info(filename);
 		LOG.info(path);
 		LOG.info(new File(path).exists());
-		File f = new File(path+"/"+filename);
-		LOG.info(new File(path+"/"+filename).exists());
-		String serverPath = "http://localhost:8080/"+path.substring(path.lastIndexOf("/")) + "/"+f.getName(); 
+		File f = new File(path + "/" + filename);
+		LOG.info(new File(path + "/" + filename).exists());
+		String serverPath = "http://localhost:8080/" + path.substring(path.lastIndexOf("/")) + "/" + f.getName();
 		return serverPath;
 	}
-	
+
 	@GetMapping(value = "/parse/{filename:.+}")
 	public void parseMp3(@PathVariable String filename) {
 		String path = servletContext.getRealPath("WEB-INF/music");
 		LOG.info(filename);
 		LOG.info(path);
 		LOG.info(new File(path).exists());
-		File f = new File(path+"/"+filename);
-		LOG.info(new File(path+"/"+filename).exists()); 
+		File f = new File(path + "/" + filename);
+		LOG.info(new File(path + "/" + filename).exists());
 		Mp3Utils.parseMp3(f);
 	}
 }

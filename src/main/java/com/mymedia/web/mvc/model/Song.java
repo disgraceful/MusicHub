@@ -42,6 +42,12 @@ public class Song {
 	@JoinColumn(name = "GENRE_ID")
 	private Genre genre;
 	
+	@Column(name="SONG_URL")
+	private String url;
+	
+	@Column(name="SONG_DURATION")
+	private Date duration;
+	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = "ALBUM_ID")
 	private Album album;
@@ -90,6 +96,22 @@ public class Song {
 
 	public void setLyrics(String lyrics) {
 		this.lyrics = lyrics;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public Date getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Date duration) {
+		this.duration = duration;
 	}
 
 	public Date getBirthDate() {
