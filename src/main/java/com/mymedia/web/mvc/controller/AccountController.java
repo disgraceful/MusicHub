@@ -1,32 +1,27 @@
 package com.mymedia.web.mvc.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.mymedia.web.dto.PlaylistBeanEntity;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateConsumerRequestModel;
 import com.mymedia.web.requestmodel.CreatePublisherRequestModel;
 import com.mymedia.web.requestmodel.LoginRequestModel;
 import com.mymedia.web.responsemodel.TokenResponseModel;
 import com.mymedia.web.service.ConsumerService;
+import com.mymedia.web.service.PlaylistService;
 import com.mymedia.web.service.PublisherService;
 import com.mymedia.web.service.TokenService;
 import com.mymedia.web.service.UserService;
@@ -45,6 +40,9 @@ public class AccountController {
 	private PublisherService publisherService;
 
 	@Autowired
+	private PlaylistService playlistService;
+
+	@Autowired
 	ServletContext servletContext;
 
 	private static final Logger LOG = LogManager.getLogger(AccountController.class);
@@ -60,7 +58,7 @@ public class AccountController {
 		this.tokenService = tokenService;
 	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	@PostMapping(value = "/login")
 	public TokenResponseModel login(@RequestBody LoginRequestModel model) {
 		LOG.info(model.getUsername() + " " + model.getPassword());
 		User u = userService.getByUsername(model.getUsername());
@@ -74,7 +72,7 @@ public class AccountController {
 		return null;
 	}
 
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	@PostMapping(value = "/register")
 	public void register(@RequestBody CreateConsumerRequestModel model) {
 		LOG.info("username : " + model.getUsername());
 		LOG.info("pass : " + model.getPassword());
@@ -82,15 +80,13 @@ public class AccountController {
 		consumerService.createConsumer(model);
 	}
 
-
-	@RequestMapping(value = "/register/publisher", method = RequestMethod.POST)
+	@PostMapping(value = "/register/publisher")
 	public void register(@RequestBody CreatePublisherRequestModel model) {
 		publisherService.createPublisher(model);
 	}
 
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	public String get() {
-		return SecurityContextHolder.getContext().getAuthentication().getName();
+	@GetMapping(value = "/{id}/playlists")
+	public List<PlaylistBeanEntity> getPlaylists(@PathVariable int id) {
+		return playlistService.getPlaylistByUserId(id);
 	}
-
 }

@@ -5,14 +5,20 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.PlaylistBeanEntity;
+import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.requestmodel.PlaylistRequestModel;
+import com.mymedia.web.requestmodel.SongRequestModel;
 import com.mymedia.web.service.PlaylistService;
 import com.mymedia.web.service.SongService;
 
@@ -20,44 +26,48 @@ import com.mymedia.web.service.SongService;
 @RequestMapping("/playlist")
 public class PlaylistController {
 	private static final Logger LOG = LogManager.getLogger(PlaylistController.class);
-	
+
 	@Autowired
 	private PlaylistService playlistService;
-	
+
 	@Autowired
 	private SongService songService;
-	
-	 @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	    public @ResponseBody PlaylistBeanEntity getPlaylistById(@PathVariable int id) {
-	        PlaylistBeanEntity playlist = playlistService.getPlaylist(id);
-	        LOG.info(playlist.toString());
-	        return playlist;
-	    }
 
-	    @RequestMapping(method = RequestMethod.GET)
-	    public @ResponseBody List<PlaylistBeanEntity> getPlaylists() {
-	        return playlistService.getAllPlaylists();
-	    }
+	@PostMapping
+	public @ResponseBody PlaylistBeanEntity createPlaylist(@RequestBody PlaylistRequestModel model) {
+		return playlistService.createPlaylist(model);
+	}
 
-	    @RequestMapping(method = RequestMethod.POST)
-	    public @ResponseBody PlaylistBeanEntity postPlaylist(@RequestBody PlaylistBeanEntity playlist) {
-	        return playlistService.addPlaylist(playlist);
-	    }
-	    
-	    
-	    @RequestMapping(method = RequestMethod.PATCH)
-	    public @ResponseBody PlaylistBeanEntity updatePlaylist(@RequestBody PlaylistBeanEntity playlist){
-	    	return playlistService.updatePlaylist(playlist);
-	    }
-	    
-	    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
-	    public @ResponseBody void deletePlaylist(@RequestBody int id){
-	    	playlistService.deletePlaylist(id);
-	    }
-	    
-	    @RequestMapping(value = "/{id}/songs",method = RequestMethod.GET)
-	    public @ResponseBody void getSongs(@RequestBody int id){
-	    	songService.getSongsByPlaylistId(id);
-	    }
+	@GetMapping(value = "/{id}")
+	public @ResponseBody PlaylistBeanEntity getPlaylistById(@PathVariable int id) {
+		PlaylistBeanEntity playlist = playlistService.getPlaylist(id);
+		LOG.info(playlist.toString());
+		return playlist;
+	}
+
+	@GetMapping
+	public @ResponseBody List<PlaylistBeanEntity> getPlaylists() {
+		return playlistService.getAllPlaylists();
+	}
+
+	@PatchMapping
+	public @ResponseBody PlaylistBeanEntity updatePlaylist(@RequestBody PlaylistBeanEntity playlist) {
+		return playlistService.updatePlaylist(playlist);
+	}
+
+	@DeleteMapping(value = "/{id}")
+	public void deletePlaylist(@RequestBody int id) {
+		playlistService.deletePlaylist(id);
+	}
+
+	@GetMapping(value = "/{id}/songs")
+	public List<SongBeanEntity> getSongs(@PathVariable int id) {
+		return songService.getSongsByPlaylistId(id);
+	}
 	
+	@PostMapping(value="/{id}/songs")
+	public @ResponseBody SongBeanEntity addSong(@RequestBody SongRequestModel songModel,@PathVariable int id){
+		return songService.addSong(songModel.getId(), id);
+	}
+
 }

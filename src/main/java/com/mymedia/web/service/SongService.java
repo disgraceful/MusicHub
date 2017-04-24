@@ -18,6 +18,7 @@ import com.mymedia.web.dao.SongDAO;
 import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.mvc.model.Album;
 import com.mymedia.web.mvc.model.Author;
+import com.mymedia.web.mvc.model.Playlist;
 import com.mymedia.web.mvc.model.Song;
 
 @Service
@@ -36,10 +37,10 @@ public class SongService {
 
 	@Autowired
 	PlaylistDAO playlistDAO;
-	
+
 	@Autowired
 	GenreDAO genreDAO;
-	
+
 	@Transactional
 	public List<SongBeanEntity> getAllSongs() {
 		List<Song> songs = songDAO.getAllSongs();
@@ -104,12 +105,22 @@ public class SongService {
 		}
 		return list;
 	}
-	
+
 	@Transactional
-	public List<SongBeanEntity>getSongsByPlaylistId(int id){
+	public List<SongBeanEntity> getSongsByPlaylistId(int id) {
 		List<SongBeanEntity> list = new ArrayList<>();
-		playlistDAO.getPlaylist(id).getSongs().stream().forEach(e->list.add(songToSongEntity(e)));
+		playlistDAO.getPlaylist(id).getSongs().stream().forEach(e -> list.add(songToSongEntity(e)));
 		return list;
+	}
+
+	@Transactional
+	public SongBeanEntity addSong(int songId, int playlistId) {
+		Playlist playlist = playlistDAO.getPlaylist(playlistId);
+		Song song = songDAO.getSong(songId);
+		playlist.getSongs().add(song);
+		song.getPlaylists().add(playlist);
+		playlistDAO.updatePlaylist(playlist);
+		return songToSongEntity(songDAO.addSong(song));
 	}
 
 	public Song songEntityToSong(SongBeanEntity entity) {

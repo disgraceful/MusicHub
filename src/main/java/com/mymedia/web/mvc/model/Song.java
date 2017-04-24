@@ -1,6 +1,7 @@
 package com.mymedia.web.mvc.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,13 +10,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.drew.lang.annotations.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "SONGS")
 public class Song {
@@ -27,30 +29,34 @@ public class Song {
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "RATING",nullable = true)
+	@Column(name = "RATING", nullable = true)
 	private double rating;
-	
 
 	@Column(name = "BIRTH_DATE")
 	private Date birthDate;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "GENRE_ID")
 	private Genre genre;
-	
-	@Column(name="SONG_URL")
+
+	@Column(name = "SONG_URL")
 	private String url;
-	
-	@Column(name="SONG_DURATION")
+
+	@Column(name = "SONG_DURATION")
 	private String duration;
-	
-	@ManyToOne(cascade=CascadeType.ALL)
+
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "ALBUM_ID")
 	private Album album;
-	
-	@ManyToOne(cascade=CascadeType.ALL)
+
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "AUTHOR_ID")
 	private Author author;
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "SONG_PLAYLISTS", joinColumns = { @JoinColumn(name = "SONG_ID") }, inverseJoinColumns = {
+			@JoinColumn(name = "PLAYLIST_ID") })
+	private List<Playlist> playlists;
 
 	public int getId() {
 		return id;
@@ -122,6 +128,14 @@ public class Song {
 
 	public void setAuthor(Author author) {
 		this.author = author;
+	}
+
+	public List<Playlist> getPlaylists() {
+		return playlists;
+	}
+
+	public void setPlaylists(List<Playlist> playlists) {
+		this.playlists = playlists;
 	}
 
 }

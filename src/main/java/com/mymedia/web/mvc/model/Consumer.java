@@ -29,7 +29,7 @@ public class Consumer {
 	@JoinColumn(name = "USER_ID")
 	private User user;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL)
 	List<Playlist> playlsits;
 
 	// TODO Check BIRTH DATE For Song lyrics filter
@@ -49,8 +49,6 @@ public class Consumer {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
-
 
 	public List<Playlist> getPlaylsits() {
 		return playlsits;

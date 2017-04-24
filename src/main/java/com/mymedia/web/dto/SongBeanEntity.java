@@ -9,7 +9,6 @@ public class SongBeanEntity {
 	private int albumId;
 	private int authorId;
 	private double rating;
-	private String lyrics;
 	private Date birthDate;
 	private int genreId;
 	private String url;
@@ -53,14 +52,6 @@ public class SongBeanEntity {
 
 	public void setRating(double rating) {
 		this.rating = rating;
-	}
-
-	public String getLyrics() {
-		return lyrics;
-	}
-
-	public void setLyrics(String lyrics) {
-		this.lyrics = lyrics;
 	}
 
 	public Date getBirthDate() {
