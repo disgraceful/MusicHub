@@ -3,7 +3,11 @@ package com.mymedia.web.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,9 +31,9 @@ public class Mp3Utils {
 	private static final Logger LOG = LogManager.getLogger(Mp3Utils.class);
 	@Autowired
 	GenreService genreService;
-	
+
 	@Autowired
-	 SongService songService;
+	SongService songService;
 
 	public SongBeanEntity fileToSongBeanEntity(File file, String path) {
 		if (!file.exists()) {
@@ -51,25 +55,32 @@ public class Mp3Utils {
 			SongBeanEntity entity = new SongBeanEntity();
 			entity.setName(metadata.get("title"));
 			entity.setBirthDate(new Date());
-			entity.setDuration(metadata.get("xmpDM:duration"));
+
+			NumberFormat format = NumberFormat.getInstance(Locale.US);
+			long time = (long) format.parse(metadata.get("xmpDM:duration")).doubleValue();
+			String duration = String.format("%d:%d", TimeUnit.MILLISECONDS.toMinutes(time),
+					TimeUnit.MILLISECONDS.toSeconds(time)
+							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
+			entity.setDuration(duration);
+			LOG.info("Duration: " + duration);
 			String genreName = metadata.get("xmpDM:genre");
 			Genre genre = genreService.getGenreByName(genreName);
-			LOG.info("genre id" + genre.getId());	
+			LOG.info("genre id " + genre.getId());
 			genre.getSongList().add(songService.songEntityToSong(entity));
-			
+
 			entity.setGenreId(genre.getId());
 			entity.setUrl(getFileURL(file, path));
 
 			LOG.info(entity.getName() + " " + entity.getBirthDate());
 			return entity;
 
-		} catch (SAXException | TikaException | IOException e) {
+		} catch (SAXException | TikaException | IOException | ParseException e) {
 			LOG.error("caught exception {}", e);
 		}
 		return null;
 	}
 
-	public  String getFileURL(File file, String path) {
+	public String getFileURL(File file, String path) {
 		LOG.info(file.exists());
 		if (!file.exists()) {
 			return "";
