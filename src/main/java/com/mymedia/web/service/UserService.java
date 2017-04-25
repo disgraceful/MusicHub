@@ -16,37 +16,39 @@ import com.mymedia.web.dto.UserBeanEntity;
 import com.mymedia.web.mvc.model.Role;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateUserRequestModel;
+import com.mymedia.web.utils.CryptUtils;
 
-/**
- * Created by Nazar on 11.04.2017.
- */
 @Service
 @EnableTransactionManagement
 public class UserService {
+	
+	private static final Logger LOG = LogManager.getLogger(UserService.class);
+	
 	@Autowired
 	UserDAO userDAO;
+
 	@Autowired
 	RoleDAO roleDAO;
-	private static final Logger LOG = LogManager.getLogger(UserService.class);
-
+	
 	@Transactional
 	public User createUser(CreateUserRequestModel model) {
 		if (model.getPassword().trim().equals(model.getConfirmPassword().trim())) {
 			User user = new User();
-			user.setPassword(model.getPassword());
+			//user.setPassword(model.getPassword());
+			user.setPassword(CryptUtils.generateHashSHA1(model.getPassword()));
+			LOG.info(user.getPassword());
 			user.setUsername(model.getUsername());
 			return userDAO.addUser(user);
 		}
-		LOG.info("FAILED TO CREATE USER");
+		LOG.error("FAILED TO CREATE USER");
 		return null;
 	}
 
 	@Transactional
 	public User addRole(User user, int id) {
-		//Role role = roleDAO.getAllRoles().stream().filter(e -> e.getName().trim().equals(roleName.trim())).findAny().orElse(null);//.get();
 		Role role = roleDAO.getRole(id);
 		user.setRole(role);
-		
+
 		return userDAO.updateUser(user);
 	}
 

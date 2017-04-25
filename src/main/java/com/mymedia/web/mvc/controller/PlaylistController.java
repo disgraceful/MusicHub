@@ -44,7 +44,8 @@ public class PlaylistController {
 		LOG.info(playlist.toString());
 		return playlist;
 	}
-
+	
+	
 	@GetMapping
 	public @ResponseBody List<PlaylistBeanEntity> getPlaylists() {
 		return playlistService.getAllPlaylists();
