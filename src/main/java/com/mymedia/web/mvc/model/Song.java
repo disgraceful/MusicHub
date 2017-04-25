@@ -35,7 +35,7 @@ public class Song {
 	@Column(name = "BIRTH_DATE")
 	private Date birthDate;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "GENRE_ID")
 	private Genre genre;
 

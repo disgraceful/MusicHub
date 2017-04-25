@@ -1,5 +1,8 @@
 package com.mymedia.web.mvc.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -23,8 +26,9 @@ public class Genre {
 	@Column(name = "GENRE_NAME")
 	private String name;
 
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
-	public List<Song> songList;
+	private List<Song> songList;
 
 	public int getId() {
 		return id;

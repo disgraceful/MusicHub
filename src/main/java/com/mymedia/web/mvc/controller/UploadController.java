@@ -49,7 +49,7 @@ public class UploadController {
 
 	@PostMapping(value = "/upload/{albumId}")
 	public void upload(@RequestBody MultipartFile file, @PathVariable int albumId) {
-		LOG.info("we got file name! " + file.getOriginalFilename());
+//		LOG.info("we got file name! " + file.getOriginalFilename());
 		String path = servletContext.getRealPath("WEB-INF/music");
 		LOG.info(path);
 		File f = new File(path);

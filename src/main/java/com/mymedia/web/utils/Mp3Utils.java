@@ -86,7 +86,7 @@ public class Mp3Utils {
 			return "";
 		}
 		LOG.info(path);
-		String serverPath = "http://localhost:8080" + path.substring(path.lastIndexOf("/")) + "/" + file.getName();
+		String serverPath = "http://localhost:8080/music/" + file.getName();
 		LOG.info(serverPath);
 		return serverPath;
 	}
