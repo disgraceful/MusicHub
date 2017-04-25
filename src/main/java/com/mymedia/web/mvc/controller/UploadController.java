@@ -73,7 +73,7 @@ public class UploadController {
 			Role r = u.getRole();
 			LOG.info(r.getName());
 			if (r.getName().trim().equals("PUBLISHER")) {
-				Publisher pub = publisherService.getPublisher(u.getId());
+				Publisher pub = publisherService.getPublisherByUserId(u.getId());
 				LOG.info(pub.getAuthor().getId());
 				
 				entity.setAuthorId(pub.getAuthor().getId());

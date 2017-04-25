@@ -34,8 +34,8 @@ public class UserService {
 	public User createUser(CreateUserRequestModel model) {
 		if (model.getPassword().trim().equals(model.getConfirmPassword().trim())) {
 			User user = new User();
-			//user.setPassword(model.getPassword());
-			user.setPassword(CryptUtils.generateHashSHA1(model.getPassword()));
+			user.setPassword(model.getPassword());
+			//user.setPassword(CryptUtils.generateHashSHA1(model.getPassword()));
 			LOG.info(user.getPassword());
 			user.setUsername(model.getUsername());
 			return userDAO.addUser(user);

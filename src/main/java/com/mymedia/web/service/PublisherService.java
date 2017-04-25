@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.dao.PublisherDAO;
 import com.mymedia.web.mvc.model.Author;
+import com.mymedia.web.mvc.model.Consumer;
 import com.mymedia.web.mvc.model.Publisher;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreatePublisherRequestModel;
@@ -25,6 +26,11 @@ public class PublisherService {
 	@Transactional
 	public Publisher getPublisher(int id) {
 		return publisherDAO.getPublisher(id);
+	}
+
+	@Transactional
+	public Publisher getPublisherByUserId(int id) {
+		return publisherDAO.getAllPublishers().stream().filter(e -> e.getUser().getId() == id).findFirst().get();
 	}
 
 	@Transactional

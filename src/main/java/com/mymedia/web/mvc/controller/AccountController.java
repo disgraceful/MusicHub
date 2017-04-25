@@ -47,7 +47,8 @@ public class AccountController {
 		LOG.info("model true pass "+model.getPassword());
 		LOG.info("model hash pass "+ CryptUtils.generateHashSHA1(model.getPassword()));
 		LOG.info("user hash pass "+ u.getPassword());
-		if (u.getPassword().trim().equals(CryptUtils.generateHashSHA1(model.getPassword().trim()))) {
+		//if (u.getPassword().trim().equals(CryptUtils.generateHashSHA1(model.getPassword().trim()))) {
+		if (u.getPassword().trim().equals(model.getPassword().trim())) {
 			String token = tokenService.createJWT(u);
 
 			TokenResponseModel respModel = new TokenResponseModel();
