@@ -6,8 +6,8 @@ package com.mymedia.web.dto;
 public class UserBeanEntity {
     private int id;
     private String username;
-    private String password;
     private int roleId;
+    private String roleName;
 
     public int getId() {
         return id;
@@ -25,14 +25,6 @@ public class UserBeanEntity {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public int getRoleId() {
         return roleId;
     }
@@ -40,4 +32,14 @@ public class UserBeanEntity {
     public void setRoleId(int role) {
         this.roleId = role;
     }
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+    
+    
 }

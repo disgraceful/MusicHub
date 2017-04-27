@@ -1,12 +1,14 @@
 package com.mymedia.web.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -39,27 +41,21 @@ public class PlaylistService {
 	private UserService userService;
 
 	@Transactional
-	public PlaylistBeanEntity createPlaylist(PlaylistRequestModel model) {
+	public PlaylistBeanEntity createPlaylist(PlaylistRequestModel model, int userId) {
 		Playlist playlist = new Playlist();
 		playlist.setName(model.getName().trim());
 		playlist.setSongs(new ArrayList<Song>());
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User u = userService.getByUsername(auth.getName());
-		if (u.getRole().getName().trim().equals("CONSUMER")) {
-			playlist.setConsumer(consumerService.getConsumerByUserId(u.getId()));
-			return playlistToPlaylistEntity(playlistDAO.addPlaylist(playlist));
-		}
-		return null;
-
+		playlist.setConsumer(consumerService.getConsumerByUserId(userId));
+		return playlistToPlaylistEntity(playlistDAO.addPlaylist(playlist));
 	}
 
 	@Transactional
-	public List<PlaylistBeanEntity>getPlaylistByUserId(int id){
+	public List<PlaylistBeanEntity> getPlaylistByUserId(int id) {
 		List<PlaylistBeanEntity> list = new ArrayList<>();
-		consumerDAO.getConsumer(id).getPlaylsits().stream().forEach(e->list.add(playlistToPlaylistEntity(e)));
+		consumerDAO.getConsumer(id).getPlaylsits().stream().forEach(e -> list.add(playlistToPlaylistEntity(e)));
 		return list;
 	}
-	
+
 	@Transactional
 	public List<PlaylistBeanEntity> getAllPlaylists() {
 		List<PlaylistBeanEntity> list = new ArrayList<PlaylistBeanEntity>();
@@ -83,7 +79,6 @@ public class PlaylistService {
 		playlistDAO.deletePlaylist(id);
 	}
 
-	
 	public Playlist playlistEntityToPlaylist(PlaylistBeanEntity entity) {
 		Playlist playlist = new Playlist();
 		playlist.setId(entity.getId());

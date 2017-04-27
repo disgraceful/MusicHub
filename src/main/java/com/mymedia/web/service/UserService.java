@@ -106,17 +106,16 @@ public class UserService {
 		User user = new User();
 		user.setId(entity.getId());
 		user.setUsername(entity.getUsername());
-		user.setPassword(entity.getPassword());
 		user.setRole(roleDAO.getRole(entity.getRoleId()));
 		return user;
 	}
 
-	public UserBeanEntity userToUserEntity(User song) {
+	public UserBeanEntity userToUserEntity(User user) {
 		UserBeanEntity entity = new UserBeanEntity();
-		entity.setId(song.getId());
-		entity.setUsername(song.getUsername());
-		entity.setPassword(song.getPassword());
-		entity.setRoleId(song.getRole().getId());
+		entity.setId(user.getId());
+		entity.setUsername(user.getUsername());
+		entity.setRoleId(user.getRole().getId());
+		entity.setRoleName(user.getRole().getName());
 		return entity;
 	}
 }

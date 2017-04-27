@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.PlaylistBeanEntity;
 import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.PlaylistRequestModel;
 import com.mymedia.web.requestmodel.SongRequestModel;
 import com.mymedia.web.service.PlaylistService;
@@ -35,7 +38,14 @@ public class PlaylistController {
 
 	@PostMapping
 	public @ResponseBody PlaylistBeanEntity createPlaylist(@RequestBody PlaylistRequestModel model) {
-		return playlistService.createPlaylist(model);
+		SecurityContext context=SecurityContextHolder.getContext(); 
+		LOG.info(context);
+		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (u.getRole().getName().trim().equals("CONSUMER")) {
+			return playlistService.createPlaylist(model, u.getId());
+		}
+		return null;
+
 	}
 
 	@GetMapping(value = "/{id}")
@@ -44,8 +54,7 @@ public class PlaylistController {
 		LOG.info(playlist.toString());
 		return playlist;
 	}
-	
-	
+
 	@GetMapping
 	public @ResponseBody List<PlaylistBeanEntity> getPlaylists() {
 		return playlistService.getAllPlaylists();
@@ -65,9 +74,9 @@ public class PlaylistController {
 	public List<SongBeanEntity> getSongs(@PathVariable int id) {
 		return songService.getSongsByPlaylistId(id);
 	}
-	
-	@PostMapping(value="/{id}/songs")
-	public @ResponseBody SongBeanEntity addSong(@RequestBody SongRequestModel songModel,@PathVariable int id){
+
+	@PostMapping(value = "/{id}/songs")
+	public @ResponseBody SongBeanEntity addSong(@RequestBody SongRequestModel songModel, @PathVariable int id) {
 		return songService.addSong(songModel.getId(), id);
 	}
 

@@ -5,11 +5,14 @@ import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mymedia.web.dto.UserBeanEntity;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateConsumerRequestModel;
 import com.mymedia.web.requestmodel.CreatePublisherRequestModel;
@@ -50,7 +53,6 @@ public class AccountController {
 		//if (u.getPassword().trim().equals(CryptUtils.generateHashSHA1(model.getPassword().trim()))) {
 		if (u.getPassword().trim().equals(model.getPassword().trim())) {
 			String token = tokenService.createJWT(u);
-
 			TokenResponseModel respModel = new TokenResponseModel();
 			respModel.setAccessToken(token);
 			return respModel;
@@ -69,6 +71,12 @@ public class AccountController {
 	@PostMapping(value = "/register/publisher")
 	public void register(@RequestBody CreatePublisherRequestModel model) {
 		publisherService.createPublisher(model);
+	}
+	
+	@GetMapping
+	public UserBeanEntity getLoggedUser(){
+		User u =(User)SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+		return userService.userToUserEntity(u);
 	}
 
 }

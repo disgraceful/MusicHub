@@ -36,8 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 		.antMatchers("/account/**","/music/**")
 		.permitAll()
-		.antMatchers("/**/*")
-		.hasAuthority("ROLE_USER")
+		//.antMatchers("/**/*")
+		//.hasAuthority("ROLE_USER")
 		.and()
 		.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling()
 		.authenticationEntryPoint(jwtAuthEntryPoint);
