@@ -27,7 +27,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         try {
-            User possibleProfile = tokenService.validateJWT((String)authentication.getCredentials());
+            User possibleProfile = tokenService.parseJWT((String)authentication.getCredentials());
             return new JwtAuthenticatedProfile(possibleProfile);
         } catch (Exception e) {
            return null;

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "AUTHORS")
-public class Author {
+public class Author implements Comparable<Author> {
 
 	@Id
 	@Column(name = "AUTHOR_ID")
@@ -89,7 +89,11 @@ public class Author {
 	}
 
 	public double getRating() {
-		return rating;
+		double sum = 0.0;
+		for (Album album : albums) {
+			sum+=album.getRating();
+		}
+		return sum/albums.size();
 	}
 
 	public void setRating(double rating) {
@@ -102,6 +106,11 @@ public class Author {
 
 	public void setSurName(String surName) {
 		this.surName = surName;
+	}
+
+	@Override
+	public int compareTo(Author author) {
+		return author.getRating()-this.getRating()>0?1:-1;
 	}
 
 }

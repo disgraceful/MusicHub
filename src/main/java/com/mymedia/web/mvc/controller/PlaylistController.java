@@ -38,9 +38,8 @@ public class PlaylistController {
 
 	@PostMapping
 	public @ResponseBody PlaylistBeanEntity createPlaylist(@RequestBody PlaylistRequestModel model) {
-		SecurityContext context=SecurityContextHolder.getContext(); 
-		LOG.info(context);
 		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		LOG.info(u.getRole().getName());
 		if (u.getRole().getName().trim().equals("CONSUMER")) {
 			return playlistService.createPlaylist(model, u.getId());
 		}

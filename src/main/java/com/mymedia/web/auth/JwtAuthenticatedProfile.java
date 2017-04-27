@@ -33,7 +33,7 @@ public class JwtAuthenticatedProfile implements Authentication {
 	}
 
 	@Override
-	public User getPrincipal() {
+	public Object getPrincipal() {
 		return minimalProfile;
 	}
 

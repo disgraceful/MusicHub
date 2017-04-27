@@ -63,6 +63,7 @@ public class PlaylistService {
 		return list;
 	}
 
+
 	@Transactional
 	public PlaylistBeanEntity getPlaylist(int id) {
 		return playlistToPlaylistEntity(playlistDAO.getPlaylist(id));
@@ -92,6 +93,7 @@ public class PlaylistService {
 		entity.setId(playlist.getId());
 		entity.setName(playlist.getName());
 		entity.setConsumerId(playlist.getConsumer().getId());
+		entity.setSongAmount(playlist.getSongs().size());
 		return entity;
 	}
 }

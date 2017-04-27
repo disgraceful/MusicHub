@@ -13,6 +13,7 @@ public class SongBeanEntity {
 	private int genreId;
 	private String url;
 	private String duration;
+	private String authorName;
 
 	public int getId() {
 		return id;
@@ -84,6 +85,14 @@ public class SongBeanEntity {
 
 	public void setDuration(String duration) {
 		this.duration = duration;
+	}
+
+	public String getAuthorName() {
+		return authorName;
+	}
+
+	public void setAuthorName(String authorName) {
+		this.authorName = authorName;
 	}
 
 }

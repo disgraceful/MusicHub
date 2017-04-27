@@ -1,6 +1,7 @@
 package com.mymedia.web.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +27,16 @@ public class AlbumService {
 	@Autowired
 	AuthorDAO authorDAO;
 
+	@Transactional
+	public List<AlbumBeanEntity>getTop10(){
+		List<AlbumBeanEntity> list = new ArrayList<>();
+		List<Album>albums =albumDAO.getAllAlbums(); 
+		Collections.sort(albums);
+		int max = albums.size()<10?albums.size():10;
+		albums.subList(0, max).stream().forEach(e->list.add(albumToAlbumEntity(e)));
+		return list;
+	}
+	
 	@Transactional
 	public List<AlbumBeanEntity> getAllAlbums() {
 		List<Album> albums = albumDAO.getAllAlbums();
@@ -84,6 +95,8 @@ public class AlbumService {
 		entity.setBirthDate(album.getBirthDate());
 		entity.setRating(album.getRating());
 		entity.setAuthorId(album.getAuthor().getId());
+		entity.setAuthorName(album.getAuthor().getName());
+		entity.setSongAmount(album.getSongs().size());
 		return entity;
 	}
 }

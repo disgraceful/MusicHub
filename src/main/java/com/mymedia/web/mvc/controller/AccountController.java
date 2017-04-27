@@ -1,11 +1,15 @@
 package com.mymedia.web.mvc.controller;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,10 +51,12 @@ public class AccountController {
 	public TokenResponseModel login(@RequestBody LoginRequestModel model) {
 		LOG.info(model.getUsername() + " " + model.getPassword());
 		User u = userService.getByUsername(model.getUsername());
-		LOG.info("model true pass "+model.getPassword());
-		LOG.info("model hash pass "+ CryptUtils.generateHashSHA1(model.getPassword()));
-		LOG.info("user hash pass "+ u.getPassword());
-		//if (u.getPassword().trim().equals(CryptUtils.generateHashSHA1(model.getPassword().trim()))) {
+		LOG.info("model true pass " + model.getPassword());
+		LOG.info("model hash pass " + CryptUtils.generateHashSHA1(model.getPassword()));
+		LOG.info("user hash pass " + u.getPassword());
+		// if
+		// (u.getPassword().trim().equals(CryptUtils.generateHashSHA1(model.getPassword().trim())))
+		// {
 		if (u.getPassword().trim().equals(model.getPassword().trim())) {
 			String token = tokenService.createJWT(u);
 			TokenResponseModel respModel = new TokenResponseModel();
@@ -72,11 +78,17 @@ public class AccountController {
 	public void register(@RequestBody CreatePublisherRequestModel model) {
 		publisherService.createPublisher(model);
 	}
-	
+
 	@GetMapping
-	public UserBeanEntity getLoggedUser(){
-		User u =(User)SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+	public UserBeanEntity getLoggedUser() {
+		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return userService.userToUserEntity(u);
+	}
+
+	@PostMapping(value = "/logout")
+	public void logout(HttpServletRequest request,HttpServletResponse response) {
+		SecurityContextHolder.getContext().setAuthentication(null);
+		//new SecurityContextLogoutHandler().logout(request,response,auth);
 	}
 
 }

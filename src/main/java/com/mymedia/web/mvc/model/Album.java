@@ -11,7 +11,7 @@ import java.util.List;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "ALBUMS")
-public class Album {
+public class Album implements Comparable<Album> {
 	@Id
 	@Column(name = "ALBUM_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,10 +75,19 @@ public class Album {
 	}
 
 	public double getRating() {
-		return rating;
+		double sum = 0.0;
+		for (Song song : songs) {
+			sum+=song.getRating();
+		}
+		return sum/songs.size();
 	}
 
 	public void setRating(double rating) {
 		this.rating = rating;
+	}
+
+	@Override
+	public int compareTo(Album album) {
+		return album.getRating()-this.getRating()>0?1:-1;
 	}
 }

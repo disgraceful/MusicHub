@@ -146,6 +146,7 @@ public class SongService {
 		entity.setDuration(song.getDuration());
 		entity.setUrl(song.getUrl());
 		entity.setAuthorId(song.getAuthor().getId());
+		entity.setAuthorName(song.getAuthor().getName());
 		entity.setAlbumId(song.getAlbum().getId());
 		entity.setGenreId(song.getGenre().getId());
 		return entity;

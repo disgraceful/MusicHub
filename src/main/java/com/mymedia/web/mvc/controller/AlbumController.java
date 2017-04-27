@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,11 @@ private static final Logger LOG = LogManager.getLogger(AlbumController.class);
     @Autowired
     private SongService songService;
 
+    @GetMapping(value="/top")
+    public @ResponseBody List<AlbumBeanEntity> getTop() {
+        return albumService.getTop10();
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody AlbumBeanEntity getAlbumById(@PathVariable int id) {
         AlbumBeanEntity album = albumService.getAlbum(id);
@@ -49,7 +55,6 @@ private static final Logger LOG = LogManager.getLogger(AlbumController.class);
     public @ResponseBody AlbumBeanEntity postAlbum(@RequestBody AlbumBeanEntity album) {
         return albumService.addAlbum(album);
     }
-    
     
     @RequestMapping(method = RequestMethod.PATCH)
     public @ResponseBody AlbumBeanEntity updateAlbum(@RequestBody AlbumBeanEntity album){

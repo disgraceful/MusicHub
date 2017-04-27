@@ -5,6 +5,7 @@ public class PlaylistBeanEntity {
 	private int id;
 	private String name;
 	private int consumerId;
+	private int songAmount;
 
 	public int getId() {
 		return id;
@@ -28,6 +29,14 @@ public class PlaylistBeanEntity {
 
 	public void setConsumerId(int consumerId) {
 		this.consumerId = consumerId;
+	}
+
+	public int getSongAmount() {
+		return songAmount;
+	}
+
+	public void setSongAmount(int songAmount) {
+		this.songAmount = songAmount;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.mymedia.web.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,6 +28,16 @@ public class AuthorService {
 	@Autowired
 	SongDAO songDAO;
 
+	@Transactional
+	public List<AuthorBeanEntity>getTop10(){
+		List<AuthorBeanEntity> list = new ArrayList<>();
+		List<Author>authors=authorDAO.getAllAuthors(); 
+		Collections.sort(authors);
+		int max = authors.size()<10?authors.size():10;
+		authors.subList(0, max).stream().forEach(e->list.add(authorToAuthorEntity(e)));
+		return list;
+	}
+	
 	@Transactional
 	public List<AuthorBeanEntity> getAllAuthors() {
 		List<Author> list = authorDAO.getAllAuthors();

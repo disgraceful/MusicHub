@@ -44,13 +44,15 @@ public class TokenService {
 		return "";
 	}
 
-	public User validateJWT(String jwt) {
+	public User parseJWT(String jwt) {
 		try {
 			Jws<Claims> claims = Jwts.parser().setSigningKey("secret".getBytes("UTF-8")).parseClaimsJws(jwt);
-			LOG.info("UserName : " + claims.getBody().get("username"));
-			LOG.info("Password : " + claims.getBody().get("password"));
+		//	LOG.info("UserName : " + claims.getBody().get("username"));
+		//	LOG.info("Password : " + claims.getBody().get("password"));
 		//	LOG.info("JWT Send Date : " + claims.getBody().get("date"));
-			return userService.getByUsername(claims.getBody().get("username").toString());
+			User u = userService.getByUsername(claims.getBody().get("username").toString());
+			LOG.info("parsed user: "+ u.getId() + " "+ u.getUsername());
+			return u;
 		} catch (Exception e) {
 			LOG.error("Error while parsing a JWT", e);
 			return null;
