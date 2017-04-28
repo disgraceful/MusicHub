@@ -113,16 +113,6 @@ public class SongService {
 		return list;
 	}
 
-	@Transactional
-	public SongBeanEntity addSong(int songId, int playlistId) {
-		Playlist playlist = playlistDAO.getPlaylist(playlistId);
-		Song song = songDAO.getSong(songId);
-		playlist.getSongs().add(song);
-		song.getPlaylists().add(playlist);
-		playlistDAO.updatePlaylist(playlist);
-		return songToSongEntity(songDAO.addSong(song));
-	}
-
 	public Song songEntityToSong(SongBeanEntity entity) {
 		Song song = new Song();
 		song.setId(entity.getId());

@@ -18,8 +18,8 @@ public class JwtAuthenticatedProfile implements Authentication {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-		//return Collections.singletonList(new SimpleGrantedAuthority(minimalProfile.getRole().getName()));
+		//return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+		return Collections.singletonList(new SimpleGrantedAuthority(minimalProfile.getRole().getName()));
 	}
 
 	@Override

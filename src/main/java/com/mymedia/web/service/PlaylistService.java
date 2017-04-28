@@ -1,31 +1,28 @@
 package com.mymedia.web.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.dao.ConsumerDAO;
 import com.mymedia.web.dao.PlaylistDAO;
+import com.mymedia.web.dao.SongDAO;
 import com.mymedia.web.dto.PlaylistBeanEntity;
+import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.mvc.model.Playlist;
 import com.mymedia.web.mvc.model.Song;
-import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.PlaylistRequestModel;
 
 @Service
 @EnableTransactionManagement
 public class PlaylistService {
-
 	private static final Logger LOG = LogManager.getLogger(PlaylistService.class);
 
 	@Autowired
@@ -38,9 +35,13 @@ public class PlaylistService {
 	private ConsumerService consumerService;
 
 	@Autowired
-	private UserService userService;
-
+	private SongDAO songDAO;
+	
+	@Autowired
+	private SongService songService;
+	
 	@Transactional
+	@PreAuthorize("hasAuthority('CONSUMER')")
 	public PlaylistBeanEntity createPlaylist(PlaylistRequestModel model, int userId) {
 		Playlist playlist = new Playlist();
 		playlist.setName(model.getName().trim());
@@ -63,6 +64,26 @@ public class PlaylistService {
 		return list;
 	}
 
+	@Transactional
+	public SongBeanEntity addSong(int songId, int playlistId) {
+		Playlist playlist = playlistDAO.getPlaylist(playlistId);
+		Song song = songDAO.getSong(songId);
+		playlist.getSongs().add(song);
+		song.getPlaylists().add(playlist);
+		playlistDAO.updatePlaylist(playlist);
+		return songService.songToSongEntity(songDAO.updateSong(song));
+		
+	}
+
+	@Transactional
+	public void deleteSongFromPlaylist(int songId, int playlistId) {
+		Playlist playlist = playlistDAO.getPlaylist(playlistId);
+		Song song = songDAO.getSong(songId);
+		playlist.getSongs().remove(song);
+		song.getPlaylists().remove(playlist);
+		playlistDAO.updatePlaylist(playlist);
+		songDAO.updateSong(song);
+	}
 
 	@Transactional
 	public PlaylistBeanEntity getPlaylist(int id) {

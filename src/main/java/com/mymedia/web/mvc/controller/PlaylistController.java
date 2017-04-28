@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,11 +41,10 @@ public class PlaylistController {
 	public @ResponseBody PlaylistBeanEntity createPlaylist(@RequestBody PlaylistRequestModel model) {
 		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		LOG.info(u.getRole().getName());
-		if (u.getRole().getName().trim().equals("CONSUMER")) {
+		//if (u.getRole().getName().trim().equals("CONSUMER")) {
 			return playlistService.createPlaylist(model, u.getId());
-		}
-		return null;
-
+		//}
+		//return null;
 	}
 
 	@GetMapping(value = "/{id}")
@@ -76,7 +76,11 @@ public class PlaylistController {
 
 	@PostMapping(value = "/{id}/songs")
 	public @ResponseBody SongBeanEntity addSong(@RequestBody SongRequestModel songModel, @PathVariable int id) {
-		return songService.addSong(songModel.getId(), id);
+		return playlistService.addSong(songModel.getId(), id);
 	}
 
+	@DeleteMapping(value="/{id}/songs")
+	public void deleteSong(@RequestBody SongRequestModel songModel,@PathVariable int id){
+		
+	}
 }

@@ -1,28 +1,22 @@
 package com.mymedia.web.auth;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+import com.mymedia.web.mvc.controller.PlaylistController;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.service.TokenService;
 
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
-    
-	private final TokenService tokenService;
-
-    @SuppressWarnings("unused")
-    public JwtAuthenticationProvider() {
-        this(null);
-    }
-
-    @Autowired
-    public JwtAuthenticationProvider(TokenService tokenService) {
-        this.tokenService = tokenService;
-    }
+	private static final Logger LOG = LogManager.getLogger(JwtAuthenticationProvider.class);
+	@Autowired
+	private TokenService tokenService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -30,6 +24,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             User possibleProfile = tokenService.parseJWT((String)authentication.getCredentials());
             return new JwtAuthenticatedProfile(possibleProfile);
         } catch (Exception e) {
+        	LOG.error("invalid token");
            return null;
         }
     }
