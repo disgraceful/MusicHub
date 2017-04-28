@@ -5,8 +5,11 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,39 +43,39 @@ public class AuthorController {
         return authorService.getTop10();
     }
     
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public @ResponseBody AuthorBeanEntity getAuthorById(@PathVariable int id) {
         AuthorBeanEntity author = authorService.getAuthor(id);
         LOG.info(author.toString());
         return author;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public @ResponseBody List<AuthorBeanEntity> getAuthors() {
         return authorService.getAllAuthors();
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public @ResponseBody AuthorBeanEntity postAuthor(@RequestBody AuthorBeanEntity author) {
         return authorService.addAuthor(author);
     }
     
-    @RequestMapping(method = RequestMethod.PATCH)
+    @PatchMapping
 	public @ResponseBody AuthorBeanEntity updateAuthor(@RequestBody AuthorBeanEntity song) {
 		return authorService.updateAuthor(song);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	@DeleteMapping(value = "/{id}")
 	public @ResponseBody void deleteAuthor(@PathVariable int id) {
 		authorService.deleteAuthor(id);
 	}
 	
-	@RequestMapping(value = "/{id}/songs", method = RequestMethod.GET)
+	@GetMapping(value = "/{id}/songs")
 	public @ResponseBody List<SongBeanEntity> getSongs(@PathVariable int id) {
 		return songService.getSongsByAuthorId(id);
 	}
 	
-	@RequestMapping(value = "/{id}/albums", method = RequestMethod.GET)
+	@GetMapping(value = "/{id}/albums")
 	public @ResponseBody List<AlbumBeanEntity> getAlbums(@PathVariable int id) {
 		return albumService.getAlbumsByAuthorId(id);
 	}

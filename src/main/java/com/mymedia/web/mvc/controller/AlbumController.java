@@ -5,8 +5,11 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,34 +42,34 @@ private static final Logger LOG = LogManager.getLogger(AlbumController.class);
         return albumService.getTop10();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public @ResponseBody AlbumBeanEntity getAlbumById(@PathVariable int id) {
         AlbumBeanEntity album = albumService.getAlbum(id);
         LOG.info(album.toString());
         return album;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public @ResponseBody List<AlbumBeanEntity> getAlbums() {
         return albumService.getAllAlbums();
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public @ResponseBody AlbumBeanEntity postAlbum(@RequestBody AlbumBeanEntity album) {
         return albumService.addAlbum(album);
     }
     
-    @RequestMapping(method = RequestMethod.PATCH)
+    @PatchMapping
     public @ResponseBody AlbumBeanEntity updateAlbum(@RequestBody AlbumBeanEntity album){
     	return albumService.updateAlbum(album);
     }
     
-    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public @ResponseBody void deleteAlbum(@RequestBody int id){
     	albumService.deleteAlbum(id);
     }
     
-    @RequestMapping(value = "/{id}/author", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}/author")
     public @ResponseBody AuthorBeanEntity getAuthorByAlbumId(@PathVariable int id) {
         AlbumBeanEntity album = albumService.getAlbum(id);
         LOG.info(album.toString());
@@ -75,7 +78,7 @@ private static final Logger LOG = LogManager.getLogger(AlbumController.class);
         return author;
     }
     
-    @RequestMapping(value = "/{id}/songs", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}/songs")
     public @ResponseBody List<SongBeanEntity> getSongsByAlbumId(@PathVariable int id) {
         return songService.getSongsByAlbumId(id);
     }
