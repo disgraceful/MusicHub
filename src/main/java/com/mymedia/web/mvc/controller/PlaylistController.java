@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,31 +37,47 @@ public class PlaylistController {
 	@Autowired
 	private SongService songService;
 
-	@PostMapping
-	public @ResponseBody PlaylistBeanEntity createPlaylist(@RequestBody PlaylistRequestModel model) {
-		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		LOG.info(u.getRole().getName());
-		//if (u.getRole().getName().trim().equals("CONSUMER")) {
-			return playlistService.createPlaylist(model, u.getId());
-		//}
-		//return null;
-	}
-
 	@GetMapping(value = "/{id}")
-	public @ResponseBody PlaylistBeanEntity getPlaylistById(@PathVariable int id) {
+	public ResponseEntity<PlaylistBeanEntity> getPlaylistById(@PathVariable int id) {
 		PlaylistBeanEntity playlist = playlistService.getPlaylist(id);
-		LOG.info(playlist.toString());
-		return playlist;
+		if(playlist!=null){
+			return new ResponseEntity<>(playlist,HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@GetMapping
-	public @ResponseBody List<PlaylistBeanEntity> getPlaylists() {
-		return playlistService.getAllPlaylists();
+	public ResponseEntity<List<PlaylistBeanEntity>> getPlaylists() {
+		List<PlaylistBeanEntity> playlists = playlistService.getAllPlaylists();
+		if(playlists!=null&&!playlists.isEmpty()){
+			return new ResponseEntity<>(playlists,HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
+	@GetMapping(value = "/{id}/songs")
+	public ResponseEntity<List<SongBeanEntity>> getSongs(@PathVariable int id) {
+		List<SongBeanEntity> songs = songService.getSongsByPlaylistId(id);
+		if(songs!=null&&!songs.isEmpty()){
+			return new ResponseEntity<>(songs,HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@PostMapping
+	public ResponseEntity<PlaylistBeanEntity> createPlaylist(@RequestBody PlaylistRequestModel model) {
+		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PlaylistBeanEntity playlist = playlistService.createPlaylist(model, u.getId());
+		if (playlist != null) {
+			return new ResponseEntity<>(playlist, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(playlist, HttpStatus.NOT_FOUND);
+		// TODO ask Nazar
 	}
 
 	@PatchMapping
-	public @ResponseBody PlaylistBeanEntity updatePlaylist(@RequestBody PlaylistBeanEntity playlist) {
-		return playlistService.updatePlaylist(playlist);
+	public ResponseEntity<PlaylistBeanEntity> updatePlaylist(@RequestBody PlaylistBeanEntity playlist) {
+		return new ResponseEntity<>(playlistService.updatePlaylist(playlist),HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{id}")
@@ -69,18 +85,13 @@ public class PlaylistController {
 		playlistService.deletePlaylist(id);
 	}
 
-	@GetMapping(value = "/{id}/songs")
-	public List<SongBeanEntity> getSongs(@PathVariable int id) {
-		return songService.getSongsByPlaylistId(id);
-	}
-
 	@PostMapping(value = "/{id}/songs")
-	public @ResponseBody SongBeanEntity addSong(@RequestBody SongRequestModel songModel, @PathVariable int id) {
-		return playlistService.addSong(songModel.getId(), id);
+	public ResponseEntity<SongBeanEntity> addSong(@RequestBody SongRequestModel songModel, @PathVariable int id) {
+		return new ResponseEntity<>(playlistService.addSong(songModel.getId(),id),HttpStatus.OK);
 	}
 
-	@DeleteMapping(value="/{id}/songs")
-	public void deleteSong(@RequestBody SongRequestModel songModel,@PathVariable int id){
-		
+	@DeleteMapping(value = "/{id}/songs")
+	public void deleteSong(@RequestBody SongRequestModel songModel, @PathVariable int id) {
+		playlistService.deleteSongFromPlaylist(songModel.getId(), id);
 	}
 }

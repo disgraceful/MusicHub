@@ -1,4 +1,4 @@
-package com.mymedia.web.utils;
+package com.mymedia.web.service;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,13 +22,11 @@ import org.xml.sax.SAXException;
 
 import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.mvc.model.Genre;
-import com.mymedia.web.service.GenreService;
-import com.mymedia.web.service.SongService;
 
 @Service
-public class Mp3Utils {
+public class Mp3Service {
 
-	private static final Logger LOG = LogManager.getLogger(Mp3Utils.class);
+	private static final Logger LOG = LogManager.getLogger(Mp3Service.class);
 	@Autowired
 	GenreService genreService;
 

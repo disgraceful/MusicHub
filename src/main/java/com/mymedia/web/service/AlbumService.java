@@ -89,6 +89,9 @@ public class AlbumService {
 	}
 
 	public AlbumBeanEntity albumToAlbumEntity(Album album) {
+		if(album==null){
+			return null;
+		}
 		AlbumBeanEntity entity = new AlbumBeanEntity();
 		entity.setId(album.getId());
 		entity.setName(album.getName());

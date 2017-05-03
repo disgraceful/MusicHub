@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,7 +48,7 @@ public class AccountController {
 	private static final Logger LOG = LogManager.getLogger(AccountController.class);
 
 	@PostMapping(value = "/login")
-	public TokenResponseModel login(@RequestBody LoginRequestModel model) {
+	public ResponseEntity<TokenResponseModel> login(@RequestBody LoginRequestModel model) {
 		LOG.info(model.getUsername() + " " + model.getPassword());
 		User u = userService.getByUsername(model.getUsername());
 		LOG.info("model true pass " + model.getPassword());
@@ -61,16 +61,14 @@ public class AccountController {
 			String token = tokenService.createJWT(u);
 			TokenResponseModel respModel = new TokenResponseModel();
 			respModel.setAccessToken(token);
-			return respModel;
+			return new ResponseEntity<>(respModel,HttpStatus.OK);
 		}
-		return null;
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		//ask Nazar
 	}
 
 	@PostMapping(value = "/register")
 	public void register(@RequestBody CreateConsumerRequestModel model) {
-		LOG.info("username : " + model.getUsername());
-		LOG.info("pass : " + model.getPassword());
-		LOG.info("confirm : " + model.getConfirmPassword());
 		consumerService.createConsumer(model);
 	}
 
@@ -80,9 +78,12 @@ public class AccountController {
 	}
 
 	@GetMapping
-	public UserBeanEntity getLoggedUser() {
+	public ResponseEntity<UserBeanEntity> getLoggedUser() {
 		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		return userService.userToUserEntity(u);
+		if(u!=null){
+			return new ResponseEntity<>(userService.userToUserEntity(u),HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@PostMapping(value = "/logout")

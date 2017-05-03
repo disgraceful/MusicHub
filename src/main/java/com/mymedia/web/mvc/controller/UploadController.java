@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +25,10 @@ import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.mvc.model.Publisher;
 import com.mymedia.web.mvc.model.Role;
 import com.mymedia.web.mvc.model.User;
+import com.mymedia.web.service.Mp3Service;
 import com.mymedia.web.service.PublisherService;
 import com.mymedia.web.service.SongService;
 import com.mymedia.web.service.UserService;
-import com.mymedia.web.utils.Mp3Utils;
 
 @RestController
 public class UploadController {
@@ -43,13 +45,12 @@ public class UploadController {
 
 	@Autowired
 	private PublisherService publisherService;
-	
+
 	@Autowired
-	private Mp3Utils mp3utils;
+	private Mp3Service mp3Service;
 
 	@PostMapping(value = "/upload/{albumId}")
-	public void upload(@RequestBody MultipartFile file, @PathVariable int albumId) {
-//		LOG.info("we got file name! " + file.getOriginalFilename());
+	public ResponseEntity<SongBeanEntity> upload(@RequestBody MultipartFile file, @PathVariable int albumId) {
 		String path = servletContext.getRealPath("WEB-INF/music");
 		LOG.info(path);
 		File f = new File(path);
@@ -66,7 +67,7 @@ public class UploadController {
 			FileOutputStream fos = new FileOutputStream(convFile);
 			fos.write(file.getBytes());
 			fos.close();
-			SongBeanEntity entity = mp3utils.fileToSongBeanEntity(convFile, path);
+			SongBeanEntity entity = mp3Service.fileToSongBeanEntity(convFile, path);
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			LOG.info("user:" + auth.getName());
 			User u = userService.getByUsername(auth.getName());
@@ -75,38 +76,20 @@ public class UploadController {
 			if (r.getName().trim().equals("PUBLISHER")) {
 				Publisher pub = publisherService.getPublisherByUserId(u.getId());
 				LOG.info(pub.getAuthor().getId());
-				
+
 				entity.setAuthorId(pub.getAuthor().getId());
 				entity.setAlbumId(albumId);
-				songService.addSong(entity);
-			}
+				SongBeanEntity song = songService.addSong(entity);
+				if (song != null) {
+					return new ResponseEntity<>(song, HttpStatus.OK);
+				}
 
+			}
 			LOG.info(convFile.getAbsolutePath());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (IOException e) {
 			LOG.info("caught exception {}", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
-
-	@GetMapping(value = "/getup/{filename:.+}")
-	public String getUploadedFileURL(@PathVariable String filename) {
-		String path = servletContext.getRealPath("WEB-INF/music");
-		LOG.info(filename);
-		LOG.info(path);
-		LOG.info(new File(path).exists());
-		File f = new File(path + "/" + filename);
-		LOG.info(new File(path + "/" + filename).exists());
-		String serverPath = "http://localhost:8080/" + path.substring(path.lastIndexOf("/")) + "/" + f.getName();
-		return serverPath;
-	}
-
-	@GetMapping(value = "/parse/{filename:.+}")
-	public void parseMp3(@PathVariable String filename) {
-		String path = servletContext.getRealPath("WEB-INF/music");
-		LOG.info(filename);
-		LOG.info(path);
-		LOG.info(new File(path).exists());
-		File f = new File(path + "/" + filename);
-		LOG.info(new File(path + "/" + filename).exists());
-		// Mp3Utils.parseMp3(f);
 	}
 }
