@@ -1,5 +1,7 @@
 package com.mymedia.web.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -111,6 +113,7 @@ public class AlbumService {
 			album.setName(model.getName().trim());
 			album.setAuthor(authorDAO.getAuthor(model.getAuthorId()));
 			album.setBirthDate(new Date());
+			album.setRating(0.0);
 			return albumToAlbumEntity(albumDAO.addAlbum(album));
 		} catch (MusicHubGenericException exc) {
 			throw exc;
@@ -145,11 +148,11 @@ public class AlbumService {
 		return model.getName() == null;
 	}
 
-	public Album albumEntityToAlbum(AlbumBeanEntity entity) {
+	public Album albumEntityToAlbum(AlbumBeanEntity entity) throws ParseException {
 		Album album = new Album();
 		album.setId(entity.getId());
 		album.setName(entity.getName());
-		album.setBirthDate(entity.getBirthDate());
+		album.setBirthDate(new SimpleDateFormat("dd/M/yyyy").parse(entity.getBirthDate()));
 		album.setRating(entity.getRating());
 		album.setAuthor(authorDAO.getAuthor(entity.getAuthorId()));
 		return album;
@@ -159,7 +162,7 @@ public class AlbumService {
 		AlbumBeanEntity entity = new AlbumBeanEntity();
 		entity.setId(album.getId());
 		entity.setName(album.getName());
-		entity.setBirthDate(album.getBirthDate());
+		entity.setBirthDate(new SimpleDateFormat("dd/M/yyyy").format(album.getBirthDate()));
 		entity.setRating(album.getRating());
 		entity.setAuthorId(album.getAuthor().getId());
 		entity.setAuthorName(album.getAuthor().getName());

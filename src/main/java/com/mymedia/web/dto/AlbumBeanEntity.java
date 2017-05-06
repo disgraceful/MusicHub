@@ -1,12 +1,10 @@
 package com.mymedia.web.dto;
 
-import java.util.Date;
-
 public class AlbumBeanEntity {
 
 	private int id;
 	private String name;
-	private Date birthDate;
+	private String birthDate;
 	private double rating;
 	private int authorId;
 	private String authorName;
@@ -28,11 +26,11 @@ public class AlbumBeanEntity {
 		this.name = name;
 	}
 
-	public Date getBirthDate() {
+	public String getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 

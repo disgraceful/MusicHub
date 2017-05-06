@@ -76,7 +76,7 @@ public class Album implements Comparable<Album> {
 
 	public double getRating() {
 		double sum = 0.0;
-		if(songs==null){
+		if(songs==null||songs.isEmpty()){
 			return sum;
 		}
 		for (Song song : songs) {
