@@ -35,11 +35,11 @@ public class Author implements Comparable<Author> {
 	private String surName;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "author")
 	private List<Album> albums;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "author")
 	private List<Song> songs;
 
 	@Column(name = "BIRTH_DATE")

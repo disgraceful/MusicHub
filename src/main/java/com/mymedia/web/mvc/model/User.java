@@ -22,7 +22,7 @@ public class User {
     @Column(name = "PASSWORD")
     private String password;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "ROLE_ID")
     private Role role;
 

@@ -36,10 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 		.antMatchers("/account/**","/music/**")
 		.permitAll()
-		.antMatchers("/playlist/**","/consumer/**")
-		.hasAuthority("CONSUMER")
-		//.antMatchers("/publisher/**")
-		//.hasAuthority("PUBLISHER")
 		.and()
 		.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling()
 		.authenticationEntryPoint(jwtAuthEntryPoint);

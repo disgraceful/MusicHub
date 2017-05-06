@@ -32,7 +32,7 @@ public class Playlist {
 	private List<Song> songs;
 
  
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "CONSUMER_ID")
 	private Consumer consumer;
 	

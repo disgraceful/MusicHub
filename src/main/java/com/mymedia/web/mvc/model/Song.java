@@ -35,7 +35,7 @@ public class Song {
 	@Column(name = "BIRTH_DATE")
 	private Date birthDate;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "GENRE_ID")
 	private Genre genre;
 
@@ -45,15 +45,15 @@ public class Song {
 	@Column(name = "SONG_DURATION")
 	private String duration;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "ALBUM_ID")
 	private Album album;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "AUTHOR_ID")
 	private Author author;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	@JoinTable(name = "SONG_PLAYLISTS", joinColumns = { @JoinColumn(name = "SONG_ID") }, inverseJoinColumns = {
 			@JoinColumn(name = "PLAYLIST_ID") })
 	private List<Playlist> playlists;

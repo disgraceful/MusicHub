@@ -21,7 +21,7 @@ public class AlbumDAO {
 	private SessionFactory sessionFactory;
 
 	private static final Logger LOG = LogManager.getLogger(AlbumDAO.class);
-	
+
 	public void setSessionFactory(SessionFactory sf) {
 		this.sessionFactory = sf;
 	}
@@ -42,17 +42,15 @@ public class AlbumDAO {
 	@Transactional
 	public Album addAlbum(Album album) {
 		Session session = this.sessionFactory.getCurrentSession();
-		LOG.info(album.getName() + " " + album.getAuthor());
-		int i = (Integer)session.save(album);
-		LOG.info(session.save(album));
+		int i = (Integer) session.save(album);
 		return getAlbum(i);
 	}
-	
+
 	@Transactional
 	public Album updateAlbum(Album album) {
 		Session session = this.sessionFactory.getCurrentSession();
-		session.update(album);
-		return getAlbum(album.getId());
+		Album a = (Album)session.merge(album);
+		return getAlbum(a.getId());
 	}
 
 	@Transactional
@@ -60,10 +58,9 @@ public class AlbumDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.delete(album);
 	}
-	
+
 	@Transactional
-	public void deleteAlbum(int id){
+	public void deleteAlbum(int id) {
 		deleteAlbum(getAlbum(id));
 	}
-	
 }

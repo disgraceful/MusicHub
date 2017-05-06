@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mymedia.web.dto.AlbumBeanEntity;
 import com.mymedia.web.dto.AuthorBeanEntity;
 import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.exceptions.MusicHubGenericException;
+import com.mymedia.web.requestmodel.AlbumCreateRequestModel;
 import com.mymedia.web.service.AlbumService;
 import com.mymedia.web.service.AuthorService;
 import com.mymedia.web.service.SongService;
@@ -38,66 +40,82 @@ public class AlbumController {
 	private SongService songService;
 
 	@GetMapping
-	public ResponseEntity<List<AlbumBeanEntity>> getAlbums() {
-		List<AlbumBeanEntity> albums = albumService.getAllAlbums();
-		if (!albums.isEmpty() && albums != null) {
+	public ResponseEntity<?> getAlbums() {
+		try {
+			List<AlbumBeanEntity> albums = albumService.getAllAlbums();
 			return new ResponseEntity<>(albums, HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@GetMapping(value = "/top")
-	public ResponseEntity<List<AlbumBeanEntity>> getTopAlbums() {
-		List<AlbumBeanEntity> albums = albumService.getTop10();
-		if (!albums.isEmpty() && albums != null) {
+	public ResponseEntity<?> getTopAlbums() {
+		try {
+			List<AlbumBeanEntity> albums = albumService.getTop10();
 			return new ResponseEntity<>(albums, HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<AlbumBeanEntity> getAlbumById(@PathVariable int id) {
-		AlbumBeanEntity album = albumService.getAlbum(id);
-		LOG.info(album==null);
-		if (album != null) {
+	public ResponseEntity<?> getAlbumById(@PathVariable int id) {
+		try {
+			AlbumBeanEntity album = albumService.getAlbum(id);
 			return new ResponseEntity<>(album, HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<AlbumBeanEntity>(HttpStatus.NOT_FOUND);
 	}
 
 	@GetMapping(value = "/{id}/author")
-	public ResponseEntity<AuthorBeanEntity> getAuthorByAlbumId(@PathVariable int id) {
-		AlbumBeanEntity album = albumService.getAlbum(id);
-		AuthorBeanEntity author = authorService.getAuthor(album.getAuthorId());
-		if (author != null) {
+	public ResponseEntity<?> getAuthorByAlbumId(@PathVariable int id) {
+		try {
+			AlbumBeanEntity album = albumService.getAlbum(id);
+			AuthorBeanEntity author = authorService.getAuthor(album.getAuthorId());
 			return new ResponseEntity<>(author, HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@GetMapping(value = "/{id}/songs")
-	public ResponseEntity<List<SongBeanEntity>> getSongsByAlbumId(@PathVariable int id) {
-		List<SongBeanEntity> songs = songService.getSongsByAlbumId(id);
-		if (!songs.isEmpty() && songs != null) {
-			return new ResponseEntity<>(songs, HttpStatus.OK);
+	public ResponseEntity<?> getSongsByAlbumId(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(songService.getSongsByAlbumId(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@PostMapping
-	public ResponseEntity<AlbumBeanEntity> postAlbum(@RequestBody AlbumBeanEntity album) {
-		return new ResponseEntity<>(albumService.addAlbum(album), HttpStatus.OK);
-		// TODO Ask Nazar about this stuff
+	public ResponseEntity<?> postAlbum(@RequestBody AlbumCreateRequestModel model) {
+		try {
+			LOG.info(model.getAuthorId() + " " + model.getName());
+			return new ResponseEntity<>(albumService.createAlbum(model), HttpStatus.CREATED);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@PatchMapping
-	public ResponseEntity<AlbumBeanEntity> updateAlbum(@RequestBody AlbumBeanEntity album) {
-		return new ResponseEntity<>(albumService.updateAlbum(album), HttpStatus.OK);
+	public ResponseEntity<?> updateAlbum(@RequestBody AlbumBeanEntity album) {
+		try {
+			return new ResponseEntity<>(albumService.updateAlbum(album), HttpStatus.ACCEPTED);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public void deleteAlbum(@RequestBody int id) {
-		albumService.deleteAlbum(id);
+	public ResponseEntity<?> deleteAlbum(@PathVariable int id) {
+		try {
+			albumService.deleteAlbum(id);
+			return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
-
 }

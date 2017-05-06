@@ -21,17 +21,17 @@ public class Album implements Comparable<Album> {
 	private String name;
 
 	@Column(name = "BIRTH_DATE")
-	private Date BirthDate;
+	private Date birthDate;
 	
 	@Column(name = "RATING",nullable = true)
 	private double rating;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
     @JoinColumn(name = "AUTHOR_ID")
 	private Author author;
 	
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "album",cascade=CascadeType.ALL)
 	private List<Song> songs;
 
 	public int getId() {
@@ -67,15 +67,18 @@ public class Album implements Comparable<Album> {
 	}
 
 	public Date getBirthDate() {
-		return BirthDate;
+		return birthDate;
 	}
 
 	public void setBirthDate(Date birthDate) {
-		BirthDate = birthDate;
+		this.birthDate = birthDate;
 	}
 
 	public double getRating() {
 		double sum = 0.0;
+		if(songs==null){
+			return sum;
+		}
 		for (Song song : songs) {
 			sum+=song.getRating();
 		}

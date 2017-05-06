@@ -27,7 +27,7 @@ public class Genre {
 	private String name;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "genre")
 	private List<Song> songList;
 
 	public int getId() {
