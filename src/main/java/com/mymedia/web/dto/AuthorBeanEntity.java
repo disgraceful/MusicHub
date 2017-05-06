@@ -1,15 +1,12 @@
 package com.mymedia.web.dto;
 
-import java.util.Date;
-import java.util.List;
-
 public class AuthorBeanEntity {
 
 	private int id;
 	private String name;
 	private String surName;
 	private double rating;
-	private Date BirthDate;
+	private String birthDate;
 	
 
 	public int getId() {
@@ -44,12 +41,12 @@ public class AuthorBeanEntity {
 		this.rating = rating;
 	}
 
-	public Date getBirthDate() {
-		return BirthDate;
+	public String getBirthDate() {
+		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
-		BirthDate = birthDate;
+	public void setBirthDate(String birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	

@@ -126,9 +126,7 @@ public class AlbumService {
 	public AlbumBeanEntity updateAlbum(AlbumBeanEntity entity) {
 		try {
 			return albumToAlbumEntity(albumDAO.updateAlbum(albumEntityToAlbum(entity)));
-		} catch (MusicHubGenericException exc) {
-			throw exc;
-		} catch (Exception exc) {
+		}  catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to update Album", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

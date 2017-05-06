@@ -49,8 +49,8 @@ public class AuthorDAO {
 	@Transactional
 	public Author updateAuthor(Author author) {
 		Session session = this.sessionFactory.getCurrentSession();
-		session.update(author);
-		return getAuthor(author.getId());
+		Author a = (Author)session.merge(author);
+		return getAuthor(a.getId());
 	}
 
 	@Transactional

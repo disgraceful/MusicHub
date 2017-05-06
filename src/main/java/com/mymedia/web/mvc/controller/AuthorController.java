@@ -1,7 +1,5 @@
 package com.mymedia.web.mvc.controller;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mymedia.web.dto.AlbumBeanEntity;
 import com.mymedia.web.dto.AuthorBeanEntity;
-import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.service.AlbumService;
 import com.mymedia.web.service.AuthorService;
 import com.mymedia.web.service.SongService;
@@ -40,63 +36,68 @@ public class AuthorController {
 	private AlbumService albumService;
 
 	@GetMapping
-	public ResponseEntity<List<AuthorBeanEntity>> getAuthors() {
-		List<AuthorBeanEntity> authors = authorService.getAllAuthors();
-		if (!authors.isEmpty() && authors != null) {
-			return new ResponseEntity<>(authors, HttpStatus.OK);
+	public ResponseEntity<?> getAuthors() {
+		try {
+			return new ResponseEntity<>(authorService.getAllAuthors(), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
 	}
 
 	@GetMapping(value = "/top")
-	public ResponseEntity<List<AuthorBeanEntity>> getTopAuthors() {
-		List<AuthorBeanEntity> authors = authorService.getTop10();
-		if (!authors.isEmpty() && authors != null) {
-			return new ResponseEntity<>(authors, HttpStatus.OK);
+	public ResponseEntity<?> getTopAuthors() {
+		try {
+			return new ResponseEntity<>(authorService.getTop10(), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<AuthorBeanEntity> getAuthorById(@PathVariable int id) {
-		AuthorBeanEntity author = authorService.getAuthor(id);
-		if (author != null) {
-			return new ResponseEntity<>(author, HttpStatus.OK);
+	public ResponseEntity<?> getAuthorById(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(authorService.getAuthor(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@GetMapping(value = "/{id}/songs")
-	public ResponseEntity<List<SongBeanEntity>> getSongsByAuthorId(@PathVariable int id) {
-		List<SongBeanEntity> songs = songService.getSongsByAuthorId(id);
-		if (!songs.isEmpty() && songs != null) {
-			return new ResponseEntity<>(songs, HttpStatus.OK);
+	public ResponseEntity<?> getSongsByAuthorId(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(songService.getSongsByAuthorId(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@GetMapping(value = "/{id}/albums")
-	public ResponseEntity<List<AlbumBeanEntity>> getAlbumsByAuthorId(@PathVariable int id) {
-		List<AlbumBeanEntity> albums = albumService.getAlbumsByAuthorId(id);
-		if (!albums.isEmpty() && albums != null) {
-			return new ResponseEntity<>(albums, HttpStatus.OK);
+	public ResponseEntity<?> getAlbumsByAuthorId(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(albumService.getAlbumsByAuthorId(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@PostMapping
-	public ResponseEntity<AuthorBeanEntity> postAuthor(@RequestBody AuthorBeanEntity author) {
-		return new ResponseEntity<>(authorService.addAuthor(author), HttpStatus.OK);
+	public ResponseEntity<?> postAuthor(@RequestBody AuthorBeanEntity author) {
+		return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
 	@PatchMapping
-	public ResponseEntity<AuthorBeanEntity> updateAuthor(@RequestBody AuthorBeanEntity author) {
-		return new ResponseEntity<>(authorService.updateAuthor(author), HttpStatus.OK);
+	public ResponseEntity<?> updateAuthor(@RequestBody AuthorBeanEntity author) {
+		try {
+			return new ResponseEntity<>(authorService.updateAuthor(author), HttpStatus.ACCEPTED);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public void deleteAuthor(@PathVariable int id) {
-		authorService.deleteAuthor(id);
+	public ResponseEntity<?> deleteAuthor(@PathVariable int id) {
+		return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
 }

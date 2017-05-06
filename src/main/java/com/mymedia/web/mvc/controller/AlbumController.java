@@ -1,7 +1,5 @@
 package com.mymedia.web.mvc.controller;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.AlbumBeanEntity;
-import com.mymedia.web.dto.AuthorBeanEntity;
-import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.requestmodel.AlbumCreateRequestModel;
 import com.mymedia.web.service.AlbumService;
@@ -42,8 +38,7 @@ public class AlbumController {
 	@GetMapping
 	public ResponseEntity<?> getAlbums() {
 		try {
-			List<AlbumBeanEntity> albums = albumService.getAllAlbums();
-			return new ResponseEntity<>(albums, HttpStatus.OK);
+			return new ResponseEntity<>(albumService.getAllAlbums(), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
@@ -52,8 +47,7 @@ public class AlbumController {
 	@GetMapping(value = "/top")
 	public ResponseEntity<?> getTopAlbums() {
 		try {
-			List<AlbumBeanEntity> albums = albumService.getTop10();
-			return new ResponseEntity<>(albums, HttpStatus.OK);
+			return new ResponseEntity<>(albumService.getTop10(), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
@@ -63,8 +57,7 @@ public class AlbumController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getAlbumById(@PathVariable int id) {
 		try {
-			AlbumBeanEntity album = albumService.getAlbum(id);
-			return new ResponseEntity<>(album, HttpStatus.OK);
+			return new ResponseEntity<>(albumService.getAlbum(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
@@ -74,8 +67,7 @@ public class AlbumController {
 	public ResponseEntity<?> getAuthorByAlbumId(@PathVariable int id) {
 		try {
 			AlbumBeanEntity album = albumService.getAlbum(id);
-			AuthorBeanEntity author = authorService.getAuthor(album.getAuthorId());
-			return new ResponseEntity<>(author, HttpStatus.OK);
+			return new ResponseEntity<>(authorService.getAuthor(album.getAuthorId()), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
@@ -93,7 +85,6 @@ public class AlbumController {
 	@PostMapping
 	public ResponseEntity<?> postAlbum(@RequestBody AlbumCreateRequestModel model) {
 		try {
-			LOG.info(model.getAuthorId() + " " + model.getName());
 			return new ResponseEntity<>(albumService.createAlbum(model), HttpStatus.CREATED);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());

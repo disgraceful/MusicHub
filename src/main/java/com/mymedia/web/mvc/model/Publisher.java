@@ -1,5 +1,6 @@
 package com.mymedia.web.mvc.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,11 +20,13 @@ public class Publisher {
 	@Column(name = "PUBLISHER_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@OneToOne
-	@JoinColumn(name ="AUTHOR_ID")
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "AUTHOR_ID")
 	private Author author;
+	
 	@OneToOne
-	@JoinColumn(name ="USER_ID")
+	@JoinColumn(name = "USER_ID")
 	private User user;
 
 	public int getId() {
@@ -49,6 +52,5 @@ public class Publisher {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
 
- }
+}

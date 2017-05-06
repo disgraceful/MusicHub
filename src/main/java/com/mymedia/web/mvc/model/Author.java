@@ -35,11 +35,11 @@ public class Author implements Comparable<Author> {
 	private String surName;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "author")
+	@OneToMany(mappedBy = "author",cascade=CascadeType.ALL)
 	private List<Album> albums;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "author")
+	@OneToMany(mappedBy = "author",cascade=CascadeType.ALL)
 	private List<Song> songs;
 
 	@Column(name = "BIRTH_DATE")
@@ -90,6 +90,9 @@ public class Author implements Comparable<Author> {
 
 	public double getRating() {
 		double sum = 0.0;
+		if(albums==null||albums.isEmpty()){
+			return sum;
+		}
 		for (Album album : albums) {
 			sum+=album.getRating();
 		}
