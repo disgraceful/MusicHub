@@ -21,6 +21,7 @@ import com.mymedia.web.dto.AlbumBeanEntity;
 import com.mymedia.web.dto.AuthorBeanEntity;
 import com.mymedia.web.dto.GenreBeanEntity;
 import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.service.AlbumService;
 import com.mymedia.web.service.AuthorService;
 import com.mymedia.web.service.GenreService;
@@ -44,63 +45,81 @@ public class SongController {
 	private AuthorService authorService;
 
 	@GetMapping
-	public ResponseEntity<List<SongBeanEntity>> getSongs() {
-		List<SongBeanEntity> songs = songService.getAllSongs();
-		if (!songs.isEmpty() && songs != null) {
-			return new ResponseEntity<>(songs, HttpStatus.OK);
+	public ResponseEntity<?> getSongs() {
+		try {
+			return new ResponseEntity<>(songService.getAllSongs(), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
+	@GetMapping(value = "/top")
+	public ResponseEntity<?> getTopSongs() {
+		try {
+			return new ResponseEntity<>(songService.getTop10(), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<SongBeanEntity> getSongById(@PathVariable int id) {
-		SongBeanEntity song = songService.getSong(id);
-		if(song!=null){
-			return new ResponseEntity<>(song, HttpStatus.OK);
+	public ResponseEntity<?> getSongById(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(songService.getSong(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@GetMapping(value = "/{id}/genre")
-	public ResponseEntity<GenreBeanEntity> getGenreBySongId(@PathVariable int id) {
-		GenreBeanEntity genre = genreService.getGenre(songService.getSong(id).getGenreId());
-		if(genre!=null){
-			return new ResponseEntity<>(genre,HttpStatus.OK);
+	public ResponseEntity<?> getGenreBySongId(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(genreService.getGenre(songService.getSong(id).getGenreId()), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@GetMapping(value = "/{id}/album")
-	public ResponseEntity<AlbumBeanEntity> getAlbumBySongId(@PathVariable int id) {
-		AlbumBeanEntity album = albumService.getAlbum(songService.getSong(id).getAlbumId());
-		if(album!=null){
-			return new ResponseEntity<>(album,HttpStatus.OK);
+	public ResponseEntity<?> getAlbumBySongId(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(albumService.getAlbum(songService.getSong(id).getAlbumId()), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@GetMapping(value = "/{id}/author")
-	public ResponseEntity<AuthorBeanEntity> getAuthorBySongId(@PathVariable int id) {
-		AuthorBeanEntity author= authorService.getAuthorBySongId(id);
-		if(author!=null){
-			return new ResponseEntity<>(author,HttpStatus.OK);
+	public ResponseEntity<?> getAuthorBySongId(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(authorService.getAuthorBySongId(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@PostMapping
-	public ResponseEntity<SongBeanEntity> addSong (@RequestBody SongBeanEntity song) {
-		return new ResponseEntity<>(songService.addSong(song),HttpStatus.OK);
+	public ResponseEntity<?> postSong(@RequestBody SongBeanEntity song) {
+		return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
 	@PatchMapping
-	public ResponseEntity<SongBeanEntity> updateSong(@RequestBody SongBeanEntity song) {
-		return new ResponseEntity<>(songService.updateSong(song),HttpStatus.OK);
+	public ResponseEntity<?> updateSong(@RequestBody SongBeanEntity song) {
+		try {
+			return new ResponseEntity<>(songService.updateSong(song), HttpStatus.ACCEPTED);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public @ResponseBody void deleteSong(@PathVariable int id) {
-		songService.deleteSong(id);
+	public ResponseEntity<?> deleteSong(@PathVariable int id) {
+		try {
+			songService.deleteSong(id);
+			return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 }

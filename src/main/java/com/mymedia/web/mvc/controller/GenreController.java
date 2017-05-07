@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.GenreBeanEntity;
 import com.mymedia.web.service.GenreService;
+import com.mymedia.web.service.SongService;
 
 @RestController
 @RequestMapping("/genre")
@@ -27,6 +27,9 @@ public class GenreController {
 
 	@Autowired
 	private GenreService genreService;
+	
+	@Autowired
+	private SongService songService;
 
 	@GetMapping
 	public ResponseEntity<List<GenreBeanEntity>> getGenres() {
@@ -44,7 +47,11 @@ public class GenreController {
 			return new ResponseEntity<>(genre,HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		
+	}
+	
+	@GetMapping(value="/{id}/songs")
+	public ResponseEntity<?>getSongsByGenreId(@PathVariable int id){
+		return new ResponseEntity<>(songService.getSongsByGenreId(id),HttpStatus.OK);
 	}
 
 	@PostMapping

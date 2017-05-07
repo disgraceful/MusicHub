@@ -52,7 +52,7 @@ public class Mp3Service {
 
 			SongBeanEntity entity = new SongBeanEntity();
 			entity.setName(metadata.get("title"));
-			entity.setBirthDate(new Date());
+			//entity.setBirthDate(new Date());
 
 			NumberFormat format = NumberFormat.getInstance(Locale.US);
 			long time = (long) format.parse(metadata.get("xmpDM:duration")).doubleValue();

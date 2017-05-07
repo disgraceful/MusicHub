@@ -25,8 +25,7 @@ public class Genre {
 
 	@Column(name = "GENRE_NAME")
 	private String name;
-
-	@LazyCollection(LazyCollectionOption.FALSE)
+	
 	@OneToMany(mappedBy = "genre")
 	private List<Song> songList;
 

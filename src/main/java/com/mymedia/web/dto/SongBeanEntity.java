@@ -1,7 +1,5 @@
 package com.mymedia.web.dto;
 
-import java.util.Date;
-
 public class SongBeanEntity {
 
 	private int id;
@@ -9,7 +7,7 @@ public class SongBeanEntity {
 	private int albumId;
 	private int authorId;
 	private double rating;
-	private Date birthDate;
+	private String birthDate;
 	private int genreId;
 	private String url;
 	private String duration;
@@ -55,11 +53,11 @@ public class SongBeanEntity {
 		this.rating = rating;
 	}
 
-	public Date getBirthDate() {
+	public String getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 

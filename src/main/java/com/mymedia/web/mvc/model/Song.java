@@ -3,7 +3,6 @@ package com.mymedia.web.mvc.model;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "SONGS")
-public class Song {
+public class Song  implements Comparable<Song>{
 
 	@Id
 	@Column(name = "SONG_ID")
@@ -136,6 +135,11 @@ public class Song {
 
 	public void setPlaylists(List<Playlist> playlists) {
 		this.playlists = playlists;
+	}
+	
+	@Override
+	public int compareTo(Song song) {
+		return (int)(song.getRating()-this.getRating());
 	}
 
 }

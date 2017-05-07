@@ -30,7 +30,6 @@ public class Album implements Comparable<Album> {
     @JoinColumn(name = "AUTHOR_ID")
 	private Author author;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy = "album",cascade=CascadeType.ALL)
 	private List<Song> songs;
 

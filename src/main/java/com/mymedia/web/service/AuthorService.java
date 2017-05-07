@@ -89,6 +89,21 @@ public class AuthorService {
 	}
 
 	@Transactional
+	public AuthorBeanEntity getAuthorBySongId(int id) {
+		try {
+			Song song = songDAO.getSong(id);
+			if (song == null) {
+				throw new MusicHubGenericException("Song with that id does not exist!", HttpStatus.NOT_FOUND);
+			}
+			return authorToAuthorEntity(song.getAuthor());
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Author", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
 	public AuthorBeanEntity addAuthor(AuthorBeanEntity entity) {
 		try {
 			if (entity == null) {
@@ -133,21 +148,6 @@ public class AuthorService {
 			authorDAO.deleteAuthor(id);
 		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to delete Author", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@Transactional
-	public AuthorBeanEntity getAuthorBySongId(int id) {
-		try {
-			Song song = songDAO.getSong(id);
-			if (song == null) {
-				throw new MusicHubGenericException("Song with that id does not exist!", HttpStatus.NOT_FOUND);
-			}
-			return authorToAuthorEntity(song.getAuthor());
-		} catch (MusicHubGenericException exc) {
-			throw exc;
-		} catch (Exception exc) {
-			throw new MusicHubGenericException("Failed to get Author", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

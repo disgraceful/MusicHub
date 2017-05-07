@@ -1,11 +1,15 @@
 package com.mymedia.web.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +20,7 @@ import com.mymedia.web.dao.GenreDAO;
 import com.mymedia.web.dao.PlaylistDAO;
 import com.mymedia.web.dao.SongDAO;
 import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Album;
 import com.mymedia.web.mvc.model.Author;
 import com.mymedia.web.mvc.model.Playlist;
@@ -43,81 +48,170 @@ public class SongService {
 
 	@Transactional
 	public List<SongBeanEntity> getAllSongs() {
-		List<Song> songs = songDAO.getAllSongs();
-		List<SongBeanEntity> songEntities = new ArrayList<>();
-		SongBeanEntity entity = new SongBeanEntity();
-		for (Song song : songs) {
-			songEntities.add(songToSongEntity(song));
+		try {
+			List<Song> songs = songDAO.getAllSongs();
+			if (songs.isEmpty()) {
+				throw new MusicHubGenericException("No Songs Found", HttpStatus.NO_CONTENT);
+			}
+			List<SongBeanEntity> list = new ArrayList<>();
+			songs.stream().forEach(e -> list.add(songToSongEntity(e)));
+			return list;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Song Collection", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return songEntities;
+	}
+
+	@Transactional
+	public List<SongBeanEntity> getTop10() {
+		try {
+			List<Song> songs = songDAO.getAllSongs();
+			if (songs.isEmpty()) {
+				throw new MusicHubGenericException("No Songs Found", HttpStatus.NO_CONTENT);
+			}
+			List<SongBeanEntity> list = new ArrayList<>();
+			Collections.sort(songs);
+			int max = songs.size() < 10 ? songs.size() : 10;
+			songs.subList(0, max).stream().forEach(e -> list.add(songToSongEntity(e)));
+			return list;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Song Collection", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Transactional
 	public SongBeanEntity getSong(int id) {
-		Song song = songDAO.getSong(id);
-		return songToSongEntity(song);
-	}
-
-	@Transactional
-	public SongBeanEntity addSong(SongBeanEntity entity) {
-		Song song = songDAO.addSong(songEntityToSong(entity));
-		return songToSongEntity(song);
-	}
-
-	@Transactional
-	public SongBeanEntity updateSong(SongBeanEntity entity) {
-		Song song = songDAO.updateSong(songEntityToSong(entity));
-		return songToSongEntity(song);
-	}
-
-	@Transactional
-	public void deleteSong(int id) {
-		songDAO.deleteSongById(id);
+		try {
+			Song song = songDAO.getSong(id);
+			if (song == null) {
+				throw new MusicHubGenericException("Song with that id does not exist!", HttpStatus.NOT_FOUND);
+			}
+			return songToSongEntity(song);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Song", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Transactional
 	public List<SongBeanEntity> getSongsByAuthorId(int id) {
-		Author a = authorDAO.getAuthor(id);
-		List<SongBeanEntity> list = new ArrayList<>();
-		for (Song s : a.getSongs()) {
-			list.add(songToSongEntity(s));
+		try {
+			Author author = authorDAO.getAuthor(id);
+			if (author == null) {
+				throw new MusicHubGenericException("Author with that id does not exist!", HttpStatus.NOT_FOUND);
+			}
+			List<SongBeanEntity> list = new ArrayList<>();
+			author.getSongs().stream().forEach(e -> list.add(songToSongEntity(e)));
+			return list;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return list;
 	}
 
 	@Transactional
 	public List<SongBeanEntity> getSongsByAlbumId(int id) {
-		Album a = albumDAO.getAlbum(id);
-		List<SongBeanEntity> list = new ArrayList<>();
-		for (Song s : a.getSongs()) {
-			list.add(songToSongEntity(s));
+		try {
+			Album album = albumDAO.getAlbum(id);
+			if (album == null) {
+				throw new MusicHubGenericException("Album with that id does not exist!", HttpStatus.NOT_FOUND);
+			}
+			List<SongBeanEntity> list = new ArrayList<>();
+			album.getSongs().stream().forEach(e -> list.add(songToSongEntity(e)));
+			return list;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return list;
 	}
 
 	@Transactional
 	public List<SongBeanEntity> getSongsByGenreId(int id) {
-		List<SongBeanEntity> list = new ArrayList<>();
-		for (SongBeanEntity s : getAllSongs()) {
-			if (s.getGenreId() == id) {
-				list.add(s);
-			}
+		try {
+			List<SongBeanEntity> list = new ArrayList<>();
+			getAllSongs().stream().filter(e -> e.getGenreId() == id).forEach(e -> list.add(e));
+			return list;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return list;
 	}
 
 	@Transactional
 	public List<SongBeanEntity> getSongsByPlaylistId(int id) {
-		List<SongBeanEntity> list = new ArrayList<>();
-		playlistDAO.getPlaylist(id).getSongs().stream().forEach(e -> list.add(songToSongEntity(e)));
-		return list;
+		try {
+			Playlist playlist = playlistDAO.getPlaylist(id);
+			if (playlist == null) {
+				throw new MusicHubGenericException("Playlist with that id does not exist!", HttpStatus.NOT_FOUND);
+			}
+			List<SongBeanEntity> list = new ArrayList<>();
+			playlist.getSongs().stream().forEach(e -> list.add(songToSongEntity(e)));
+			return list;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
-	public Song songEntityToSong(SongBeanEntity entity) {
+	@Transactional
+	public SongBeanEntity addSong(SongBeanEntity entity) {
+		try {
+			if (entity == null) {
+				throw new MusicHubGenericException("Not a valid request!", HttpStatus.BAD_REQUEST);
+			}
+			Song song = songDAO.addSong(songEntityToSong(entity));
+			return songToSongEntity(song);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to add Song", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public Song addSong(Song song) {
+		try {
+			if (song == null) {
+				throw new MusicHubGenericException("Not a valid request!", HttpStatus.BAD_REQUEST);
+			}
+			return songDAO.addSong(song);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to add Song", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public SongBeanEntity updateSong(SongBeanEntity entity) {
+		try {
+			Song song = songDAO.updateSong(songEntityToSong(entity));
+			return songToSongEntity(song);
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to update Song", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public void deleteSong(int id) {
+		try {
+			songDAO.deleteSongById(id);
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to delete Song", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public Song songEntityToSong(SongBeanEntity entity) throws ParseException {
 		Song song = new Song();
 		song.setId(entity.getId());
 		song.setName(entity.getName());
-		song.setBirthDate(entity.getBirthDate());
+		song.setBirthDate(new SimpleDateFormat("dd/M/yyyy").parse(entity.getBirthDate()));
 		song.setRating(entity.getRating());
 		song.setDuration(entity.getDuration());
 		song.setUrl(entity.getUrl());
@@ -131,7 +225,7 @@ public class SongService {
 		SongBeanEntity entity = new SongBeanEntity();
 		entity.setId(song.getId());
 		entity.setName(song.getName());
-		entity.setBirthDate(song.getBirthDate());
+		entity.setBirthDate(new SimpleDateFormat("dd/M/yyyy").format(song.getBirthDate()));
 		entity.setRating(song.getRating());
 		entity.setDuration(song.getDuration());
 		entity.setUrl(song.getUrl());

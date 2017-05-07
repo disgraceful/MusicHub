@@ -34,11 +34,9 @@ public class Author implements Comparable<Author> {
 	@Column(name = "SUR_NAME")
 	private String surName;
 
-	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy = "author",cascade=CascadeType.ALL)
 	private List<Album> albums;
 
-	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy = "author",cascade=CascadeType.ALL)
 	private List<Song> songs;
 
