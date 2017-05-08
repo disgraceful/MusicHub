@@ -1,7 +1,5 @@
 package com.mymedia.web.mvc.controller;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.GenreBeanEntity;
+import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.service.GenreService;
 import com.mymedia.web.service.SongService;
 
@@ -27,45 +26,53 @@ public class GenreController {
 
 	@Autowired
 	private GenreService genreService;
-	
+
 	@Autowired
 	private SongService songService;
 
 	@GetMapping
-	public ResponseEntity<List<GenreBeanEntity>> getGenres() {
-		List<GenreBeanEntity> genres = genreService.getAllGenres();
-		if(!genres.isEmpty()&&genres!=null){
-			return new ResponseEntity<>(genres,HttpStatus.OK);
+	public ResponseEntity<?> getGenres() {
+		try {
+			return new ResponseEntity<>(genreService.getAllGenres(), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<GenreBeanEntity> getGenreById(@PathVariable int id) {
-		GenreBeanEntity genre = genreService.getGenre(id);
-		if(genre!=null){
-			return new ResponseEntity<>(genre,HttpStatus.OK);
+	public ResponseEntity<?> getGenreById(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(genreService.getGenre(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
-	@GetMapping(value="/{id}/songs")
-	public ResponseEntity<?>getSongsByGenreId(@PathVariable int id){
-		return new ResponseEntity<>(songService.getSongsByGenreId(id),HttpStatus.OK);
+
+	@GetMapping(value = "/{id}/songs")
+	public ResponseEntity<?> getSongsByGenreId(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(songService.getSongsByGenreId(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@PostMapping
-	public ResponseEntity<GenreBeanEntity> postGenre(@RequestBody GenreBeanEntity genre) {
-		return new ResponseEntity<>(genreService.addGenre(genre),HttpStatus.OK);
+	public ResponseEntity<?> postGenre(@RequestBody GenreBeanEntity genre) {
+		return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
 	@PatchMapping
-	public ResponseEntity<GenreBeanEntity> updateGenre(@RequestBody GenreBeanEntity genre) {
-		return new ResponseEntity<>(genreService.updateGenre(genre),HttpStatus.OK);
+	public ResponseEntity<?> updateGenre(@RequestBody GenreBeanEntity genre) {
+		try {
+			return new ResponseEntity<>(genreService.updateGenre(genre), HttpStatus.ACCEPTED);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public void deleteGenre(@PathVariable int id) {
-		genreService.deleteGenre(id);
+	public ResponseEntity<?> deleteGenre(@PathVariable int id) {
+		return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 	}
 }

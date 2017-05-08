@@ -16,10 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.dao.AuthorDAO;
 import com.mymedia.web.dao.SongDAO;
-import com.mymedia.web.dto.AlbumBeanEntity;
 import com.mymedia.web.dto.AuthorBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
-import com.mymedia.web.mvc.model.Album;
 import com.mymedia.web.mvc.model.Author;
 import com.mymedia.web.mvc.model.Song;
 
