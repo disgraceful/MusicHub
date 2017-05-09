@@ -1,6 +1,6 @@
 package com.mymedia.web.requestmodel;
 
-public class SongRequestModel {
+public class AddSongToPlaylistRequestModel {
 	private int id;
 
 	public int getId() {

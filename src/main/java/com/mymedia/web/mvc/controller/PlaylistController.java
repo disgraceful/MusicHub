@@ -1,7 +1,5 @@
 package com.mymedia.web.mvc.controller;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.PlaylistBeanEntity;
-import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.PlaylistRequestModel;
-import com.mymedia.web.requestmodel.SongRequestModel;
+import com.mymedia.web.requestmodel.AddSongToPlaylistRequestModel;
 import com.mymedia.web.service.PlaylistService;
 import com.mymedia.web.service.SongService;
 
@@ -38,60 +35,81 @@ public class PlaylistController {
 	private SongService songService;
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<PlaylistBeanEntity> getPlaylistById(@PathVariable int id) {
-		PlaylistBeanEntity playlist = playlistService.getPlaylist(id);
-		if(playlist!=null){
-			return new ResponseEntity<>(playlist,HttpStatus.OK);
+	public ResponseEntity<?> getPlaylistById(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(playlistService.getPlaylistById(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<PlaylistBeanEntity>> getPlaylists() {
-		List<PlaylistBeanEntity> playlists = playlistService.getAllPlaylists();
-		if(playlists!=null&&!playlists.isEmpty()){
-			return new ResponseEntity<>(playlists,HttpStatus.OK);
+	public ResponseEntity<?> getPlaylists() {
+		try {
+			return new ResponseEntity<>(playlistService.getAllPlaylists(), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@GetMapping(value = "/{id}/songs")
-	public ResponseEntity<List<SongBeanEntity>> getSongs(@PathVariable int id) {
-		List<SongBeanEntity> songs = songService.getSongsByPlaylistId(id);
-		if(songs!=null&&!songs.isEmpty()){
-			return new ResponseEntity<>(songs,HttpStatus.OK);
+	public ResponseEntity<?> getSongs(@PathVariable int id) {
+		try {
+			return new ResponseEntity<>(songService.getSongsByPlaylistId(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@PostMapping
-	public ResponseEntity<PlaylistBeanEntity> createPlaylist(@RequestBody PlaylistRequestModel model) {
-		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		PlaylistBeanEntity playlist = playlistService.createPlaylist(model, u.getId());
-		if (playlist != null) {
-			return new ResponseEntity<>(playlist, HttpStatus.OK);
+	public ResponseEntity<?> createPlaylist(@RequestBody PlaylistRequestModel model) {
+		try {
+			//User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			//PlaylistBeanEntity playlist = playlistService.createPlaylist(model, u.getId());
+			PlaylistBeanEntity playlist = playlistService.createPlaylist(model);
+			return new ResponseEntity<>(playlist, HttpStatus.CREATED);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}catch(Exception exc){
+			return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(playlist, HttpStatus.NOT_FOUND);
-		// TODO ask Nazar
 	}
 
 	@PatchMapping
-	public ResponseEntity<PlaylistBeanEntity> updatePlaylist(@RequestBody PlaylistBeanEntity playlist) {
-		return new ResponseEntity<>(playlistService.updatePlaylist(playlist),HttpStatus.OK);
+	public ResponseEntity<?> updatePlaylist(@RequestBody PlaylistBeanEntity playlist) {
+		try{
+		return new ResponseEntity<>(playlistService.updatePlaylist(playlist), HttpStatus.ACCEPTED);
+		}catch(MusicHubGenericException exc){
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public void deletePlaylist(@RequestBody int id) {
+	public ResponseEntity<?> deletePlaylist(@PathVariable int id) {
+		try{
 		playlistService.deletePlaylist(id);
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		}catch(MusicHubGenericException exc){
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@PostMapping(value = "/{id}/songs")
-	public ResponseEntity<SongBeanEntity> addSong(@RequestBody SongRequestModel songModel, @PathVariable int id) {
-		return new ResponseEntity<>(playlistService.addSong(songModel.getId(),id),HttpStatus.OK);
+	public ResponseEntity<?> addSong(@RequestBody AddSongToPlaylistRequestModel songModel, @PathVariable int id) {
+		try{
+		return new ResponseEntity<>(playlistService.addSong(songModel.getId(), id), HttpStatus.CREATED);
+		}catch(MusicHubGenericException exc){
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@DeleteMapping(value = "/{id}/songs")
-	public void deleteSong(@RequestBody SongRequestModel songModel, @PathVariable int id) {
+	public ResponseEntity<?>  deleteSong(@RequestBody AddSongToPlaylistRequestModel songModel, @PathVariable int id) {
+		try{
 		playlistService.deleteSongFromPlaylist(songModel.getId(), id);
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		}catch(MusicHubGenericException exc){
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 }

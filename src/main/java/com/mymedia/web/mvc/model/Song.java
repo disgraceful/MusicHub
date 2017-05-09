@@ -3,6 +3,7 @@ package com.mymedia.web.mvc.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -52,7 +53,7 @@ public class Song  implements Comparable<Song>{
 	@JoinColumn(name = "AUTHOR_ID")
 	private Author author;
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "SONG_PLAYLISTS", joinColumns = { @JoinColumn(name = "SONG_ID") }, inverseJoinColumns = {
 			@JoinColumn(name = "PLAYLIST_ID") })
 	private List<Playlist> playlists;

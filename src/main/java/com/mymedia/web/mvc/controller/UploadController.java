@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Publisher;
 import com.mymedia.web.mvc.model.Role;
 import com.mymedia.web.mvc.model.User;
@@ -41,55 +42,37 @@ public class UploadController {
 	private SongService songService;
 
 	@Autowired
-	private UserService userService;
-
-	@Autowired
 	private PublisherService publisherService;
 
 	@Autowired
 	private Mp3Service mp3Service;
 
 	@PostMapping(value = "/upload/{albumId}")
-	public ResponseEntity<SongBeanEntity> upload(@RequestBody MultipartFile file, @PathVariable int albumId) {
-		String path = servletContext.getRealPath("WEB-INF/music");
-		LOG.info(path);
-		File f = new File(path);
-		LOG.info(f.exists());
-		if (!f.exists()) {
-			f.mkdir();
-			LOG.info("making dir " + f.getName());
-		}
-		LOG.info(f.exists());
+	public ResponseEntity<?> upload(@RequestBody MultipartFile file, @PathVariable int albumId) {
 		try {
-			LOG.info(path + "/" + file.getOriginalFilename());
-			File convFile = new File(path + "/" + file.getOriginalFilename());
-			convFile.createNewFile();
-			FileOutputStream fos = new FileOutputStream(convFile);
+			if (file.isEmpty()) {
+				throw new MusicHubGenericException("Uploaded file is not valid", HttpStatus.BAD_REQUEST);
+			}
+			String pathToServerMusicDir = servletContext.getRealPath("WEB-INF/music");
+			File serverMusicDir = new File(pathToServerMusicDir);
+			if (!serverMusicDir.exists()) {
+				serverMusicDir.mkdir();
+			}
+			File musicFile = new File(pathToServerMusicDir + "/" + file.getOriginalFilename());
+			musicFile.createNewFile();
+			FileOutputStream fos = new FileOutputStream(musicFile);
 			fos.write(file.getBytes());
 			fos.close();
-			SongBeanEntity entity = mp3Service.fileToSongBeanEntity(convFile, path);
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			LOG.info("user:" + auth.getName());
-			User u = userService.getByUsername(auth.getName());
-			Role r = u.getRole();
-			LOG.info(r.getName());
-			if (r.getName().trim().equals("PUBLISHER")) {
-				Publisher pub = publisherService.getPublisherByUserId(u.getId());
-				LOG.info(pub.getAuthor().getId());
-
-				entity.setAuthorId(pub.getAuthor().getId());
-				entity.setAlbumId(albumId);
-				SongBeanEntity song = songService.addSong(entity);
-				if (song != null) {
-					return new ResponseEntity<>(song, HttpStatus.OK);
-				}
-
-			}
-			LOG.info(convFile.getAbsolutePath());
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (IOException e) {
-			LOG.info("caught exception {}", e);
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			SongBeanEntity entity = mp3Service.fileToSongBeanEntity(musicFile);
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			Publisher pub = publisherService.getPublisherByUserId(user.getId());
+			entity.setAuthorId(pub.getAuthor().getId());
+			entity.setAlbumId(albumId);
+			SongBeanEntity song = songService.addSong(entity);
+			return new ResponseEntity<>(song, HttpStatus.OK);
+		} catch (Exception exc) {
+			return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

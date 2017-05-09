@@ -31,6 +31,8 @@ public class JwtAuthFilter implements Filter {
 		if (authorization != null) {
 			JwtAuthToken token = new JwtAuthToken(authorization.replaceAll("Bearer ", ""));
 			SecurityContextHolder.getContext().setAuthentication(token);
+			LOG.info(token.getCredentials());
+			LOG.info("works");
 		}
 		chain.doFilter(request, response);
 	}

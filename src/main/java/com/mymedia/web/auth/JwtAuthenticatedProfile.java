@@ -34,6 +34,8 @@ public class JwtAuthenticatedProfile implements Authentication {
 
 	@Override
 	public Object getPrincipal() {
+		System.out.println("JWT PROFILE GET PRINCIPAL");
+		System.out.println(minimalProfile.getUsername());
 		return minimalProfile;
 	}
 

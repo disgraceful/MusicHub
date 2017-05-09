@@ -2,25 +2,27 @@ package com.mymedia.web.service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.tika.exception.TikaException;
+import org.apache.tika.Tika;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mymedia.web.dto.SongBeanEntity;
+import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Genre;
 
 @Service
@@ -33,59 +35,49 @@ public class Mp3Service {
 	@Autowired
 	SongService songService;
 
-	public SongBeanEntity fileToSongBeanEntity(File file, String path) {
-		if (!file.exists()) {
-			LOG.info("file not exists");
-			return null;
-		}
-		try (FileInputStream inputstream = new FileInputStream(file)) {
+	public SongBeanEntity fileToSongBeanEntity(File file) {
+		try {
+			Tika tika = new Tika();
+			LOG.info(tika.detect(file));
+			if (!file.exists()) {	
+				throw new MusicHubGenericException("Not a valid music file!", HttpStatus.BAD_REQUEST);
+			}
+			FileInputStream inputStream = new FileInputStream(file);
 			BodyContentHandler handler = new BodyContentHandler();
 			Metadata metadata = new Metadata();
 			ParseContext pcontext = new ParseContext();
 
 			Mp3Parser mp3Parser = new Mp3Parser();
-			mp3Parser.parse(inputstream, handler, metadata, pcontext);
-
-			for (String name : metadata.names()) {
-				LOG.info(name + ":" + metadata.get(name));
-			}
+			mp3Parser.parse(inputStream, handler, metadata, pcontext);
 
 			SongBeanEntity entity = new SongBeanEntity();
 			entity.setName(metadata.get("title"));
-			//entity.setBirthDate(new Date());
+			entity.setBirthDate(new SimpleDateFormat("dd/M/yyyy").format(new Date()));
 
-			NumberFormat format = NumberFormat.getInstance(Locale.US);
-			long time = (long) format.parse(metadata.get("xmpDM:duration")).doubleValue();
-			String duration = String.format("%d:%d", TimeUnit.MILLISECONDS.toMinutes(time),
-					TimeUnit.MILLISECONDS.toSeconds(time)
-							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
-			entity.setDuration(duration);
-			LOG.info("Duration: " + duration);
+			entity.setDuration(parseDuration(metadata.get("xmpDM:duration")));
 			String genreName = metadata.get("xmpDM:genre");
 			Genre genre = genreService.getGenreByName(genreName);
-			LOG.info("genre id " + genre.getId());
-			genre.getSongList().add(songService.songEntityToSong(entity));
+			//genre.getSongList().add(songService.songEntityToSong(entity));
 
 			entity.setGenreId(genre.getId());
-			entity.setUrl(getFileURL(file, path));
-
-			LOG.info(entity.getName() + " " + entity.getBirthDate());
+			entity.setUrl(getFileURL(file));
+			inputStream.close();
 			return entity;
-
-		} catch (SAXException | TikaException | IOException | ParseException e) {
-			LOG.error("caught exception {}", e);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to parse the file!", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return null;
+	}
+	
+	private String getFileURL(File file) {
+		return "http://localhost:8080/music/" + file.getName();
 	}
 
-	public String getFileURL(File file, String path) {
-		LOG.info(file.exists());
-		if (!file.exists()) {
-			return "";
-		}
-		LOG.info(path);
-		String serverPath = "http://localhost:8080/music/" + file.getName();
-		LOG.info(serverPath);
-		return serverPath;
+	private String parseDuration(String duration) throws ParseException {
+		NumberFormat format = NumberFormat.getInstance(Locale.US);
+		long time = (long) format.parse(duration).doubleValue();
+		return String.format("%d:%d", TimeUnit.MILLISECONDS.toMinutes(time), TimeUnit.MILLISECONDS.toSeconds(time)
+				- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
 	}
 }

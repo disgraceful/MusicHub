@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.UserBeanEntity;
+import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateConsumerRequestModel;
 import com.mymedia.web.requestmodel.CreatePublisherRequestModel;
@@ -64,7 +65,7 @@ public class AccountController {
 			return new ResponseEntity<>(respModel,HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		//ask Nazar
+
 	}
 
 	@PostMapping(value = "/register")
@@ -78,12 +79,16 @@ public class AccountController {
 	}
 
 	@GetMapping
-	public ResponseEntity<UserBeanEntity> getLoggedUser() {
+	public ResponseEntity<?> getLoggedUser() {
+		try{
 		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(u!=null){
-			return new ResponseEntity<>(userService.userToUserEntity(u),HttpStatus.OK);
+		if(u==null){
+			throw new MusicHubGenericException("Authorization required!", HttpStatus.UNAUTHORIZED);
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(userService.userToUserEntity(u),HttpStatus.OK);
+		}catch(Exception exc){
+			return new ResponseEntity<>(exc.getMessage(),HttpStatus.NO_CONTENT);	
+		}
 	}
 
 	@PostMapping(value = "/logout")
