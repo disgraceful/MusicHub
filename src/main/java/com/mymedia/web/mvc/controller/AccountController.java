@@ -62,39 +62,47 @@ public class AccountController {
 			String token = tokenService.createJWT(u);
 			TokenResponseModel respModel = new TokenResponseModel();
 			respModel.setAccessToken(token);
-			return new ResponseEntity<>(respModel,HttpStatus.OK);
+			return new ResponseEntity<>(respModel, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
 	}
 
 	@PostMapping(value = "/register")
-	public void register(@RequestBody CreateConsumerRequestModel model) {
-		consumerService.createConsumer(model);
+	public ResponseEntity<?> register(@RequestBody CreateConsumerRequestModel model) {
+		try {
+			return new ResponseEntity<>(consumerService.createConsumer(model), HttpStatus.CREATED);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@PostMapping(value = "/register/publisher")
-	public void register(@RequestBody CreatePublisherRequestModel model) {
-		publisherService.createPublisher(model);
+	public ResponseEntity<?>register(@RequestBody CreatePublisherRequestModel model) {
+		try{
+			return new ResponseEntity<>(publisherService.createPublisher(model),HttpStatus.CREATED);
+		}catch(MusicHubGenericException exc){
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@GetMapping
 	public ResponseEntity<?> getLoggedUser() {
-		try{
-		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(u==null){
-			throw new MusicHubGenericException("Authorization required!", HttpStatus.UNAUTHORIZED);
-		}
-		return new ResponseEntity<>(userService.userToUserEntity(u),HttpStatus.OK);
-		}catch(Exception exc){
-			return new ResponseEntity<>(exc.getMessage(),HttpStatus.NO_CONTENT);	
+		try {
+			User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if (u == null) {
+				throw new MusicHubGenericException("Authorization required!", HttpStatus.UNAUTHORIZED);
+			}
+			return new ResponseEntity<>(userService.userToUserEntity(u), HttpStatus.OK);
+		} catch (Exception exc) {
+			return new ResponseEntity<>(exc.getMessage(), HttpStatus.NO_CONTENT);
 		}
 	}
 
 	@PostMapping(value = "/logout")
-	public void logout(HttpServletRequest request,HttpServletResponse response) {
+	public void logout(HttpServletRequest request, HttpServletResponse response) {
 		SecurityContextHolder.getContext().setAuthentication(null);
-		//new SecurityContextLogoutHandler().logout(request,response,auth);
+		// new SecurityContextLogoutHandler().logout(request,response,auth);
 	}
 
 }

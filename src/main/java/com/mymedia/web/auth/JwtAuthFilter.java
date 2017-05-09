@@ -12,13 +12,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.mymedia.web.service.TokenService;
+
 @Component
 public class JwtAuthFilter implements Filter {
-	private static final Log LOG = LogFactory.getLog(JwtAuthFilter.class);
 
+	@Autowired
+	private TokenService tokenService;
+	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 	}
@@ -28,11 +33,9 @@ public class JwtAuthFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest servletRequest = (HttpServletRequest) request;
 		String authorization = servletRequest.getHeader("Authorization");
-		if (authorization != null) {
+		if (authorization != null&&tokenService.validateJWT(authorization)) {
 			JwtAuthToken token = new JwtAuthToken(authorization.replaceAll("Bearer ", ""));
 			SecurityContextHolder.getContext().setAuthentication(token);
-			LOG.info(token.getCredentials());
-			LOG.info("works");
 		}
 		chain.doFilter(request, response);
 	}

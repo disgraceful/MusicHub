@@ -2,10 +2,12 @@ package com.mymedia.web.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,93 +15,154 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mymedia.web.dao.RoleDAO;
 import com.mymedia.web.dao.UserDAO;
 import com.mymedia.web.dto.UserBeanEntity;
+import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Role;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateUserRequestModel;
-import com.mymedia.web.utils.CryptUtils;
 
 @Service
 @EnableTransactionManagement
 public class UserService {
-	
+
 	private static final Logger LOG = LogManager.getLogger(UserService.class);
-	
+
 	@Autowired
 	UserDAO userDAO;
 
 	@Autowired
 	RoleDAO roleDAO;
-	
+
 	@Transactional
 	public User createUser(CreateUserRequestModel model) {
-		if (model.getPassword().trim().equals(model.getConfirmPassword().trim())) {
-			User user = new User();
-			user.setPassword(model.getPassword());
-			//user.setPassword(CryptUtils.generateHashSHA1(model.getPassword()));
-			LOG.info(user.getPassword());
-			user.setUsername(model.getUsername());
-			return userDAO.addUser(user);
+		try {
+			if (validateUserRequestModel(model)) {
+				User user = new User();
+				user.setPassword(model.getPassword());
+				// user.setPassword(CryptUtils.generateHashSHA1(model.getPassword()));
+				user.setUsername(model.getUsername());
+				return userDAO.addUser(user);
+			}else{
+				throw new MusicHubGenericException("Passwords do not match", HttpStatus.BAD_REQUEST);
+			}
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get User", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		LOG.error("FAILED TO CREATE USER");
-		return null;
 	}
 
 	@Transactional
 	public User addRole(User user, int id) {
-		Role role = roleDAO.getRole(id);
-		user.setRole(role);
-
-		return userDAO.updateUser(user);
+		try {
+			Role role = roleDAO.getRole(id);
+			user.setRole(role);
+			return userDAO.updateUser(user);
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to set User Role", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Transactional
 	public List<UserBeanEntity> getAllUsers() {
-		List<User> users = userDAO.getAllUsers();
-		List<UserBeanEntity> userEntities = new ArrayList<>();
-		UserBeanEntity entity = new UserBeanEntity();
-		for (User user : users) {
-			userEntities.add(userToUserEntity(user));
+		try {
+			List<User> users = userDAO.getAllUsers();
+			List<UserBeanEntity> list = new ArrayList<>();
+			users.forEach(e -> list.add(userToUserEntity(e)));
+			return list;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get User Collection", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return userEntities;
 	}
 
 	@Transactional
 	public UserBeanEntity getUser(int id) {
-		User user = userDAO.getUser(id);
-		return userToUserEntity(user);
+		try {
+			User user = userDAO.getUser(id);
+			if (user == null) {
+				throw new MusicHubGenericException("User with that id does not exist!", HttpStatus.NOT_FOUND);
+			}
+			return userToUserEntity(user);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Transactional
 	public User getByUsername(String username) {
-		List<User> users = userDAO.getAllUsers();
-		for (User user : users) {
-			if (user.getUsername().trim().equals(username.trim())) {
-				return user;
+		try {
+			List<User> users = userDAO.getAllUsers();
+			Optional<User> userOpt = users.stream().filter(e -> e.getUsername().trim().equals(username.trim()))
+					.findFirst();
+			if (!userOpt.isPresent()) {
+				throw new MusicHubGenericException("User with that name does not exist",
+						HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+			return userOpt.get();
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get User", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new User();
 	}
 
 	@Transactional
 	public UserBeanEntity addUser(UserBeanEntity entity) {
-		User user = userDAO.addUser(userEntityToUser(entity));
-		return userToUserEntity(user);
+		try {
+			User user = userDAO.addUser(userEntityToUser(entity));
+			if (user == null) {
+				throw new MusicHubGenericException("Not a valid request!", HttpStatus.BAD_REQUEST);
+			}
+			return userToUserEntity(user);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to add User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Transactional
 	public User addUser(User user) {
-		return userDAO.addUser(user);
+		try {
+			User u = userDAO.addUser(user);
+			if (u == null) {
+				throw new MusicHubGenericException("Not a valid request!", HttpStatus.BAD_REQUEST);
+			}
+			return u;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to add User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Transactional
 	public UserBeanEntity updateUser(UserBeanEntity entity) {
-		User user = userDAO.updateUser(userEntityToUser(entity));
-		return userToUserEntity(user);
+		try {
+			User user = userDAO.updateUser(userEntityToUser(entity));
+			if (user == null) {
+				throw new MusicHubGenericException("Not a valid request!", HttpStatus.BAD_REQUEST);
+			}
+			return userToUserEntity(user);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to update User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Transactional
 	public void deleteUser(int id) {
-		userDAO.deleteUser(id);
+		try {
+			userDAO.deleteUser(id);
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Faield to delete User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	private boolean validateUserRequestModel(CreateUserRequestModel model){
+		return model.getPassword().trim().equals(model.getConfirmPassword().trim())?true:false; 
 	}
 
 	public User userEntityToUser(UserBeanEntity entity) {

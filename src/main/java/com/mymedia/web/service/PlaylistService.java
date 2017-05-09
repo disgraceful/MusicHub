@@ -45,7 +45,7 @@ public class PlaylistService {
 	private SongService songService;
 
 	@Transactional
-	//@PreAuthorize("hasAuthority('CONSUMER')")
+	// @PreAuthorize("hasAuthority('CONSUMER')")
 	public PlaylistBeanEntity createPlaylist(PlaylistRequestModel model) {
 		try {
 			if (!validatePlaylistModel(model)) {
@@ -166,12 +166,14 @@ public class PlaylistService {
 	public void deletePlaylist(int id) {
 		try {
 			Playlist playlist = playlistDAO.getPlaylist(id);
-			if(playlist==null){
+			if (playlist == null) {
 				throw new MusicHubGenericException("Playlist with that id does not exist", HttpStatus.NOT_FOUND);
 			}
-			playlist.getSongs().forEach(e->e.getPlaylists().remove(playlist));
+			playlist.getSongs().forEach(e -> e.getPlaylists().remove(playlist));
 			playlist.getSongs().clear();
 			playlistDAO.deletePlaylist(playlistDAO.updatePlaylist(playlist).getId());
+		} catch (MusicHubGenericException exc) {
+			throw exc;
 		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to delete Playlist", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -194,7 +196,7 @@ public class PlaylistService {
 		entity.setId(playlist.getId());
 		entity.setName(playlist.getName());
 		entity.setConsumerId(playlist.getConsumer().getId());
-		entity.setSongAmount(playlist.getSongs()==null?0:playlist.getSongs().size());
+		entity.setSongAmount(playlist.getSongs() == null ? 0 : playlist.getSongs().size());
 		return entity;
 	}
 }

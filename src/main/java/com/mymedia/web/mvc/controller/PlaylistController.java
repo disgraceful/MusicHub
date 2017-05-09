@@ -64,8 +64,6 @@ public class PlaylistController {
 	@PostMapping
 	public ResponseEntity<?> createPlaylist(@RequestBody PlaylistRequestModel model) {
 		try {
-			//User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			//PlaylistBeanEntity playlist = playlistService.createPlaylist(model, u.getId());
 			PlaylistBeanEntity playlist = playlistService.createPlaylist(model);
 			return new ResponseEntity<>(playlist, HttpStatus.CREATED);
 		} catch (MusicHubGenericException exc) {

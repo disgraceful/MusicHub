@@ -135,9 +135,8 @@ public class AlbumService {
 	public void deleteAlbum(int id) {
 		try {
 			albumDAO.deleteAlbum(id);
-		} catch (MusicHubGenericException exc) {
-			throw exc;
-		} catch (Exception exc) {
+		}
+		 catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to delete Album", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
