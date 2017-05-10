@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,8 @@ import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Role;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateUserRequestModel;
+import com.mymedia.web.requestmodel.LoginRequestModel;
+import com.mymedia.web.responsemodel.TokenResponseModel;
 
 @Service
 @EnableTransactionManagement
@@ -27,10 +30,13 @@ public class UserService {
 	private static final Logger LOG = LogManager.getLogger(UserService.class);
 
 	@Autowired
-	UserDAO userDAO;
+	private UserDAO userDAO;
 
 	@Autowired
-	RoleDAO roleDAO;
+	private RoleDAO roleDAO;
+
+	@Autowired
+	private TokenService tokenService;
 
 	@Transactional
 	public User createUser(CreateUserRequestModel model) {
@@ -41,7 +47,7 @@ public class UserService {
 				// user.setPassword(CryptUtils.generateHashSHA1(model.getPassword()));
 				user.setUsername(model.getUsername());
 				return userDAO.addUser(user);
-			}else{
+			} else {
 				throw new MusicHubGenericException("Passwords do not match", HttpStatus.BAD_REQUEST);
 			}
 		} catch (MusicHubGenericException exc) {
@@ -160,9 +166,29 @@ public class UserService {
 			throw new MusicHubGenericException("Faield to delete User", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	private boolean validateUserRequestModel(CreateUserRequestModel model){
-		return model.getPassword().trim().equals(model.getConfirmPassword().trim())?true:false; 
+
+	public TokenResponseModel getToken(LoginRequestModel model){
+		try{
+		User u = getByUsername(model.getUsername());
+		// if
+		// (u.getPassword().trim().equals(CryptUtils.generateHashSHA1(model.getPassword().trim())))
+		// {
+		if (u.getPassword().trim().equals(model.getPassword().trim())) {
+			String token = tokenService.createJWT(u);
+			TokenResponseModel respModel = new TokenResponseModel();
+			respModel.setAccessToken(token);
+			return respModel;
+		}
+		throw new MusicHubGenericException("Invalid username or password!", HttpStatus.BAD_REQUEST);
+		}catch(MusicHubGenericException exc){
+			throw exc;
+		}catch(Exception exc){
+			throw new MusicHubGenericException("Failed to authenticate user", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private boolean validateUserRequestModel(CreateUserRequestModel model) {
+		return model.getPassword().trim().equals(model.getConfirmPassword().trim()) ? true : false;
 	}
 
 	public User userEntityToUser(UserBeanEntity entity) {

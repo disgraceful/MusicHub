@@ -72,6 +72,9 @@ public class PublisherService {
 			User user = userService.createUser(model);
 			userService.addRole(user, 1);
 
+			if(!validatePublisherModel(model)){
+				throw new MusicHubGenericException("Author name is invalid!", HttpStatus.BAD_REQUEST);
+			}
 			Author author = new Author();
 			author.setName(model.getAuthorName());
 			authorService.addAuthor(author);
@@ -85,6 +88,10 @@ public class PublisherService {
 		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to create Publisher", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	private boolean validatePublisherModel(CreatePublisherRequestModel model){
+		return model.getAuthorName()==null||model.getAuthorName().trim().isEmpty()?false:true;
 	}
 
 	private PublisherBeanEntity publisherToPublisherEntity(Publisher publisher) {

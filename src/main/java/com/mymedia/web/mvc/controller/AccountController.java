@@ -9,33 +9,29 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mymedia.web.dto.UserBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateConsumerRequestModel;
 import com.mymedia.web.requestmodel.CreatePublisherRequestModel;
 import com.mymedia.web.requestmodel.LoginRequestModel;
-import com.mymedia.web.responsemodel.TokenResponseModel;
 import com.mymedia.web.service.ConsumerService;
 import com.mymedia.web.service.PublisherService;
-import com.mymedia.web.service.TokenService;
 import com.mymedia.web.service.UserService;
-import com.mymedia.web.utils.CryptUtils;
 
 @RestController
 @RequestMapping("/account")
 public class AccountController {
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private TokenService tokenService;
 
 	@Autowired
 	private ConsumerService consumerService;
@@ -49,23 +45,12 @@ public class AccountController {
 	private static final Logger LOG = LogManager.getLogger(AccountController.class);
 
 	@PostMapping(value = "/login")
-	public ResponseEntity<TokenResponseModel> login(@RequestBody LoginRequestModel model) {
-		LOG.info(model.getUsername() + " " + model.getPassword());
-		User u = userService.getByUsername(model.getUsername());
-		LOG.info("model true pass " + model.getPassword());
-		LOG.info("model hash pass " + CryptUtils.generateHashSHA1(model.getPassword()));
-		LOG.info("user hash pass " + u.getPassword());
-		// if
-		// (u.getPassword().trim().equals(CryptUtils.generateHashSHA1(model.getPassword().trim())))
-		// {
-		if (u.getPassword().trim().equals(model.getPassword().trim())) {
-			String token = tokenService.createJWT(u);
-			TokenResponseModel respModel = new TokenResponseModel();
-			respModel.setAccessToken(token);
-			return new ResponseEntity<>(respModel, HttpStatus.OK);
+	public ResponseEntity<?> login(@RequestBody LoginRequestModel model) {
+		try {
+			return new ResponseEntity<>(userService.getToken(model), HttpStatus.ACCEPTED);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
 	}
 
 	@PostMapping(value = "/register")
@@ -78,10 +63,10 @@ public class AccountController {
 	}
 
 	@PostMapping(value = "/register/publisher")
-	public ResponseEntity<?>register(@RequestBody CreatePublisherRequestModel model) {
-		try{
-			return new ResponseEntity<>(publisherService.createPublisher(model),HttpStatus.CREATED);
-		}catch(MusicHubGenericException exc){
+	public ResponseEntity<?> register(@RequestBody CreatePublisherRequestModel model) {
+		try {
+			return new ResponseEntity<>(publisherService.createPublisher(model), HttpStatus.CREATED);
+		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
 	}
@@ -90,19 +75,25 @@ public class AccountController {
 	public ResponseEntity<?> getLoggedUser() {
 		try {
 			User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			if (u == null) {
-				throw new MusicHubGenericException("Authorization required!", HttpStatus.UNAUTHORIZED);
-			}
 			return new ResponseEntity<>(userService.userToUserEntity(u), HttpStatus.OK);
 		} catch (Exception exc) {
-			return new ResponseEntity<>(exc.getMessage(), HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>("Authorization required!", HttpStatus.UNAUTHORIZED);
 		}
 	}
 
 	@PostMapping(value = "/logout")
-	public void logout(HttpServletRequest request, HttpServletResponse response) {
-		SecurityContextHolder.getContext().setAuthentication(null);
-		// new SecurityContextLogoutHandler().logout(request,response,auth);
+	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			User u = (User) auth.getPrincipal();
+			if (u != null) {
+				new SecurityContextLogoutHandler().logout(request, response, auth);
+				return new ResponseEntity<>(HttpStatus.ACCEPTED);
+			}
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		} catch (Exception exc) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 }

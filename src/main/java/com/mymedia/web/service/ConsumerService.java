@@ -39,8 +39,11 @@ public class ConsumerService {
 			Consumer consumer = new Consumer();
 			consumer.setUser(user);
 			return consumerToConsumerEntity(consumerDAO.addConsumer(consumer));
-		} catch (Exception exc) {
-			throw new MusicHubGenericException("Failed to get User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		catch(MusicHubGenericException exc){
+			throw exc;
+		}catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to register User", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
