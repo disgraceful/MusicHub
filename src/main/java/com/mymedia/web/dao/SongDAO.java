@@ -41,7 +41,6 @@ public class SongDAO {
 	@Transactional
 	public Song addSong(Song song) {
 		Session session = this.sessionFactory.getCurrentSession();
-		LOG.info("name: "+ song.getName() + " ");
 		int id = (Integer)session.save(song);
 		return getSong(id);
 	}

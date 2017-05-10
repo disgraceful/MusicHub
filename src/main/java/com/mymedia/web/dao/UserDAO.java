@@ -1,7 +1,7 @@
 package com.mymedia.web.dao;
 
-import com.mymedia.web.mvc.model.Song;
-import com.mymedia.web.mvc.model.User;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -11,11 +11,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.mymedia.web.mvc.model.User;
 
-/**
- * Created by Nazar on 11.04.2017.
- */
 @Repository
 @EnableTransactionManagement
 public class UserDAO {
@@ -45,7 +42,6 @@ public class UserDAO {
     @Transactional
     public User addUser(User user) {
         Session session = this.sessionFactory.getCurrentSession();
-        LOG.info(user.getUsername() + " ");
         int id = (Integer)session.save(user);
         return getUser(id);
     }
@@ -54,7 +50,6 @@ public class UserDAO {
     public User updateUser(User user) {
         Session session = this.sessionFactory.getCurrentSession();
         session.update(user);
-        LOG.info("wroks "+ user.getRole().getName());
         return getUser(user.getId());
         
     }

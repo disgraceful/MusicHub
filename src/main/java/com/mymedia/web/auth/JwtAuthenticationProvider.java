@@ -24,7 +24,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             User possibleProfile = tokenService.parseJWT((String)authentication.getCredentials());
             return new JwtAuthenticatedProfile(possibleProfile);
         } catch (Exception e) {
-        	LOG.error("invalid token");
            return null;
         }
     }

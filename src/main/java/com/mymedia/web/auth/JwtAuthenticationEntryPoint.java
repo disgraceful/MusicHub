@@ -19,7 +19,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e)
             throws IOException, ServletException {
-        //httpServletResponse.setStatus(SC_FORBIDDEN);
         httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         String message;

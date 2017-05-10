@@ -23,7 +23,7 @@ public class JwtAuthFilter implements Filter {
 
 	@Autowired
 	private TokenService tokenService;
-	
+
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 	}
@@ -33,7 +33,7 @@ public class JwtAuthFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest servletRequest = (HttpServletRequest) request;
 		String authorization = servletRequest.getHeader("Authorization");
-		if (authorization != null&&tokenService.validateJWT(authorization)) {
+		if (authorization != null && tokenService.validateJWT(authorization)) {
 			JwtAuthToken token = new JwtAuthToken(authorization.replaceAll("Bearer ", ""));
 			SecurityContextHolder.getContext().setAuthentication(token);
 		}

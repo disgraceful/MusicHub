@@ -45,7 +45,6 @@ public class RoleDAO {
     @Transactional
     public Role addRole(Role role) {
         Session session = this.sessionFactory.getCurrentSession();
-        LOG.info(role.getName() + " ");
         int id = (Integer)session.save(role);
         return getRole(id);
     }

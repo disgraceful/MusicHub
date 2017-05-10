@@ -29,7 +29,6 @@ public class JwtAuthToken implements Authentication {
 
     @Override
     public Object getPrincipal() {
-    	System.out.println("programming gave me cancer");
         return null;
     }
 
