@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -72,6 +73,7 @@ public class AccountController {
 	}
 
 	@GetMapping
+	@PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<?> getLoggedUser() {
 		try {
 			User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -82,15 +84,12 @@ public class AccountController {
 	}
 
 	@PostMapping(value = "/logout")
+	@PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			User u = (User) auth.getPrincipal();
-			if (u != null) {
-				new SecurityContextLogoutHandler().logout(request, response, auth);
-				return new ResponseEntity<>(HttpStatus.ACCEPTED);
-			}
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			new SecurityContextLogoutHandler().logout(request, response, auth);
+			return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		} catch (Exception exc) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}

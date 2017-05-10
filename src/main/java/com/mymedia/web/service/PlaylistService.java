@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -45,7 +46,6 @@ public class PlaylistService {
 	private SongService songService;
 
 	@Transactional
-	// @PreAuthorize("hasAuthority('CONSUMER')")
 	public PlaylistBeanEntity createPlaylist(PlaylistRequestModel model) {
 		try {
 			if (!validatePlaylistModel(model)) {
