@@ -63,6 +63,8 @@ public class UploadController {
 			FileOutputStream fos = new FileOutputStream(musicFile);
 			fos.write(file.getBytes());
 			fos.close();
+			LOG.info(musicFile.exists());
+			LOG.info(musicFile.getAbsolutePath());
 			SongBeanEntity entity = mp3Service.fileToSongBeanEntity(musicFile);
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			

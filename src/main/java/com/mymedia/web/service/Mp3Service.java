@@ -12,14 +12,15 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tika.Tika;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
@@ -38,8 +39,7 @@ public class Mp3Service {
 	public SongBeanEntity fileToSongBeanEntity(File file) {
 		try {
 			Tika tika = new Tika();
-			LOG.info(tika.detect(file));
-			if (!file.exists()) {	
+			if (!file.exists() || !tika.detect(file).trim().equals("audio/mpeg")) {
 				throw new MusicHubGenericException("Not a valid music file!", HttpStatus.BAD_REQUEST);
 			}
 			FileInputStream inputStream = new FileInputStream(file);
@@ -57,8 +57,6 @@ public class Mp3Service {
 			entity.setDuration(parseDuration(metadata.get("xmpDM:duration")));
 			String genreName = metadata.get("xmpDM:genre");
 			Genre genre = genreService.getGenreByName(genreName);
-			//genre.getSongList().add(songService.songEntityToSong(entity));
-
 			entity.setGenreId(genre.getId());
 			entity.setUrl(getFileURL(file));
 			inputStream.close();
@@ -69,7 +67,7 @@ public class Mp3Service {
 			throw new MusicHubGenericException("Failed to parse the file!", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	private String getFileURL(File file) {
 		return "http://localhost:8080/music/" + file.getName();
 	}
