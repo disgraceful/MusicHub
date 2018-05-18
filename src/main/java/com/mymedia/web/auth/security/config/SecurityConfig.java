@@ -16,10 +16,10 @@ import com.mymedia.web.auth.JwtAuthFilter;
 import com.mymedia.web.auth.JwtAuthenticationEntryPoint;
 import com.mymedia.web.auth.JwtAuthenticationProvider;
 
-@Configuration
-@EnableWebSecurity
+//@Configuration
+//@EnableWebSecurity
 //@EnableGlobalMethodSecurity(securedEnabled = true)
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JwtAuthFilter jwtAuthFilter;
@@ -36,13 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 	
-//	  @Override
-//	  public void configure(WebSecurity web) throws Exception {
-//	    web
-//	      .ignoring()
-//	         .antMatchers("/music/**");
-//	  }
-	  
+
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(jwtAuthenticationProvider);
@@ -51,7 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-
 		http.authorizeRequests()
 		.antMatchers("/upload/**").hasAuthority("PUBLISHER")
 		.antMatchers("/playlist/**","consumer").hasAuthority("CONSUMER")	

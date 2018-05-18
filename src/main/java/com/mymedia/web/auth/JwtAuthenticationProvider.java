@@ -12,7 +12,7 @@ import com.mymedia.web.mvc.controller.PlaylistController;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.service.TokenService;
 
-@Component
+//@Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 	private static final Logger LOG = LogManager.getLogger(JwtAuthenticationProvider.class);
 	@Autowired
