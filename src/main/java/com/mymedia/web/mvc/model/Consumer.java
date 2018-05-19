@@ -23,7 +23,7 @@ public class Consumer {
 	@Id
 	@Column(name = "CONSUMER_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private String id;
 
 	@OneToOne
 	@JoinColumn(name = "USER_ID")
@@ -32,13 +32,12 @@ public class Consumer {
 	@OneToMany(mappedBy = "consumer")
 	List<Playlist> playlsits;
 
-	// TODO Check BIRTH DATE For Song lyrics filter
-
-	public int getId() {
+	
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

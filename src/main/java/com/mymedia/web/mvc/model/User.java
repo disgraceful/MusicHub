@@ -10,11 +10,14 @@ import javax.persistence.*;
 public class User {
     @Id
     @Column(name = "USER_ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private String id;
 
     @Column(name = "USERNAME")
     private String username;
+    
+    @Column(name = "EMAIL")
+    private String email;
 
     @Column(name = "PASSWORD")
     private String password;
@@ -23,11 +26,11 @@ public class User {
     @JoinColumn(name = "ROLE_ID")
     private Role role;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -38,8 +41,17 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
+    
+    
+    public String getEmail() {
+		return email;
+	}
 
-    public String getPassword() {
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
         return password;
     }
 

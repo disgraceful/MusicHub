@@ -33,16 +33,16 @@ public class UserDAO {
     }
 
     @Transactional
-    public User getUser(int id) {
+    public User getUser(String id) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.get(User.class, new Integer(id));
+        return session.get(User.class, new String(id));
     }
 
 
     @Transactional
     public User addUser(User user) {
         Session session = this.sessionFactory.getCurrentSession();
-        int id = (Integer)session.save(user);
+        String id = (String)session.save(user);
         return getUser(id);
     }
 
@@ -61,7 +61,7 @@ public class UserDAO {
     }
 
     @Transactional
-    public void deleteUser(int id){
+    public void deleteUser(String id){
         deleteUser(getUser(id));
     }
 }

@@ -26,7 +26,7 @@ public class Author implements Comparable<Author> {
 	@Id
 	@Column(name = "AUTHOR_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private String id;
 
 	@Column(name = "NAME")
 	private String name;
@@ -46,11 +46,11 @@ public class Author implements Comparable<Author> {
 	@Column(name = "RATING",nullable = true)
 	private double rating;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

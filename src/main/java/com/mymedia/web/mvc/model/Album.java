@@ -15,7 +15,7 @@ public class Album implements Comparable<Album> {
 	@Id
 	@Column(name = "ALBUM_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private String id;
 	
 	@Column(name = "NAME")
 	private String name;
@@ -33,11 +33,11 @@ public class Album implements Comparable<Album> {
 	@OneToMany(mappedBy = "album",cascade=CascadeType.ALL)
 	private List<Song> songs;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
