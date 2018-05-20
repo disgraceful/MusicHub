@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +19,7 @@ import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Role;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateUserRequestModel;
+import com.mymedia.web.requestmodel.GoogleLoginReqModel;
 import com.mymedia.web.requestmodel.LoginRequestModel;
 import com.mymedia.web.responsemodel.TokenResponseModel;
 
@@ -37,6 +37,26 @@ public class UserService {
 
 	@Autowired
 	private TokenService tokenService;
+
+	@Transactional
+	public User createUser(GoogleLoginReqModel model) {
+		try {
+
+			User user = new User();
+			//user.setId(model.getId());
+			user.setUsername(model.getUsername());
+			user.setEmail(model.getEmail());
+			user.setPassword(model.getEmail());
+			return userDAO.addUser(user);
+
+		} catch (
+
+		MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@Transactional
 	public User createUser(CreateUserRequestModel model) {
@@ -79,10 +99,10 @@ public class UserService {
 			throw new MusicHubGenericException("Failed to get User Collection", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@Transactional
 	public boolean userExists(String id) {
-		return userDAO.getUser(id)!=null;
+		return userDAO.getUser(id) != null;
 	}
 
 	@Transactional
@@ -172,28 +192,28 @@ public class UserService {
 		}
 	}
 
-	public TokenResponseModel getToken(LoginRequestModel model){
-		try{
-		User u = getByUsername(model.getUsername());
-		// if
-		// (u.getPassword().trim().equals(CryptUtils.generateHashSHA1(model.getPassword().trim())))
-		// {
-		if (u.getPassword().trim().equals(model.getPassword().trim())) {
-			String token = tokenService.createJWT(u);
-			TokenResponseModel respModel = new TokenResponseModel();
-			respModel.setAccessToken(token);
-			return respModel;
-		}
-		throw new MusicHubGenericException("Invalid username or password!", HttpStatus.BAD_REQUEST);
-		}catch(MusicHubGenericException exc){
+	public TokenResponseModel getToken(LoginRequestModel model) {
+		try {
+			User u = getByUsername(model.getUsername());
+			// if
+			// (u.getPassword().trim().equals(CryptUtils.generateHashSHA1(model.getPassword().trim())))
+			// {
+			if (u.getPassword().trim().equals(model.getPassword().trim())) {
+				String token = tokenService.createJWT(u);
+				TokenResponseModel respModel = new TokenResponseModel();
+				respModel.setAccessToken(token);
+				return respModel;
+			}
+			throw new MusicHubGenericException("Invalid username or password!", HttpStatus.BAD_REQUEST);
+		} catch (MusicHubGenericException exc) {
 			throw exc;
-		}catch(Exception exc){
+		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to authenticate user", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	private boolean validateUserRequestModel(CreateUserRequestModel model) {
-		return model.getPassword().trim().equals(model.getConfirmPassword().trim()) ? true : false;
+		return model.getPassword().trim().equals(model.getConfirmPassword().trim());
 	}
 
 	public User userEntityToUser(UserBeanEntity entity) {
@@ -201,12 +221,14 @@ public class UserService {
 		user.setId(entity.getId());
 		user.setUsername(entity.getUsername());
 		user.setRole(roleDAO.getRole(entity.getRoleId()));
+		user.setEmail(entity.getEmail());;
 		return user;
 	}
 
 	public UserBeanEntity userToUserEntity(User user) {
 		UserBeanEntity entity = new UserBeanEntity();
 		entity.setId(user.getId());
+		entity.setEmail(user.getEmail());
 		entity.setUsername(user.getUsername());
 		entity.setRoleId(user.getRole().getId());
 		entity.setRoleName(user.getRole().getName());

@@ -16,6 +16,7 @@ import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Consumer;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateConsumerRequestModel;
+import com.mymedia.web.requestmodel.GoogleLoginReqModel;
 
 @Service
 public class ConsumerService {
@@ -29,6 +30,23 @@ public class ConsumerService {
 	private ConsumerDAO consumerDAO;
 
 	private static final Logger LOG = LogManager.getLogger(ConsumerService.class);
+	
+	@Transactional
+	public ConsumerBeanEntity createConsumer(GoogleLoginReqModel model) {
+		try {
+			User user = userService.createUser(model);
+			userService.addRole(user, "2");
+			Consumer consumer = new Consumer();
+			consumer.setImgPath(model.getAvatarPath());
+			consumer.setUser(user);
+			return consumerToConsumerEntity(consumerDAO.addConsumer(consumer));
+		}
+		catch(MusicHubGenericException exc){
+			throw exc;
+		}catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to register User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@Transactional
 	public ConsumerBeanEntity createConsumer(CreateConsumerRequestModel model) {

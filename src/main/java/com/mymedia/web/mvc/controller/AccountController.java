@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.mymedia.web.dto.UserBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateConsumerRequestModel;
@@ -28,6 +30,7 @@ import com.mymedia.web.requestmodel.LoginRequestModel;
 import com.mymedia.web.service.ConsumerService;
 import com.mymedia.web.service.PublisherService;
 import com.mymedia.web.service.UserService;
+import com.mymedia.web.utils.GoogleTokenVerifier;
 
 @RestController
 @RequestMapping("/account")
@@ -47,18 +50,25 @@ public class AccountController {
 	private static final Logger LOG = LogManager.getLogger(AccountController.class);
 
 	@PostMapping(value = "/loginGoogle")
-	public ResponseEntity<String> loginGoogle(@RequestBody GoogleLoginReqModel model) {
+	public ResponseEntity<UserBeanEntity> loginGoogle(@RequestBody String tokenId) {
 		try {
-			if(userService.userExists(model.getId())) {
-				
+			Payload payload = GoogleTokenVerifier.verify(tokenId);
+			System.out.println(tokenId);
+			System.out.println(payload.getSubject());
+			UserBeanEntity user;
+			if (userService.userExists(payload.getSubject())) {
+				user = userService.getUser(payload.getSubject());
+			} else {
+				GoogleLoginReqModel model = new GoogleLoginReqModel(payload.getSubject(), (String) payload.get("name"),
+						payload.getEmail(), (String) payload.get("picture"));
+				user = userService.getUser(consumerService.createConsumer(model).getUserId());
 			}
-			System.out.println("google id: " + model.getId());
-			return new ResponseEntity<String>(model.getId(), HttpStatus.OK);
+			return new ResponseEntity<UserBeanEntity>(user, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<UserBeanEntity>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@PostMapping(value = "/loginGoogleTest")
 	public ResponseEntity<String> loginGoogleTest(@RequestBody String id) {
 		try {
@@ -68,8 +78,8 @@ public class AccountController {
 			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	@PostMapping(value="/registerGoogle")
+
+	@PostMapping(value = "/registerGoogle")
 	public ResponseEntity<String> registerGoogle(@RequestBody String id) {
 		try {
 			System.out.println("google id: " + id);
@@ -78,6 +88,7 @@ public class AccountController {
 			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequestModel model) {
 		try {

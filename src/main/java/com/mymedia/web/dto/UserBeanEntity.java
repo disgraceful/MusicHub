@@ -3,6 +3,7 @@ package com.mymedia.web.dto;
 public class UserBeanEntity {
     private String id;
     private String username;
+    private String email;
     private String roleId;
     private String roleName;
 
@@ -22,7 +23,15 @@ public class UserBeanEntity {
         this.username = username;
     }
 
-    public String getRoleId() {
+    public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getRoleId() {
         return roleId;
     }
 
