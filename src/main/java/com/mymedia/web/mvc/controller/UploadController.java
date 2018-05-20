@@ -48,7 +48,7 @@ public class UploadController {
 	private Mp3Service mp3Service;
 
 	@PostMapping(value = "/upload/{albumId}")
-	public ResponseEntity<?> upload(@RequestBody MultipartFile file, @PathVariable int albumId) {
+	public ResponseEntity<?> upload(@RequestBody MultipartFile file, @PathVariable String albumId) {
 		try {
 			if (file.isEmpty()) {
 				throw new MusicHubGenericException("Uploaded file is not valid", HttpStatus.BAD_REQUEST);

@@ -72,7 +72,7 @@ public class AuthorService {
 	}
 
 	@Transactional
-	public AuthorBeanEntity getAuthor(int id) {
+	public AuthorBeanEntity getAuthor(String id) {
 		try {
 			Author author = authorDAO.getAuthor(id);
 			if (author == null) {
@@ -87,7 +87,7 @@ public class AuthorService {
 	}
 
 	@Transactional
-	public AuthorBeanEntity getAuthorBySongId(int id) {
+	public AuthorBeanEntity getAuthorBySongId(String id) {
 		try {
 			Song song = songDAO.getSong(id);
 			if (song == null) {
@@ -141,7 +141,7 @@ public class AuthorService {
 	}
 
 	@Transactional
-	public void deleteAuthor(int id) {
+	public void deleteAuthor(String id) {
 		try {
 			authorDAO.deleteAuthor(id);
 		} catch (Exception exc) {

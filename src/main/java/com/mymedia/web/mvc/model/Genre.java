@@ -18,7 +18,7 @@ public class Genre {
 	@Id
 	@Column(name = "GENRE_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private String id;
 
 	@Column(name = "GENRE_NAME")
 	private String name;
@@ -26,11 +26,11 @@ public class Genre {
 	@OneToMany(mappedBy = "genre",cascade=CascadeType.ALL)
 	private List<Song> songList;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

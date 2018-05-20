@@ -1,14 +1,14 @@
 package com.mymedia.web.requestmodel;
 
 public class AlbumCreateRequestModel {
-	private int authorId;
+	private String authorId;
 	private String name;
 
-	public int getAuthorId() {
+	public String getAuthorId() {
 		return authorId;
 	}
 
-	public void setAuthorId(int authorId) {
+	public void setAuthorId(String authorId) {
 		this.authorId = authorId;
 	}
 

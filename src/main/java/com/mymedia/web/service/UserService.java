@@ -58,7 +58,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public User addRole(User user, int id) {
+	public User addRole(User user, String id) {
 		try {
 			Role role = roleDAO.getRole(id);
 			user.setRole(role);
@@ -79,9 +79,14 @@ public class UserService {
 			throw new MusicHubGenericException("Failed to get User Collection", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@Transactional
+	public boolean userExists(String id) {
+		return userDAO.getUser(id)!=null;
+	}
 
 	@Transactional
-	public UserBeanEntity getUser(int id) {
+	public UserBeanEntity getUser(String id) {
 		try {
 			User user = userDAO.getUser(id);
 			if (user == null) {
@@ -159,7 +164,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public void deleteUser(int id) {
+	public void deleteUser(String id) {
 		try {
 			userDAO.deleteUser(id);
 		} catch (Exception exc) {

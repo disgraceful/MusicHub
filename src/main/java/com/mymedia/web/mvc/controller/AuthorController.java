@@ -55,7 +55,7 @@ public class AuthorController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> getAuthorById(@PathVariable int id) {
+	public ResponseEntity<?> getAuthorById(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(authorService.getAuthor(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
@@ -64,7 +64,7 @@ public class AuthorController {
 	}
 
 	@GetMapping(value = "/{id}/songs")
-	public ResponseEntity<?> getSongsByAuthorId(@PathVariable int id) {
+	public ResponseEntity<?> getSongsByAuthorId(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(songService.getSongsByAuthorId(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
@@ -73,7 +73,7 @@ public class AuthorController {
 	}
 
 	@GetMapping(value = "/{id}/albums")
-	public ResponseEntity<?> getAlbumsByAuthorId(@PathVariable int id) {
+	public ResponseEntity<?> getAlbumsByAuthorId(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(albumService.getAlbumsByAuthorId(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {

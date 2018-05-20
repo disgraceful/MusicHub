@@ -63,7 +63,7 @@ public class GenreService {
 	}
 
 	@Transactional
-	public GenreBeanEntity getGenre(int id) {
+	public GenreBeanEntity getGenre(String id) {
 		try {
 			Genre genre = genreDAO.getGenre(id);
 			if (genre == null) {
@@ -118,7 +118,7 @@ public class GenreService {
 	}
 
 	@Transactional
-	public void deleteGenre(int id) {
+	public void deleteGenre(String id) {
 		try {
 			genreDAO.deleteGenre(id);
 		} catch (Exception exc) {

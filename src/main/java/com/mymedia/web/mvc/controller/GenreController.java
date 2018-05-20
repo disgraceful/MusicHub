@@ -40,7 +40,7 @@ public class GenreController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> getGenreById(@PathVariable int id) {
+	public ResponseEntity<?> getGenreById(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(genreService.getGenre(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
@@ -49,7 +49,7 @@ public class GenreController {
 	}
 
 	@GetMapping(value = "/{id}/songs")
-	public ResponseEntity<?> getSongsByGenreId(@PathVariable int id) {
+	public ResponseEntity<?> getSongsByGenreId(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(songService.getSongsByGenreId(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {

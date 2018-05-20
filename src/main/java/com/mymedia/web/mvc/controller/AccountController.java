@@ -23,6 +23,7 @@ import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateConsumerRequestModel;
 import com.mymedia.web.requestmodel.CreatePublisherRequestModel;
+import com.mymedia.web.requestmodel.GoogleLoginReqModel;
 import com.mymedia.web.requestmodel.LoginRequestModel;
 import com.mymedia.web.service.ConsumerService;
 import com.mymedia.web.service.PublisherService;
@@ -46,10 +47,13 @@ public class AccountController {
 	private static final Logger LOG = LogManager.getLogger(AccountController.class);
 
 	@PostMapping(value = "/loginGoogle")
-	public ResponseEntity<String> loginGoogle(@RequestBody String id) {
+	public ResponseEntity<String> loginGoogle(@RequestBody GoogleLoginReqModel model) {
 		try {
-			System.out.println("google id: " + id);
-			return new ResponseEntity<String>(id, HttpStatus.OK);
+			if(userService.userExists(model.getId())) {
+				
+			}
+			System.out.println("google id: " + model.getId());
+			return new ResponseEntity<String>(model.getId(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

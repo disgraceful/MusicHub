@@ -37,15 +37,15 @@ public class RoleDAO {
     }
 
     @Transactional
-    public Role getRole(int id) {
+    public Role getRole(String id) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.get(Role.class, new Integer(id));
+        return session.get(Role.class, new String(id));
     }
 
     @Transactional
     public Role addRole(Role role) {
         Session session = this.sessionFactory.getCurrentSession();
-        int id = (Integer)session.save(role);
+        String id = (String)session.save(role);
         return getRole(id);
     }
 
@@ -63,7 +63,7 @@ public class RoleDAO {
     }
 
     @Transactional
-    public void deleteRoleById(int id){
+    public void deleteRoleById(String id){
         deleteRole(getRole(id));
     }
 }

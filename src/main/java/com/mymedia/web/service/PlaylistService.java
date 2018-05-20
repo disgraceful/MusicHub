@@ -65,7 +65,7 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public PlaylistBeanEntity getPlaylistById(int id) {
+	public PlaylistBeanEntity getPlaylistById(String id) {
 		try {
 			Playlist playlist = playlistDAO.getPlaylist(id);
 			if (playlist == null) {
@@ -80,7 +80,7 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public List<PlaylistBeanEntity> getPlaylistByUserId(int id) {
+	public List<PlaylistBeanEntity> getPlaylistByUserId(String id) {
 		try {
 			Consumer consumer = consumerDAO.getConsumer(id);
 			if (consumer == null) {
@@ -108,7 +108,7 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public SongBeanEntity addSong(int songId, int playlistId) {
+	public SongBeanEntity addSong(String songId, String playlistId) {
 		try {
 			Playlist playlist = playlistDAO.getPlaylist(playlistId);
 			Song song = songDAO.getSong(songId);
@@ -128,7 +128,7 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public void deleteSongFromPlaylist(int songId, int playlistId) {
+	public void deleteSongFromPlaylist(String songId, String playlistId) {
 		try {
 			Playlist playlist = playlistDAO.getPlaylist(playlistId);
 			Song song = songDAO.getSong(songId);
@@ -163,7 +163,7 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public void deletePlaylist(int id) {
+	public void deletePlaylist(String id) {
 		try {
 			Playlist playlist = playlistDAO.getPlaylist(id);
 			if (playlist == null) {

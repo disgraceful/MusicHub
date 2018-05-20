@@ -3,7 +3,7 @@ package com.mymedia.web.dto;
 public class UserBeanEntity {
     private String id;
     private String username;
-    private int roleId;
+    private String roleId;
     private String roleName;
 
     public String getId() {
@@ -22,11 +22,11 @@ public class UserBeanEntity {
         this.username = username;
     }
 
-    public int getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(int role) {
+    public void setRoleId(String role) {
         this.roleId = role;
     }
 

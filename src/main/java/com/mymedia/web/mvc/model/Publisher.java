@@ -19,7 +19,7 @@ public class Publisher {
 	@Id
 	@Column(name = "PUBLISHER_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private String id;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "AUTHOR_ID")
@@ -29,11 +29,11 @@ public class Publisher {
 	@JoinColumn(name = "USER_ID")
 	private User user;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

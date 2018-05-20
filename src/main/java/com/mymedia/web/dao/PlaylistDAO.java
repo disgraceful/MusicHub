@@ -35,16 +35,16 @@ public class PlaylistDAO {
 	}
 
 	@Transactional
-	public Playlist getPlaylist(int id) {
+	public Playlist getPlaylist(String id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.get(Playlist.class, new Integer(id));
+		return session.get(Playlist.class, new String(id));
 	}
 
 	@Transactional
 	public Playlist addPlaylist(Playlist playlist) {
 		Session session = this.sessionFactory.getCurrentSession();
 		LOG.info(playlist.getName() + " ");
-		int id = (Integer)session.save(playlist);
+		String id = (String)session.save(playlist);
 		return getPlaylist(id);
 	}
 	
@@ -62,7 +62,7 @@ public class PlaylistDAO {
 	}
 	
 	@Transactional
-	public void deletePlaylist(int id){
+	public void deletePlaylist(String id){
 		deletePlaylist(getPlaylist(id));
 	}
 	

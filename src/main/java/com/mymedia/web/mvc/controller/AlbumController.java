@@ -55,7 +55,7 @@ public class AlbumController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> getAlbumById(@PathVariable int id) {
+	public ResponseEntity<?> getAlbumById(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(albumService.getAlbum(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
@@ -64,7 +64,7 @@ public class AlbumController {
 	}
 
 	@GetMapping(value = "/{id}/author")
-	public ResponseEntity<?> getAuthorByAlbumId(@PathVariable int id) {
+	public ResponseEntity<?> getAuthorByAlbumId(@PathVariable String id) {
 		try {
 			AlbumBeanEntity album = albumService.getAlbum(id);
 			return new ResponseEntity<>(authorService.getAuthor(album.getAuthorId()), HttpStatus.OK);
@@ -74,7 +74,7 @@ public class AlbumController {
 	}
 
 	@GetMapping(value = "/{id}/songs")
-	public ResponseEntity<?> getSongsByAlbumId(@PathVariable int id) {
+	public ResponseEntity<?> getSongsByAlbumId(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(songService.getSongsByAlbumId(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
@@ -101,7 +101,7 @@ public class AlbumController {
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteAlbum(@PathVariable int id) {
+	public ResponseEntity<?> deleteAlbum(@PathVariable String id) {
 		try {
 			albumService.deleteAlbum(id);
 			return new ResponseEntity<>(HttpStatus.ACCEPTED);

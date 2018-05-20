@@ -33,15 +33,15 @@ public class AuthorDAO {
 	}
 
 	@Transactional
-	public Author getAuthor(int id) {
+	public Author getAuthor(String id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.get(Author.class, new Integer(id));
+		return session.get(Author.class, new String(id));
 	}
 
 	@Transactional
 	public Author addAuthor(Author author) {
 		Session session = this.sessionFactory.getCurrentSession();
-		int id = (Integer)session.save(author);
+		String id = (String)session.save(author);
 		return getAuthor(id);
 
 	}
@@ -60,7 +60,7 @@ public class AuthorDAO {
 	}
 	
 	@Transactional
-	public void deleteAuthor(int id){
+	public void deleteAuthor(String id){
 		deleteAuthor(getAuthor(id));
 	}
 	

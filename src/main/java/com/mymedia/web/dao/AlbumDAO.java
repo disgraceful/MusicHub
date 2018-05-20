@@ -34,15 +34,15 @@ public class AlbumDAO {
 	}
 
 	@Transactional
-	public Album getAlbum(int id) {
+	public Album getAlbum(String id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.get(Album.class, new Integer(id));
+		return session.get(Album.class, new String(id));
 	}
 
 	@Transactional
 	public Album addAlbum(Album album) {
 		Session session = this.sessionFactory.getCurrentSession();
-		int i = (Integer) session.save(album);
+		String i = (String) session.save(album);
 		return getAlbum(i);
 	}
 
@@ -60,7 +60,7 @@ public class AlbumDAO {
 	}
 
 	@Transactional
-	public void deleteAlbum(int id) {
+	public void deleteAlbum(String id) {
 		deleteAlbum(getAlbum(id));
 	}
 }

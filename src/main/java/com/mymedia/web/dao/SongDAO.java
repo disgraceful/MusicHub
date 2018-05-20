@@ -33,15 +33,15 @@ public class SongDAO {
 	}
 
 	@Transactional
-	public Song getSong(int id) {
+	public Song getSong(String id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.get(Song.class, new Integer(id));
+		return session.get(Song.class, new String(id));
 	}
 
 	@Transactional
 	public Song addSong(Song song) {
 		Session session = this.sessionFactory.getCurrentSession();
-		int id = (Integer)session.save(song);
+		String id = (String)session.save(song);
 		return getSong(id);
 	}
 	
@@ -59,7 +59,7 @@ public class SongDAO {
 	}
 	
 	@Transactional
-	public void deleteSongById(int id){
+	public void deleteSongById(String id){
 		deleteSong(getSong(id));
 	}
 	

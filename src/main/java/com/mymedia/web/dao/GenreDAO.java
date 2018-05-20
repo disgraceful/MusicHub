@@ -33,15 +33,15 @@ public class GenreDAO {
 	}
 
 	@Transactional
-	public Genre getGenre(int id) {
+	public Genre getGenre(String id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.get(Genre.class, new Integer(id));
+		return session.get(Genre.class, new String(id));
 	}
 
 	@Transactional
 	public Genre addGenre(Genre genre) {
 		Session session = this.sessionFactory.getCurrentSession();
-		int id = (Integer)session.save(genre);
+		String id = (String)session.save(genre);
 		return getGenre(id);
 	}
 
@@ -59,7 +59,7 @@ public class GenreDAO {
 	}
 	
 	@Transactional
-	public void deleteGenre(int id){
+	public void deleteGenre(String id){
 		deleteGenre(getGenre(id));
 	}
 	

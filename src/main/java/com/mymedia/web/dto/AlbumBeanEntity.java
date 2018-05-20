@@ -2,19 +2,19 @@ package com.mymedia.web.dto;
 
 public class AlbumBeanEntity {
 
-	private int id;
+	private String id;
 	private String name;
 	private String birthDate;
 	private double rating;
-	private int authorId;
+	private String authorId;
 	private String authorName;
 	private int songAmount;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -42,11 +42,11 @@ public class AlbumBeanEntity {
 		this.rating = rating;
 	}
 
-	public int getAuthorId() {
+	public String getAuthorId() {
 		return authorId;
 	}
 
-	public void setAuthorId(int authorId) {
+	public void setAuthorId(String authorId) {
 		this.authorId = authorId;
 	}
 

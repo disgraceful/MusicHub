@@ -1,22 +1,22 @@
 package com.mymedia.web.dto;
 
 public class ConsumerBeanEntity {
-	private int id;
-	private int userId;
+	private String id;
+	private String userId;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

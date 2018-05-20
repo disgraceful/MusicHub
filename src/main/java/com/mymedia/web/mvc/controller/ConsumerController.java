@@ -20,7 +20,7 @@ public class ConsumerController {
 	private PlaylistService playlistService;
 
 	@GetMapping(value = "/{id}/playlists")
-	public ResponseEntity<?> getPlaylists(@PathVariable int id) {
+	public ResponseEntity<?> getPlaylists(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(playlistService.getPlaylistByUserId(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {

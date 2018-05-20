@@ -35,7 +35,7 @@ public class PlaylistController {
 	private SongService songService;
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> getPlaylistById(@PathVariable int id) {
+	public ResponseEntity<?> getPlaylistById(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(playlistService.getPlaylistById(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
@@ -53,7 +53,7 @@ public class PlaylistController {
 	}
 
 	@GetMapping(value = "/{id}/songs")
-	public ResponseEntity<?> getSongs(@PathVariable int id) {
+	public ResponseEntity<?> getSongs(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(songService.getSongsByPlaylistId(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
@@ -83,7 +83,7 @@ public class PlaylistController {
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deletePlaylist(@PathVariable int id) {
+	public ResponseEntity<?> deletePlaylist(@PathVariable String id) {
 		try{
 		playlistService.deletePlaylist(id);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -93,7 +93,7 @@ public class PlaylistController {
 	}
 
 	@PostMapping(value = "/{id}/songs")
-	public ResponseEntity<?> addSong(@RequestBody AddSongToPlaylistRequestModel songModel, @PathVariable int id) {
+	public ResponseEntity<?> addSong(@RequestBody AddSongToPlaylistRequestModel songModel, @PathVariable String id) {
 		try{
 		return new ResponseEntity<>(playlistService.addSong(songModel.getId(), id), HttpStatus.CREATED);
 		}catch(MusicHubGenericException exc){
@@ -102,7 +102,7 @@ public class PlaylistController {
 	}
 
 	@DeleteMapping(value = "/{id}/songs")
-	public ResponseEntity<?>  deleteSong(@RequestBody AddSongToPlaylistRequestModel songModel, @PathVariable int id) {
+	public ResponseEntity<?>  deleteSong(@RequestBody AddSongToPlaylistRequestModel songModel, @PathVariable String id) {
 		try{
 		playlistService.deleteSongFromPlaylist(songModel.getId(), id);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);

@@ -34,7 +34,7 @@ public class ConsumerService {
 	public ConsumerBeanEntity createConsumer(CreateConsumerRequestModel model) {
 		try {
 			User user = userService.createUser(model);
-			userService.addRole(user, 2);
+			userService.addRole(user, "2");
 
 			Consumer consumer = new Consumer();
 			consumer.setUser(user);
@@ -48,7 +48,7 @@ public class ConsumerService {
 	}
 
 	@Transactional
-	public Consumer getConsumerByUserId(int id) {
+	public Consumer getConsumerByUserId(String id) {
 		try {
 			Optional<Consumer> consumerOpt = consumerDAO.getAllConsumers().stream()
 					.filter(e -> e.getUser().getId() == id).findFirst();
@@ -64,7 +64,7 @@ public class ConsumerService {
 	}
 	
 	@Transactional
-	public ConsumerBeanEntity getConsumerById(int id){
+	public ConsumerBeanEntity getConsumerById(String id){
 		try {
 			Consumer consumer = consumerDAO.getConsumer(id);
 					

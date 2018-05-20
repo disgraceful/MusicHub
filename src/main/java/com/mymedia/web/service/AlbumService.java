@@ -72,7 +72,7 @@ public class AlbumService {
 	}
 
 	@Transactional
-	public AlbumBeanEntity getAlbum(int id) {
+	public AlbumBeanEntity getAlbum(String id) {
 		try {
 			Album album = albumDAO.getAlbum(id);
 			if (album == null) {
@@ -87,7 +87,7 @@ public class AlbumService {
 	}
 
 	@Transactional
-	public List<AlbumBeanEntity> getAlbumsByAuthorId(int id) {
+	public List<AlbumBeanEntity> getAlbumsByAuthorId(String id) {
 		try {
 			List<Album> albums = authorDAO.getAuthor(id).getAlbums();
 			if (albums.isEmpty()) {
@@ -132,7 +132,7 @@ public class AlbumService {
 	}
 
 	@Transactional
-	public void deleteAlbum(int id) {
+	public void deleteAlbum(String id) {
 		try {
 			albumDAO.deleteAlbum(id);
 		}

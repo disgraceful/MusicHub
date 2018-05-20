@@ -25,7 +25,7 @@ public class Song  implements Comparable<Song>{
 	@Id
 	@Column(name = "SONG_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private String id;
 	@Column(name = "NAME")
 	private String name;
 
@@ -58,11 +58,11 @@ public class Song  implements Comparable<Song>{
 			@JoinColumn(name = "PLAYLIST_ID") })
 	private List<Playlist> playlists;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

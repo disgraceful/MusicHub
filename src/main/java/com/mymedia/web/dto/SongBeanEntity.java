@@ -2,22 +2,22 @@ package com.mymedia.web.dto;
 
 public class SongBeanEntity {
 
-	private int id;
+	private String id;
 	private String name;
-	private int albumId;
-	private int authorId;
+	private String albumId;
+	private String authorId;
 	private double rating;
 	private String birthDate;
-	private int genreId;
+	private String genreId;
 	private String url;
 	private String duration;
 	private String authorName;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -29,19 +29,19 @@ public class SongBeanEntity {
 		this.name = name;
 	}
 
-	public int getAlbumId() {
+	public String getAlbumId() {
 		return albumId;
 	}
 
-	public void setAlbumId(int albumId) {
+	public void setAlbumId(String albumId) {
 		this.albumId = albumId;
 	}
 
-	public int getAuthorId() {
+	public String getAuthorId() {
 		return authorId;
 	}
 
-	public void setAuthorId(int authorId) {
+	public void setAuthorId(String authorId) {
 		this.authorId = authorId;
 	}
 
@@ -61,11 +61,11 @@ public class SongBeanEntity {
 		this.birthDate = birthDate;
 	}
 
-	public int getGenreId() {
+	public String getGenreId() {
 		return genreId;
 	}
 
-	public void setGenreId(int genreId) {
+	public void setGenreId(String genreId) {
 		this.genreId = genreId;
 	}
 

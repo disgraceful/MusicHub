@@ -83,7 +83,7 @@ public class SongService {
 	}
 
 	@Transactional
-	public SongBeanEntity getSong(int id) {
+	public SongBeanEntity getSong(String id) {
 		try {
 			Song song = songDAO.getSong(id);
 			if (song == null) {
@@ -98,7 +98,7 @@ public class SongService {
 	}
 
 	@Transactional
-	public List<SongBeanEntity> getSongsByAuthorId(int id) {
+	public List<SongBeanEntity> getSongsByAuthorId(String id) {
 		try {
 			Author author = authorDAO.getAuthor(id);
 			if (author == null) {
@@ -115,7 +115,7 @@ public class SongService {
 	}
 
 	@Transactional
-	public List<SongBeanEntity> getSongsByAlbumId(int id) {
+	public List<SongBeanEntity> getSongsByAlbumId(String id) {
 		try {
 			Album album = albumDAO.getAlbum(id);
 			if (album == null) {
@@ -132,7 +132,7 @@ public class SongService {
 	}
 
 	@Transactional
-	public List<SongBeanEntity> getSongsByGenreId(int id) {
+	public List<SongBeanEntity> getSongsByGenreId(String id) {
 		try {
 			List<SongBeanEntity> list = new ArrayList<>();
 			getAllSongs().stream().filter(e -> e.getGenreId() == id).forEach(e -> list.add(e));
@@ -143,7 +143,7 @@ public class SongService {
 	}
 
 	@Transactional
-	public List<SongBeanEntity> getSongsByPlaylistId(int id) {
+	public List<SongBeanEntity> getSongsByPlaylistId(String id) {
 		try {
 			Playlist playlist = playlistDAO.getPlaylist(id);
 			if (playlist == null) {
@@ -199,7 +199,7 @@ public class SongService {
 	}
 
 	@Transactional
-	public void deleteSong(int id) {
+	public void deleteSong(String id) {
 		try {
 			songDAO.deleteSongById(id);
 		} catch (Exception exc) {

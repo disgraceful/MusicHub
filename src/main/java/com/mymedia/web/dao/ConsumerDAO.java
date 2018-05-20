@@ -33,15 +33,15 @@ public class ConsumerDAO {
 	}
 
 	@Transactional
-	public Consumer getConsumer(int id) {
+	public Consumer getConsumer(String id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.get(Consumer.class, new Integer(id));
+		return session.get(Consumer.class, new String(id));
 	}
 
 	@Transactional
 	public Consumer addConsumer(Consumer consumer) {
 		Session session = this.sessionFactory.getCurrentSession();
-		int id = (Integer) session.save(consumer);
+		String id = (String) session.save(consumer);
 		return getConsumer(id);
 	}
 
@@ -59,7 +59,7 @@ public class ConsumerDAO {
 	}
 
 	@Transactional
-	public void deleteConsumer(int id) {
+	public void deleteConsumer(String id) {
 		deleteConsumer(getConsumer(id));
 	}
 }

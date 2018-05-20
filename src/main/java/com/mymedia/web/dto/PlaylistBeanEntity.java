@@ -2,16 +2,16 @@ package com.mymedia.web.dto;
 
 public class PlaylistBeanEntity {
 
-	private int id;
+	private String id;
 	private String name;
-	private int consumerId;
+	private String consumerId;
 	private int songAmount;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -23,11 +23,11 @@ public class PlaylistBeanEntity {
 		this.name = name;
 	}
 
-	public int getConsumerId() {
+	public String getConsumerId() {
 		return consumerId;
 	}
 
-	public void setConsumerId(int consumerId) {
+	public void setConsumerId(String consumerId) {
 		this.consumerId = consumerId;
 	}
 

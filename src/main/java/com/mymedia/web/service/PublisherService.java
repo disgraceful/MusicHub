@@ -36,7 +36,7 @@ public class PublisherService {
 	private UserDAO userDAO;
 
 	@Transactional
-	public PublisherBeanEntity getPublisher(int id) {
+	public PublisherBeanEntity getPublisher(String id) {
 		try {
 			Publisher pub = publisherDAO.getPublisher(id);
 			if (pub == null) {
@@ -51,7 +51,7 @@ public class PublisherService {
 	}
 
 	@Transactional
-	public Publisher getPublisherByUserId(int id) {
+	public Publisher getPublisherByUserId(String id) {
 		try {
 			Optional<Publisher> publisherOpt = publisherDAO.getAllPublishers().stream()
 					.filter(e -> e.getUser().getId() == id).findFirst();
@@ -70,7 +70,7 @@ public class PublisherService {
 	public PublisherBeanEntity createPublisher(CreatePublisherRequestModel model) {
 		try {
 			User user = userService.createUser(model);
-			userService.addRole(user, 1);
+			userService.addRole(user, "1");
 
 			if(!validatePublisherModel(model)){
 				throw new MusicHubGenericException("Author name is invalid!", HttpStatus.BAD_REQUEST);

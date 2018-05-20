@@ -1,31 +1,31 @@
 package com.mymedia.web.dto;
 
 public class PublisherBeanEntity {
-	private int id;
-	private int authorId;
-	private int userId;
+	private String id;
+	private String authorId;
+	private String userId;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
-	public int getAuthorId() {
+	public String getAuthorId() {
 		return authorId;
 	}
 
-	public void setAuthorId(int authorId) {
+	public void setAuthorId(String authorId) {
 		this.authorId = authorId;
 	}
 
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

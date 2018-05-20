@@ -1,17 +1,15 @@
 package com.mymedia.web.dto;
 
-/**
- * Created by Nazar on 11.04.2017.
- */
+
 public class RoleBeanEntity {
-    private int id;
+    private String id;
     private String name;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

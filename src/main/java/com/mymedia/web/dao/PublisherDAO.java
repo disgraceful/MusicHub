@@ -34,15 +34,15 @@ public class PublisherDAO {
 	}
 
 	@Transactional
-	public Publisher getPublisher(int id) {
+	public Publisher getPublisher(String id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.get(Publisher.class, new Integer(id));
+		return session.get(Publisher.class, new String(id));
 	}
 
 	@Transactional
 	public Publisher addPublisher(Publisher publisher) {
 		Session session = this.sessionFactory.getCurrentSession();
-		int id = (Integer) session.save(publisher);
+		String id = (String) session.save(publisher);
 		return getPublisher(id);
 	}
 
@@ -60,7 +60,7 @@ public class PublisherDAO {
 	}
 
 	@Transactional
-	public void deletePublisher(int id) {
+	public void deletePublisher(String id) {
 		deletePublisher(getPublisher(id));
 	}
 }
