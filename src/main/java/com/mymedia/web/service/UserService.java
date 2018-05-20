@@ -43,7 +43,7 @@ public class UserService {
 		try {
 
 			User user = new User();
-			//user.setId(model.getId());
+			user.setGoogleId(model.getId());
 			user.setUsername(model.getUsername());
 			user.setEmail(model.getEmail());
 			user.setPassword(model.getEmail());
@@ -102,7 +102,7 @@ public class UserService {
 
 	@Transactional
 	public boolean userExists(String id) {
-		return userDAO.getUser(id) != null;
+		return userDAO.getUser(id) != null || userDAO.getUserByField("googleId", id)!=null;
 	}
 
 	@Transactional
@@ -123,14 +123,30 @@ public class UserService {
 	@Transactional
 	public User getByUsername(String username) {
 		try {
-			List<User> users = userDAO.getAllUsers();
-			Optional<User> userOpt = users.stream().filter(e -> e.getUsername().trim().equals(username.trim()))
-					.findFirst();
-			if (!userOpt.isPresent()) {
+			User user = userDAO.getUserByField("username", username);
+
+			if (user == null) {
 				throw new MusicHubGenericException("User with that name does not exist",
 						HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-			return userOpt.get();
+			return user;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public User getByGoogleId(String googleId) {
+		try {
+			User user = userDAO.getUserByField("googleId", googleId);
+
+			if (user == null) {
+				throw new MusicHubGenericException("User with that name does not exist",
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			return user;
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -221,7 +237,8 @@ public class UserService {
 		user.setId(entity.getId());
 		user.setUsername(entity.getUsername());
 		user.setRole(roleDAO.getRole(entity.getRoleId()));
-		user.setEmail(entity.getEmail());;
+		user.setEmail(entity.getEmail());
+		;
 		return user;
 	}
 

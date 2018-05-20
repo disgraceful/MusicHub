@@ -53,8 +53,6 @@ public class AccountController {
 	public ResponseEntity<UserBeanEntity> loginGoogle(@RequestBody String tokenId) {
 		try {
 			Payload payload = GoogleTokenVerifier.verify(tokenId);
-			System.out.println(tokenId);
-			System.out.println(payload.getSubject());
 			UserBeanEntity user;
 			if (userService.userExists(payload.getSubject())) {
 				user = userService.getUser(payload.getSubject());

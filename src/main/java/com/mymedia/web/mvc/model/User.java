@@ -9,50 +9,56 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NaturalId;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "USERS")
 public class User {
-    @Id
-    @Column(name = "USER_ID")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+	@Id
+	@Column(name = "USER_ID")
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	private String id;
 
-    @Column(name = "USERNAME")
-    private String username;
-    
-    @Column(name = "EMAIL")
-    private String email;
+	@NaturalId
+	@Column(name = "USERNAME")
+	private String username;
 
-    @Column(name = "PASSWORD")
-    private String password;
+	@NaturalId
+	@Column(name = "EMAIL")
+	private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "ROLE_ID")
-    private Role role;
+	@Column(name = "PASSWORD", unique = true)
+	private String password;
 
-    public String getId() {
-        return id;
-    }
+	@ManyToOne
+	@JoinColumn(name = "ROLE_ID")
+	private Role role;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	@NaturalId
+	@Column(name = "GOOGLE_ID", nullable = true, unique = true)
+	private String googleId;
 
-    public String getUsername() {
-        return username;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    
-    
-    public String getEmail() {
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getEmail() {
 		return email;
 	}
 
@@ -61,19 +67,27 @@ public class User {
 	}
 
 	public String getPassword() {
-        return password;
-    }
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public Role getRole() {
-        return role;
-    }
+	public Role getRole() {
+		return role;
+	}
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public String getGoogleId() {
+		return googleId;
+	}
+
+	public void setGoogleId(String googleId) {
+		this.googleId = googleId;
+	}
+
 }
-

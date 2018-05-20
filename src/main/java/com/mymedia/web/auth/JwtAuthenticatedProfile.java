@@ -38,7 +38,7 @@ public class JwtAuthenticatedProfile implements Authentication {
 
 	@Override
 	public boolean isAuthenticated() {
-		return minimalProfile!=null?true:false;
+		return minimalProfile!=null;
 	}
 
 	@Override
