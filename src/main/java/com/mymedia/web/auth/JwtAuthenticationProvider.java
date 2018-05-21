@@ -17,19 +17,20 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 	@Autowired
 	private TokenService tokenService;
 
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        try {
-            User possibleProfile = tokenService.parseJWT((String)authentication.getCredentials());
-            return new JwtAuthenticatedProfile(possibleProfile);
-        } catch (Exception e) {
-           return null;
-        }
-    }
+	@Override
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		try {
+			String token = (String) authentication.getCredentials();
+			User possibleProfile = tokenService.retrieveUser(token);
+			return new JwtAuthenticatedProfile(possibleProfile);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return JwtAuthToken.class.equals(authentication);
-    }
+	@Override
+	public boolean supports(Class<?> authentication) {
+		return JwtAuthToken.class.equals(authentication);
+	}
 
 }

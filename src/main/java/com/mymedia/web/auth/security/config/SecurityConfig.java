@@ -16,10 +16,10 @@ import com.mymedia.web.auth.JwtAuthFilter;
 import com.mymedia.web.auth.JwtAuthenticationEntryPoint;
 import com.mymedia.web.auth.JwtAuthenticationProvider;
 
-//@Configuration
-//@EnableWebSecurity
+@Configuration
+@EnableWebSecurity
 //@EnableGlobalMethodSecurity(securedEnabled = true)
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JwtAuthFilter jwtAuthFilter;
@@ -46,6 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
 		http.authorizeRequests()
+		.antMatchers("/login/**").permitAll()
+		.antMatchers("/register/**").permitAll()
 		.antMatchers("/upload/**").hasAuthority("PUBLISHER")
 		.antMatchers("/playlist/**","consumer").hasAuthority("CONSUMER")	
 		.antMatchers("/album/**","/song/**","/author/**","/genre/**").fullyAuthenticated()

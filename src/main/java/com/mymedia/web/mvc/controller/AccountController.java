@@ -49,7 +49,7 @@ public class AccountController {
 
 	private static final Logger LOG = LogManager.getLogger(AccountController.class);
 
-	@PostMapping(value = "/loginGoogle")
+	@PostMapping(value = "/login/Google")
 	public ResponseEntity<UserBeanEntity> loginGoogle(@RequestBody String tokenId) {
 		try {
 			Payload payload = GoogleTokenVerifier.verify(tokenId);
@@ -67,17 +67,7 @@ public class AccountController {
 		}
 	}
 
-	@PostMapping(value = "/loginGoogleTest")
-	public ResponseEntity<String> loginGoogleTest(@RequestBody String id) {
-		try {
-			System.out.println("google id: " + id);
-			return new ResponseEntity<String>(id, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@PostMapping(value = "/registerGoogle")
+	@PostMapping(value = "/register/Google")
 	public ResponseEntity<String> registerGoogle(@RequestBody String id) {
 		try {
 			System.out.println("google id: " + id);

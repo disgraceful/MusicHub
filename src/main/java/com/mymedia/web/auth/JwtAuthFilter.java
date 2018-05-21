@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.mymedia.web.service.TokenService;
 
-//@Component
+@Component
 public class JwtAuthFilter implements Filter {
 
 	@Autowired
