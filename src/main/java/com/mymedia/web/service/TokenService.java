@@ -97,7 +97,7 @@ public class TokenService {
 			Payload payload = GoogleTokenVerifier.verify(idTokenString);
 			User user;
 			if (userService.userExists(payload.getSubject())) {
-				user = userService.userEntityToUser(userService.getUser(payload.getSubject()));
+				user = userService.getByGoogleId(payload.getSubject());
 			} else {
 				GoogleLoginReqModel model = new GoogleLoginReqModel(payload.getSubject(), (String) payload.get("name"),
 						payload.getEmail(), (String) payload.get("picture"));

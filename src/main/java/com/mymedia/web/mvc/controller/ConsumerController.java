@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mymedia.web.dto.ConsumerBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.service.PlaylistService;
@@ -40,6 +41,4 @@ public class ConsumerController {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
 	}
-	
-
 }

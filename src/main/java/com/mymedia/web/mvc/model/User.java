@@ -23,11 +23,9 @@ public class User {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 
-	@NaturalId
 	@Column(name = "USERNAME")
 	private String username;
 
-	@NaturalId
 	@Column(name = "EMAIL")
 	private String email;
 

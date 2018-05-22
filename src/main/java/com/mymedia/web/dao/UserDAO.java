@@ -34,12 +34,18 @@ public class UserDAO {
 	}
 
 	@Transactional
-	public User getUserByField(String fieldName, String fieldValue) {
+	public User getUniqueUserByField(String fieldName, String fieldValue) {
 		Session session = sessionFactory.getCurrentSession();
-		User user = session.byNaturalId(User.class)
-		                   .using(fieldName,fieldValue)
-		                   .load();
+		Criteria criteria = session.createCriteria(User.class);
+		User user = (User) criteria.add(Restrictions.eq(fieldName, fieldValue)).uniqueResult();
 		return user;
+	}
+
+	@Transactional
+	public List<User> getUsersByField(String fieldName, String fieldValue) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		return criteria.add(Restrictions.eq(fieldName, fieldValue)).list();
 	}
 
 	@Transactional

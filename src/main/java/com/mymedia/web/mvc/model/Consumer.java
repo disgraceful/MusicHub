@@ -33,6 +33,7 @@ public class Consumer {
 	@OneToMany(mappedBy = "consumer")
 	private List<Playlist> playlists;
 	
+	@Column(name="IMG_PATH")
 	private String imgPath;
 
 	public String getId() {

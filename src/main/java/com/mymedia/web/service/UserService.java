@@ -102,7 +102,7 @@ public class UserService {
 
 	@Transactional
 	public boolean userExists(String id) {
-		return userDAO.getUser(id) != null || userDAO.getUserByField("googleId", id)!=null;
+		return userDAO.getUser(id) != null || userDAO.getUniqueUserByField("googleId", id)!=null;
 	}
 
 	@Transactional
@@ -123,7 +123,7 @@ public class UserService {
 	@Transactional
 	public User getByUsername(String username) {
 		try {
-			User user = userDAO.getUserByField("username", username);
+			User user = userDAO.getUniqueUserByField("username", username);
 
 			if (user == null) {
 				throw new MusicHubGenericException("User with that name does not exist",
@@ -140,7 +140,7 @@ public class UserService {
 	@Transactional
 	public User getByGoogleId(String googleId) {
 		try {
-			User user = userDAO.getUserByField("googleId", googleId);
+			User user = userDAO.getUniqueUserByField("googleId", googleId);
 
 			if (user == null) {
 				throw new MusicHubGenericException("User with that name does not exist",
