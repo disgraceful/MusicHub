@@ -12,7 +12,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 
 public class GoogleTokenVerifier {
-	private static final String CLIENT_ID = "100485869370-r3cg6jshl05m0gh7egkm26r0lk6iiq3h.apps.googleusercontent.com";
+	private static final String CLIENT_ID = "100485869370-cl89djdjsno00e1re6sfl6d4hua9d7p9.apps.googleusercontent.com";
 	private static final HttpTransport TRANSPORT = new NetHttpTransport();
 	private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
 

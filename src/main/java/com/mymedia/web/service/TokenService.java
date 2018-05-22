@@ -19,6 +19,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.GoogleLoginReqModel;
+import com.mymedia.web.utils.GoogleTokenVerifier;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -30,12 +31,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class TokenService {
 
 	private static final Logger LOG = LogManager.getLogger(TokenService.class);
-	private static final String CLIENT_ID = "100485869370-r3cg6jshl05m0gh7egkm26r0lk6iiq3h.apps.googleusercontent.com";
-	private static final HttpTransport TRANSPORT = new NetHttpTransport();
-	private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
 	private static final String JWT_KEY = "secret";
 	private static final String JWT_ENCODE = "UTF-8";
 	private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
+
+	static {
+		
+	}
 
 	@Autowired
 	private UserService userService;
@@ -92,25 +94,18 @@ public class TokenService {
 
 	public User getUserFromGoogleToken(String idTokenString) {
 		try {
-			GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(TRANSPORT, JSON_FACTORY)
-					.setAudience(Collections.singletonList(CLIENT_ID)).build();
-			System.out.println(idTokenString);
-			GoogleIdToken idToken = verifier.verify(idTokenString);
-			if (idToken != null) {
-				Payload payload = idToken.getPayload();
-				User user;
-				if (userService.userExists(payload.getSubject())) {
-					user = userService.userEntityToUser(userService.getUser(payload.getSubject()));
-				} else {
-					GoogleLoginReqModel model = new GoogleLoginReqModel(payload.getSubject(),
-							(String) payload.get("name"), payload.getEmail(), (String) payload.get("picture"));
-					user = userService
-							.userEntityToUser(userService.getUser(consumerService.createConsumer(model).getUserId()));
-				}
-				return user;
+			Payload payload = GoogleTokenVerifier.verify(idTokenString);
+			User user;
+			if (userService.userExists(payload.getSubject())) {
+				user = userService.userEntityToUser(userService.getUser(payload.getSubject()));
 			} else {
-				throw new MusicHubGenericException("Invalid token", HttpStatus.INTERNAL_SERVER_ERROR);
+				GoogleLoginReqModel model = new GoogleLoginReqModel(payload.getSubject(), (String) payload.get("name"),
+						payload.getEmail(), (String) payload.get("picture"));
+				user = userService
+						.userEntityToUser(userService.getUser(consumerService.createConsumer(model).getUserId()));
 			}
+			return user;
+
 		} catch (GeneralSecurityException | IOException e) {
 			throw new MusicHubGenericException("Failed to parse token", HttpStatus.INTERNAL_SERVER_ERROR);
 		}

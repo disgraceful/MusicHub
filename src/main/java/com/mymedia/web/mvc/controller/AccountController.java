@@ -19,16 +19,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.auth.openidconnect.IdToken.Payload;
 import com.mymedia.web.dto.UserBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateConsumerRequestModel;
 import com.mymedia.web.requestmodel.CreatePublisherRequestModel;
-import com.mymedia.web.requestmodel.GoogleLoginReqModel;
 import com.mymedia.web.requestmodel.LoginRequestModel;
 import com.mymedia.web.service.ConsumerService;
 import com.mymedia.web.service.PublisherService;
+import com.mymedia.web.service.TokenService;
 import com.mymedia.web.service.UserService;
 import com.mymedia.web.utils.GoogleTokenVerifier;
 
@@ -43,6 +43,9 @@ public class AccountController {
 
 	@Autowired
 	private PublisherService publisherService;
+	
+	@Autowired
+	private TokenService tokenService;
 
 	@Autowired
 	ServletContext servletContext;
@@ -52,15 +55,15 @@ public class AccountController {
 	@PostMapping(value = "/login/Google")
 	public ResponseEntity<UserBeanEntity> loginGoogle(@RequestBody String tokenId) {
 		try {
-			Payload payload = GoogleTokenVerifier.verify(tokenId);
-			UserBeanEntity user;
-			if (userService.userExists(payload.getSubject())) {
-				user = userService.getUser(payload.getSubject());
-			} else {
-				GoogleLoginReqModel model = new GoogleLoginReqModel(payload.getSubject(), (String) payload.get("name"),
-						payload.getEmail(), (String) payload.get("picture"));
-				user = userService.getUser(consumerService.createConsumer(model).getUserId());
-			}
+			//Payload payload = GoogleTokenVerifier.verify(tokenId);
+			UserBeanEntity user = userService.userToUserEntity(tokenService.getUserFromGoogleToken(tokenId));
+//			if (userService.userExists(payload.getSubject())) {
+//				user = userService.getUser(payload.getSubject());
+//			} else {
+//				GoogleLoginReqModel model = new GoogleLoginReqModel(payload.getSubject(), (String) payload.get("name"),
+//						payload.getEmail(), (String) payload.get("picture"));
+//				user = userService.getUser(consumerService.createConsumer(model).getUserId());
+//			}
 			return new ResponseEntity<UserBeanEntity>(user, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<UserBeanEntity>(HttpStatus.INTERNAL_SERVER_ERROR);
