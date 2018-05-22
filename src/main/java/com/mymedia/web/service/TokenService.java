@@ -46,7 +46,10 @@ public class TokenService {
 	private ConsumerService consumerService;
 
 	public boolean verifyToken(String token) {
-		return verifyGoogleToken(token) || verifyJWT(token);
+		boolean a = verifyGoogleToken(token);
+		boolean b =verifyJWT(token);
+		LOG.info("google " + a + " jwt " + b);
+		return  a|| b;
 	}
 
 	public User retrieveUser(String token) {
@@ -104,10 +107,11 @@ public class TokenService {
 				user = userService
 						.userEntityToUser(userService.getUser(consumerService.createConsumer(model).getUserId()));
 			}
+			LOG.info(user.getEmail());
 			return user;
 
 		} catch (GeneralSecurityException | IOException e) {
-			throw new MusicHubGenericException("Failed to parse token", HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new MusicHubGenericException("Failed to parse token " + idTokenString, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

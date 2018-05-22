@@ -66,14 +66,14 @@ public class ConsumerService {
 	}
 
 	@Transactional
-	public Consumer getConsumerByUserId(String id) {
+	public ConsumerBeanEntity getConsumerByUserId(String id) {
 		try {
 			Optional<Consumer> consumerOpt = consumerDAO.getAllConsumers().stream()
 					.filter(e -> e.getUser().getId() == id).findFirst();
 			if (!consumerOpt.isPresent()) {
 				throw new MusicHubGenericException("User with that id does not exist!", HttpStatus.NOT_FOUND);
 			}
-			return consumerOpt.get();
+			return consumerToConsumerEntity(consumerOpt.get());
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -101,6 +101,7 @@ public class ConsumerService {
 		ConsumerBeanEntity entity = new ConsumerBeanEntity();
 		entity.setId(consumer.getId());
 		entity.setUserId(consumer.getUser().getId());
+		entity.setImgPath(consumer.getImgPath());
 		return entity;
 	}
 
@@ -108,6 +109,7 @@ public class ConsumerService {
 		Consumer consumer = new Consumer();
 		consumer.setId(entity.getId());
 		consumer.setUser(userDAO.getUser(entity.getUserId()));
+		consumer.setImgPath(entity.getImgPath());
 		return consumer;
 	}
 }

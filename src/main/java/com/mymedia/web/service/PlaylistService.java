@@ -55,7 +55,7 @@ public class PlaylistService {
 			Playlist playlist = new Playlist();
 			playlist.setName(model.getName().trim());
 			playlist.setSongs(new ArrayList<Song>());
-			playlist.setConsumer(consumerService.getConsumerByUserId(u.getId()));
+			playlist.setConsumer(consumerService.consumerEntityToConsumer(consumerService.getConsumerByUserId(u.getId())));
 			return playlistToPlaylistEntity(playlistDAO.addPlaylist(playlist));
 		} catch (MusicHubGenericException exc) {
 			throw exc;

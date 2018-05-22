@@ -33,9 +33,11 @@ public class JwtAuthFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest servletRequest = (HttpServletRequest) request;
 		String authorization = servletRequest.getHeader("Authorization");
-		if (authorization != null && tokenService.verifyJWT(authorization)) {
-			JwtAuthToken token = new JwtAuthToken(authorization.replaceAll("Bearer ", ""));
-			SecurityContextHolder.getContext().setAuthentication(token);
+		System.out.println("auth: " + authorization);
+		String token = authorization.replaceAll("Bearer ", "");
+		if (authorization != null && tokenService.verifyToken(token)) {
+			JwtAuthToken authToken = new JwtAuthToken(token);
+			SecurityContextHolder.getContext().setAuthentication(authToken);
 		}
 		chain.doFilter(request, response);
 	}
