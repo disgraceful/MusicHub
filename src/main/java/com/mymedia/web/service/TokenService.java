@@ -83,7 +83,7 @@ public class TokenService {
 			User u = userService.getByUsername(claims.getBody().get("username").toString());
 			return u;
 		} catch (Exception e) {
-			throw new MusicHubGenericException("Failed to parse token", HttpStatus.INTERNAL_SERVER_ERROR);
+			return null;
 		}
 	}
 
@@ -111,7 +111,8 @@ public class TokenService {
 			return user;
 
 		} catch (GeneralSecurityException | IOException e) {
-			throw new MusicHubGenericException("Failed to parse token " + idTokenString, HttpStatus.INTERNAL_SERVER_ERROR);
+			return null;
+			//throw new MusicHubGenericException("Failed to parse token " + idTokenString, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

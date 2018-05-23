@@ -10,9 +10,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -34,10 +33,16 @@ public class JwtAuthFilter implements Filter {
 		HttpServletRequest servletRequest = (HttpServletRequest) request;
 		String authorization = servletRequest.getHeader("Authorization");
 		System.out.println("auth: " + authorization);
-		String token = authorization.replaceAll("Bearer ", "");
-		if (authorization != null && tokenService.verifyToken(token)) {
-			JwtAuthToken authToken = new JwtAuthToken(token);
-			SecurityContextHolder.getContext().setAuthentication(authToken);
+
+		if (authorization != null) {
+			String token = authorization.replaceAll("Bearer ", "");
+			if (tokenService.verifyToken(token)) {
+				JwtAuthToken authToken = new JwtAuthToken(token);
+				SecurityContext context = SecurityContextHolder.createEmptyContext();
+		        context.setAuthentication(authToken);
+		        SecurityContextHolder.setContext(context);
+		       
+			}
 		}
 		chain.doFilter(request, response);
 	}

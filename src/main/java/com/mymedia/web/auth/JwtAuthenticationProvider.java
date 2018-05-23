@@ -20,7 +20,9 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		try {
+			
 			String token = (String) authentication.getCredentials();
+			LOG.info("SOME TOKENM " + token);
 			User possibleProfile = tokenService.retrieveUser(token);
 			return new JwtAuthenticatedProfile(possibleProfile);
 		} catch (Exception e) {
