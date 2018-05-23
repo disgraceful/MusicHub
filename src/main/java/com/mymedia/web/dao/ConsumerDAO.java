@@ -2,6 +2,14 @@ package com.mymedia.web.dao;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -26,9 +34,34 @@ public class ConsumerDAO {
 	}
 
 	@Transactional
+	public Consumer getConsumerByField(String fieldName, String fieldValue) {
+		EntityManager entityManager = sessionFactory.createEntityManager();
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Consumer> criteriaQuery = criteriaBuilder.createQuery(Consumer.class);
+		Root<Consumer> root = criteriaQuery.from(Consumer.class);
+		criteriaQuery.select(root);
+
+		ParameterExpression<String> params = criteriaBuilder.parameter(String.class);
+		criteriaQuery.where(criteriaBuilder.equal(root.get(fieldName), params));
+
+		TypedQuery<Consumer> query = entityManager.createQuery(criteriaQuery);
+		query.setParameter(params, fieldValue);
+
+		List<Consumer> queryResult = query.getResultList();
+
+		Consumer returnObject = null;
+
+		if (CollectionUtils.isNotEmpty(queryResult)) {
+			returnObject = queryResult.get(0);
+		}
+
+		return returnObject;
+	}
+
+	@Transactional
 	public List<Consumer> getAllConsumers() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Consumer> consumers= session.createQuery("from Consumer").list();
+		List<Consumer> consumers = session.createQuery("from Consumer").list();
 		return consumers;
 	}
 

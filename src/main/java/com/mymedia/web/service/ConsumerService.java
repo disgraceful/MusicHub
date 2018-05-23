@@ -68,12 +68,9 @@ public class ConsumerService {
 	@Transactional
 	public ConsumerBeanEntity getConsumerByUserId(String id) {
 		try {
-			Optional<Consumer> consumerOpt = consumerDAO.getAllConsumers().stream()
-					.filter(e -> e.getUser().getId() == id).findFirst();
-			if (!consumerOpt.isPresent()) {
-				throw new MusicHubGenericException("User with that id does not exist!", HttpStatus.NOT_FOUND);
-			}
-			return consumerToConsumerEntity(consumerOpt.get());
+			Consumer consumer = consumerDAO.getAllConsumers().stream().filter(e->e.getUser().getId().equals(id)).findAny().get();
+			System.out.println(consumer);
+			return consumerToConsumerEntity(consumer);
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {

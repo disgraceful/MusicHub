@@ -34,7 +34,6 @@ import com.mymedia.web.service.UserService;
 import com.mymedia.web.utils.GoogleTokenVerifier;
 
 @RestController
-@RequestMapping("/account")
 public class AccountController {
 	@Autowired
 	private UserService userService;
@@ -101,7 +100,7 @@ public class AccountController {
 		}
 	}
 
-	@GetMapping
+	@GetMapping(value="/account")
 	@PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<?> getLoggedUser() {
 		try {
@@ -112,7 +111,7 @@ public class AccountController {
 		}
 	}
 	
-	@GetMapping(value="/consumer")
+	@GetMapping(value="/account/consumer")
 	//@PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<ConsumerBeanEntity> getLoggedConsumer() {
 		try {
@@ -129,7 +128,7 @@ public class AccountController {
 	}
 	
 
-	@PostMapping(value = "/logout")
+	@PostMapping(value = "account/logout")
 	@PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 		try {

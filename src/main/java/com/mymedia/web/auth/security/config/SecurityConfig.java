@@ -2,6 +2,7 @@ package com.mymedia.web.auth.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,6 +21,7 @@ import com.mymedia.web.auth.JwtAuthenticationProvider;
 @EnableWebSecurity
 // @EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@ComponentScan("com.mymedia.web.auth")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JwtAuthFilter jwtAuthFilter;
@@ -45,15 +47,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
 		http.authorizeRequests()
-		.and()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and()
-		.authorizeRequests()
-				// .antMatchers("/login/**").permitAll()
-				// .antMatchers("/register/**").permitAll()
-				.antMatchers("/upload/**").hasAuthority("PUBLISHER").antMatchers("/playlist/**", "consumer")
-				.hasAuthority("CONSUMER").antMatchers("/album/**", "/song/**", "/author/**", "/genre/**")
-				.fullyAuthenticated().and().addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+		.antMatchers("/login/**").permitAll()
+		.antMatchers("/register/**").permitAll()
+		.antMatchers("/account/**").authenticated()
+				.anyRequest()
+				.authenticated().and()
+				.authorizeRequests()
+//				.antMatchers("/login/Google").permitAll()
+//				.antMatchers("/register/**").permitAll()
+//				.antMatchers("/upload/**").hasAuthority("PUBLISHER")
+//				.antMatchers("/playlist/**", "/consumer**").hasAuthority("CONSUMER")
+//				.antMatchers("/album/**", "/song/**", "/author/**", "/genre/**").fullyAuthenticated()
+				.and()
+				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 				.exceptionHandling().authenticationEntryPoint(jwtAuthEntryPoint);
 
 	}

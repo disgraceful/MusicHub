@@ -39,9 +39,8 @@ public class JwtAuthFilter implements Filter {
 			if (tokenService.verifyToken(token)) {
 				JwtAuthToken authToken = new JwtAuthToken(token);
 				SecurityContext context = SecurityContextHolder.createEmptyContext();
-		        context.setAuthentication(authToken);
-		        SecurityContextHolder.setContext(context);
-		       
+				context.setAuthentication(authToken);
+				SecurityContextHolder.setContext(context);
 			}
 		}
 		chain.doFilter(request, response);
