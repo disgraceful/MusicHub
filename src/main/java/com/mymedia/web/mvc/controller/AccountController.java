@@ -62,6 +62,8 @@ public class AccountController {
 			return new ResponseEntity<UserBeanEntity>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	
 
 	@PostMapping(value = "/register/Google")
 	public ResponseEntity<String> registerGoogle(@RequestBody String id) {
@@ -101,7 +103,7 @@ public class AccountController {
 	}
 
 	@GetMapping(value="/account")
-	@PreAuthorize("isFullyAuthenticated()")
+	//@PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<?> getLoggedUser() {
 		try {
 			User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -1,10 +1,27 @@
 package com.mymedia.web.requestmodel;
 
 public class CreateUserRequestModel {
+	private String email;
 	private String username;
 	private String password;
 	private String confirmPassword;
 	
+	public CreateUserRequestModel() {
+		super();
+	}
+	public CreateUserRequestModel(String email, String username, String password, String confirmPassword) {
+		super();
+		this.email = email;
+		this.username = username;
+		this.password = password;
+		this.confirmPassword = confirmPassword;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	public String getUsername() {
 		return username;
 	}
