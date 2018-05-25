@@ -35,10 +35,6 @@ public class TokenService {
 	private static final String JWT_ENCODE = "UTF-8";
 	private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
 
-	static {
-		
-	}
-
 	@Autowired
 	private UserService userService;
 
@@ -98,6 +94,9 @@ public class TokenService {
 	public User getUserFromGoogleToken(String idTokenString) {
 		try {
 			Payload payload = GoogleTokenVerifier.verify(idTokenString);
+			if(payload==null) {
+				return null;
+			}
 			User user;
 			if (userService.userExists(payload.getSubject())) {
 				user = userService.getByGoogleId(payload.getSubject());

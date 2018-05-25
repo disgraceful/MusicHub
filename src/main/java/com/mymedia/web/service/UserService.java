@@ -64,6 +64,8 @@ public class UserService {
 			if (validateUserRequestModel(model)) {
 				User user = new User();
 				user.setPassword(model.getPassword());
+				user.setEmail(model.getEmail());
+				user.setGoogleId("");
 				// user.setPassword(CryptUtils.generateHashSHA1(model.getPassword()));
 				user.setUsername(model.getUsername());
 				return userDAO.addUser(user);
@@ -238,7 +240,6 @@ public class UserService {
 		user.setUsername(entity.getUsername());
 		user.setRole(roleDAO.getRole(entity.getRoleId()));
 		user.setEmail(entity.getEmail());
-		;
 		return user;
 	}
 

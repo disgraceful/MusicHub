@@ -6,7 +6,7 @@ public class UserBeanEntity {
     private String email;
     private String roleId;
     private String roleName;
-
+    
     public String getId() {
         return id;
     }

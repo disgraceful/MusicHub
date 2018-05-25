@@ -53,9 +53,9 @@ public class ConsumerService {
 		try {
 			User user = userService.createUser(model);
 			userService.addRole(user, "2");
-
 			Consumer consumer = new Consumer();
 			consumer.setUser(user);
+			consumer.setImgPath(model.getImgPath());
 			return consumerToConsumerEntity(consumerDAO.addConsumer(consumer));
 		}
 		catch(MusicHubGenericException exc){
