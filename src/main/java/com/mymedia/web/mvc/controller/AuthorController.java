@@ -42,7 +42,6 @@ public class AuthorController {
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-
 	}
 
 	@GetMapping(value = "/top")

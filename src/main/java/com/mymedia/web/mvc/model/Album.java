@@ -1,6 +1,5 @@
 package com.mymedia.web.mvc.model;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -17,7 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "ALBUMS")
 public class Album implements Comparable<Album> {
@@ -26,23 +25,30 @@ public class Album implements Comparable<Album> {
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
-	
+
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "BIRTH_DATE")
-	private Date birthDate;
-	
-	@Column(name = "RATING",nullable = true)
-	private double rating;
-	
+	@Column(name = "RECORD_DATE")
+	private String recordDate;
+
+	@Column(name = "RATING")
+	private long rating;
+
 	@ManyToOne
-    @JoinColumn(name = "AUTHOR_ID")
+	@JoinColumn(name = "AUTHOR_ID")
 	private Author author;
-	
-	@OneToMany(mappedBy = "album",cascade=CascadeType.ALL)
+
+	@ManyToOne
+	@JoinColumn(name = "GENRE_ID")
+	private Genre genre;
+
+	@OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
 	private List<Song> songs;
 
+	@Column(name="IMG_PATH")
+	private String imgPath;
+	
 	public String getId() {
 		return id;
 	}
@@ -75,31 +81,40 @@ public class Album implements Comparable<Album> {
 		this.songs = songs;
 	}
 
-	public Date getBirthDate() {
-		return birthDate;
+	public long getRating() {
+		return rating;
 	}
 
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public double getRating() {
-		double sum = 0.0;
-		if(songs==null||songs.isEmpty()){
-			return sum;
-		}
-		for (Song song : songs) {
-			sum+=song.getRating();
-		}
-		return sum/songs.size();
-	}
-
-	public void setRating(double rating) {
+	public void setRating(long rating) {
 		this.rating = rating;
+	}
+
+	public String getRecordDate() {
+		return recordDate;
+	}
+
+	public void setRecordDate(String birthDate) {
+		this.recordDate = birthDate;
+	}
+
+	public Genre getGenre() {
+		return genre;
+	}
+
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+
+	public String getImgPath() {
+		return imgPath;
+	}
+
+	public void setImgPath(String imgPath) {
+		this.imgPath = imgPath;
 	}
 
 	@Override
 	public int compareTo(Album album) {
-		return album.getRating()-this.getRating()>0?1:-1;
+		return album.getRating() - this.getRating() > 0 ? 1 : -1;
 	}
 }

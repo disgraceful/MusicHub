@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.dao.AlbumDAO;
 import com.mymedia.web.dao.AuthorDAO;
+import com.mymedia.web.dao.GenreDAO;
 import com.mymedia.web.dto.AlbumBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Album;
@@ -32,6 +33,9 @@ public class AlbumService {
 
 	@Autowired
 	private AuthorDAO authorDAO;
+	
+	@Autowired
+	private GenreDAO genreDAO;
 
 	@Transactional
 	public List<AlbumBeanEntity> getAllAlbums() {
@@ -112,8 +116,10 @@ public class AlbumService {
 			Album album = new Album();
 			album.setName(model.getName().trim());
 			album.setAuthor(authorDAO.getAuthor(model.getAuthorId()));
-			album.setBirthDate(new Date());
-			album.setRating(0.0);
+			album.setRecordDate(model.getRecordDate());
+			album.setRating(0);
+			album.setGenre(genreDAO.getGenre(model.getGenreId()));
+			album.setImgPath(model.getImgPath());
 			return albumToAlbumEntity(albumDAO.addAlbum(album));
 		} catch (MusicHubGenericException exc) {
 			throw exc;
@@ -149,9 +155,10 @@ public class AlbumService {
 		Album album = new Album();
 		album.setId(entity.getId());
 		album.setName(entity.getName());
-		album.setBirthDate(new SimpleDateFormat("dd/M/yyyy").parse(entity.getBirthDate()));
+		album.setRecordDate(entity.getRecordDate());
 		album.setRating(entity.getRating());
 		album.setAuthor(authorDAO.getAuthor(entity.getAuthorId()));
+		album.setImgPath(entity.getImgPath());
 		return album;
 	}
 
@@ -159,11 +166,14 @@ public class AlbumService {
 		AlbumBeanEntity entity = new AlbumBeanEntity();
 		entity.setId(album.getId());
 		entity.setName(album.getName());
-		entity.setBirthDate(new SimpleDateFormat("dd/M/yyyy").format(album.getBirthDate()));
+		entity.setRecordDate(album.getRecordDate());
 		entity.setRating(album.getRating());
 		entity.setAuthorId(album.getAuthor().getId());
 		entity.setAuthorName(album.getAuthor().getName());
 		entity.setSongAmount(album.getSongs()==null?0:album.getSongs().size());
+		entity.setGenreId(album.getGenre().getId());
+		entity.setGenreName(album.getGenre().getName());
+		entity.setImgPath(album.getImgPath());
 		return entity;
 	}
 }

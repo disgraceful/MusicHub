@@ -1,6 +1,5 @@
 package com.mymedia.web.mvc.model;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -8,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -29,20 +30,21 @@ public class Author implements Comparable<Author> {
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "SUR_NAME")
-	private String surName;
-
-	@OneToMany(mappedBy = "author",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
 	private List<Album> albums;
 
-	@OneToMany(mappedBy = "author",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
 	private List<Song> songs;
 
-	@Column(name = "BIRTH_DATE")
-	private Date birthDate;
-	
-	@Column(name = "RATING",nullable = true)
-	private double rating;
+	@Column(name = "RATING")
+	private long rating;
+
+	@ManyToOne
+	@JoinColumn(name = "GENRE_ID")
+	private Genre genre;
+
+	@Column(name="IMG_PATH")
+	private String imgPath;
 
 	public String getId() {
 		return id;
@@ -76,40 +78,33 @@ public class Author implements Comparable<Author> {
 		this.songs = songs;
 	}
 
-	public Date getBirthDate() {
-		return birthDate;
+	public long getRating() {
+		return rating;
 	}
 
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public double getRating() {
-		double sum = 0.0;
-		if(albums==null||albums.isEmpty()){
-			return sum;
-		}
-		for (Album album : albums) {
-			sum+=album.getRating();
-		}
-		return sum/albums.size();
-	}
-
-	public void setRating(double rating) {
+	public void setRating(long rating) {
 		this.rating = rating;
 	}
 
-	public String getSurName() {
-		return surName;
+	public Genre getGenre() {
+		return genre;
 	}
 
-	public void setSurName(String surName) {
-		this.surName = surName;
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+
+	public String getImgPath() {
+		return imgPath;
+	}
+
+	public void setImgPath(String imgPath) {
+		this.imgPath = imgPath;
 	}
 
 	@Override
 	public int compareTo(Author author) {
-		return author.getRating()-this.getRating()>0?1:-1;
+		return author.getRating() - this.getRating() > 0 ? 1 : -1;
 	}
 
 }

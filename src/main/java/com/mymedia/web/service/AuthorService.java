@@ -153,9 +153,8 @@ public class AuthorService {
 		Author a = new Author();
 		a.setId(entity.getId());
 		a.setName(entity.getName());
-		a.setSurName(entity.getSurName());
 		a.setRating(entity.getRating());
-		a.setBirthDate(new SimpleDateFormat("dd/M/yyyy").parse(entity.getBirthDate()));
+		a.setImgPath(entity.getImgPath());
 		return a;
 	}
 
@@ -163,9 +162,10 @@ public class AuthorService {
 		AuthorBeanEntity entity = new AuthorBeanEntity();
 		entity.setId(author.getId());
 		entity.setName(author.getName());
-		entity.setSurName(author.getSurName());
 		entity.setRating(author.getRating());
-		entity.setBirthDate(new SimpleDateFormat("dd/M/yyyy").format(author.getBirthDate()));
+		entity.setGenreName(author.getGenre().getName());
+		entity.setGenreId(author.getGenre().getId());
+		entity.setImgPath(author.getImgPath());
 		return entity;
 	}
 }

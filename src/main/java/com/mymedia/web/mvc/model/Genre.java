@@ -24,9 +24,15 @@ public class Genre {
 
 	@Column(name = "GENRE_NAME")
 	private String name;
-	
-	@OneToMany(mappedBy = "genre",cascade=CascadeType.ALL)
+
+	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
 	private List<Song> songList;
+
+	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
+	private List<Author> authorList;
+	
+	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
+	private List<Author> albumList;
 
 	public String getId() {
 		return id;
@@ -50,6 +56,22 @@ public class Genre {
 
 	public void setSongList(List<Song> songList) {
 		this.songList = songList;
+	}
+
+	public List<Author> getAuthorList() {
+		return authorList;
+	}
+
+	public void setAuthorList(List<Author> authorList) {
+		this.authorList = authorList;
+	}
+
+	public List<Author> getAlbumList() {
+		return albumList;
+	}
+
+	public void setAlbumList(List<Author> albumList) {
+		this.albumList = albumList;
 	}
 	
 	

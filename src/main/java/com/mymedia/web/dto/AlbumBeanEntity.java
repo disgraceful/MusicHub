@@ -4,12 +4,15 @@ public class AlbumBeanEntity {
 
 	private String id;
 	private String name;
-	private String birthDate;
-	private double rating;
+	private String recordDate;
+	private long rating;
 	private String authorId;
 	private String authorName;
 	private int songAmount;
-
+	private String genreId;
+	private String genreName;
+	private String imgPath;
+	
 	public String getId() {
 		return id;
 	}
@@ -26,20 +29,12 @@ public class AlbumBeanEntity {
 		this.name = name;
 	}
 
-	public String getBirthDate() {
-		return birthDate;
+	public String getRecordDate() {
+		return recordDate;
 	}
 
-	public void setBirthDate(String birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public double getRating() {
-		return rating;
-	}
-
-	public void setRating(double rating) {
-		this.rating = rating;
+	public void setRecordDate(String recordDate) {
+		this.recordDate = recordDate;
 	}
 
 	public String getAuthorId() {
@@ -65,5 +60,38 @@ public class AlbumBeanEntity {
 	public void setSongAmount(int songAmount) {
 		this.songAmount = songAmount;
 	}
+
+	public long getRating() {
+		return rating;
+	}
+
+	public void setRating(long rating) {
+		this.rating = rating;
+	}
+
+	public String getGenreId() {
+		return genreId;
+	}
+
+	public void setGenreId(String genreId) {
+		this.genreId = genreId;
+	}
+
+	public String getGenreName() {
+		return genreName;
+	}
+
+	public void setGenreName(String genreName) {
+		this.genreName = genreName;
+	}
+
+	public String getImgPath() {
+		return imgPath;
+	}
+
+	public void setImgPath(String imgPath) {
+		this.imgPath = imgPath;
+	}
+	
 
 }

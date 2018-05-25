@@ -4,10 +4,10 @@ public class AuthorBeanEntity {
 
 	private String id;
 	private String name;
-	private String surName;
-	private double rating;
-	private String birthDate;
-	
+	private long rating;
+	private String genreName;
+	private String genreId;
+	private String imgPath;
 
 	public String getId() {
 		return id;
@@ -25,29 +25,36 @@ public class AuthorBeanEntity {
 		this.name = name;
 	}
 
-	public String getSurName() {
-		return surName;
-	}
-
-	public void setSurName(String surName) {
-		this.surName = surName;
-	}
-
-	public double getRating() {
+	public long getRating() {
 		return rating;
 	}
 
-	public void setRating(double rating) {
+	public void setRating(long rating) {
 		this.rating = rating;
 	}
 
-	public String getBirthDate() {
-		return birthDate;
+	public String getGenreName() {
+		return genreName;
 	}
 
-	public void setBirthDate(String birthDate) {
-		this.birthDate = birthDate;
+	public void setGenreName(String genreName) {
+		this.genreName = genreName;
 	}
 
-	
+	public String getImgPath() {
+		return imgPath;
+	}
+
+	public void setImgPath(String imgPath) {
+		this.imgPath = imgPath;
+	}
+
+	public String getGenreId() {
+		return genreId;
+	}
+
+	public void setGenreId(String genreId) {
+		this.genreId = genreId;
+	}
+
 }

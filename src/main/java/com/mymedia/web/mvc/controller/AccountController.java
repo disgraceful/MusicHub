@@ -43,7 +43,7 @@ public class AccountController {
 
 	@Autowired
 	private PublisherService publisherService;
-	
+
 	@Autowired
 	private TokenService tokenService;
 
@@ -55,20 +55,16 @@ public class AccountController {
 	@PostMapping(value = "/login/Google")
 	public ResponseEntity<UserBeanEntity> loginGoogle(@RequestBody String tokenId) {
 		try {
-			
 			UserBeanEntity user = userService.userToUserEntity(tokenService.getUserFromGoogleToken(tokenId));
 			return new ResponseEntity<UserBeanEntity>(user, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<UserBeanEntity>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
 
 	@PostMapping(value = "/register/Google")
 	public ResponseEntity<String> registerGoogle(@RequestBody String id) {
 		try {
-			System.out.println("google id: " + id);
 			return new ResponseEntity<String>(id, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -102,8 +98,8 @@ public class AccountController {
 		}
 	}
 
-	@GetMapping(value="/account")
-	//@PreAuthorize("isFullyAuthenticated()")
+	@GetMapping(value = "/account")
+	// @PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<?> getLoggedUser() {
 		try {
 			User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -112,26 +108,21 @@ public class AccountController {
 			return new ResponseEntity<>("Authorization required!", HttpStatus.UNAUTHORIZED);
 		}
 	}
-	
-	@GetMapping(value="/account/consumer")
-	//@PreAuthorize("isFullyAuthenticated()")
+
+	@GetMapping(value = "/account/consumer")
+	// @PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<ConsumerBeanEntity> getLoggedConsumer() {
 		try {
-			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			LOG.info("consumer was called");
-			LOG.info(user.getEmail());
 			ConsumerBeanEntity consumer = consumerService.getConsumerByUserId(user.getId());
-			LOG.info(consumer.getImgPath());
 			return new ResponseEntity<>(consumer, HttpStatus.OK);
 		} catch (Exception exc) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 	}
-	
 
 	@PostMapping(value = "account/logout")
-	//@PreAuthorize("isFullyAuthenticated()")
+	// @PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
