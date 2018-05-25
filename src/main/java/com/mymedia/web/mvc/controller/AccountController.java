@@ -131,7 +131,7 @@ public class AccountController {
 	
 
 	@PostMapping(value = "account/logout")
-	@PreAuthorize("isFullyAuthenticated()")
+	//@PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
