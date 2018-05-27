@@ -45,7 +45,7 @@ public class AuthorDAO {
 
 		return returnObject;
 	}
-	
+
 	@Transactional
 	public List<Author> getAuthorsByField(String fieldName, String fieldValue) {
 		EntityManager entityManager = sessionFactory.createEntityManager();
@@ -64,6 +64,7 @@ public class AuthorDAO {
 
 		return queryResult;
 	}
+
 	@Transactional
 	public List<Author> getAllAuthors() {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -80,7 +81,7 @@ public class AuthorDAO {
 	@Transactional
 	public Author addAuthor(Author author) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String id = (String)session.save(author);
+		String id = (String) session.save(author);
 		return getAuthor(id);
 
 	}
@@ -88,7 +89,7 @@ public class AuthorDAO {
 	@Transactional
 	public Author updateAuthor(Author author) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Author a = (Author)session.merge(author);
+		Author a = (Author) session.merge(author);
 		return getAuthor(a.getId());
 	}
 
@@ -97,10 +98,10 @@ public class AuthorDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.delete(author);
 	}
-	
+
 	@Transactional
-	public void deleteAuthor(String id){
+	public void deleteAuthor(String id) {
 		deleteAuthor(getAuthor(id));
 	}
-	
+
 }

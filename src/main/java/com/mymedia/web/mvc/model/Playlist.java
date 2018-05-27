@@ -28,10 +28,14 @@ public class Playlist {
 
 	@Column(name = "PLAYLIST_NAME")
 	private String name;
+	
+	@Column(name="RATING")
+	private long rating;
 
 	@ManyToMany(mappedBy = "playlists")
 	private List<Song> songs;
-
+	
+	
  
 	@ManyToOne
 	@JoinColumn(name = "CONSUMER_ID")
@@ -71,6 +75,14 @@ public class Playlist {
 
 	public void setConsumer(Consumer consumer) {
 		this.consumer = consumer;
+	}
+
+	public long getRating() {
+		return rating;
+	}
+
+	public void setRating(long rating) {
+		this.rating = rating;
 	}
 	
 	

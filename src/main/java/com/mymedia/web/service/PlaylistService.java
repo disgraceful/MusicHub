@@ -7,19 +7,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mymedia.web.dao.AuthorDAO;
 import com.mymedia.web.dao.ConsumerDAO;
+import com.mymedia.web.dao.GenreDAO;
 import com.mymedia.web.dao.PlaylistDAO;
 import com.mymedia.web.dao.SongDAO;
 import com.mymedia.web.dto.PlaylistBeanEntity;
 import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
+import com.mymedia.web.mvc.model.Author;
 import com.mymedia.web.mvc.model.Consumer;
+import com.mymedia.web.mvc.model.Genre;
 import com.mymedia.web.mvc.model.Playlist;
 import com.mymedia.web.mvc.model.Song;
 import com.mymedia.web.mvc.model.User;
@@ -35,15 +38,79 @@ public class PlaylistService {
 
 	@Autowired
 	private ConsumerDAO consumerDAO;
+	@Autowired
+	private SongDAO songDAO;
+	@Autowired
+	private GenreDAO genreDAO;
 
 	@Autowired
 	private ConsumerService consumerService;
 
 	@Autowired
-	private SongDAO songDAO;
-
+	private AuthorDAO authorDAO;
+	
 	@Autowired
 	private SongService songService;
+
+	@Transactional
+	public List<PlaylistBeanEntity> generatePlaylistForAuthor(String id) {
+		try {
+			List<PlaylistBeanEntity> list = new ArrayList<>();
+			list.add(generateBestOfPlaylistForAuthor(id));
+			list.add(generatePlaylistByGenre(id));
+			return list;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to create Playlist", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	private PlaylistBeanEntity generateBestOfPlaylistForAuthor(String id) {
+		try {
+			Author author = authorDAO.getAuthor(id);
+			String playlistName = "Best of " + author.getName();
+			Playlist playlist = playlistDAO.getUniquePlaylistByField("name", playlistName);
+			if(playlist!=null) {
+				return playlistToPlaylistEntity(playlist);
+			}
+			playlist = new Playlist();
+			playlist.setName(playlistName);
+			playlist.setRating(30);
+			playlist.setSongs(songService.getBestSongsByAuthorId(id, 20));
+			playlist = playlistDAO.addPlaylist(playlist);
+			return playlistToPlaylistEntity(playlist);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to create Playlist", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@Transactional
+	private PlaylistBeanEntity generatePlaylistByGenre(String id) {
+		try {
+			Author author = authorDAO.getAuthor(id);
+			Genre similarGenre = genreDAO.getGenre(author.getGenre().getId());
+			
+			String playlistName = "Best of " + author.getName();
+			Playlist playlist = playlistDAO.getUniquePlaylistByField("name", playlistName);
+			if(playlist!=null) {
+				return playlistToPlaylistEntity(playlist);
+			}
+			playlist = new Playlist();
+			playlist.setName(playlistName);
+			playlist.setRating(30);
+			playlist.setSongs(songService.getLimitedSongsByGenreId(similarGenre.getId(), 20));
+			playlist = playlistDAO.addPlaylist(playlist);
+			return playlistToPlaylistEntity(playlist);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to create Playlist", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@Transactional
 	public PlaylistBeanEntity createPlaylist(PlaylistRequestModel model) {
@@ -55,7 +122,8 @@ public class PlaylistService {
 			Playlist playlist = new Playlist();
 			playlist.setName(model.getName().trim());
 			playlist.setSongs(new ArrayList<Song>());
-			playlist.setConsumer(consumerService.consumerEntityToConsumer(consumerService.getConsumerByUserId(u.getId())));
+			playlist.setConsumer(
+					consumerService.consumerEntityToConsumer(consumerService.getConsumerByUserId(u.getId())));
 			return playlistToPlaylistEntity(playlistDAO.addPlaylist(playlist));
 		} catch (MusicHubGenericException exc) {
 			throw exc;
@@ -188,6 +256,7 @@ public class PlaylistService {
 		playlist.setId(entity.getId());
 		playlist.setName(entity.getName());
 		playlist.setConsumer(consumerDAO.getConsumer(entity.getConsumerId()));
+		playlist.setRating(entity.getRating());
 		return playlist;
 	}
 
@@ -197,6 +266,7 @@ public class PlaylistService {
 		entity.setName(playlist.getName());
 		entity.setConsumerId(playlist.getConsumer().getId());
 		entity.setSongAmount(playlist.getSongs() == null ? 0 : playlist.getSongs().size());
+		entity.setRating(playlist.getRating());
 		return entity;
 	}
 }

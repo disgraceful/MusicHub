@@ -3,6 +3,7 @@ package com.mymedia.web.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -96,21 +97,30 @@ public class SongService {
 	}
 
 	@Transactional
-	public List<SongBeanEntity> getBestSongsByAuthorId(String id) {
+	public List<SongBeanEntity> getBestSongsEntityByAuthorId(String id, int amount) {
 		try {
-			Author author = authorDAO.getAuthor(id);
-			List<Song> songs = author.getSongs();
-			List<SongBeanEntity> list = new ArrayList<>();
-			Collections.sort(songs);
-			int max = songs.size() < 5 ? songs.size() : 5;
-			songs.subList(0, max).stream().forEach(e -> list.add(songToSongEntity(e)));
-			return list;
+			return getBestSongsByAuthorId(id, amount).stream().map(f -> songToSongEntity(f))
+					.collect(Collectors.toList());
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
 
+	@Transactional
+	public List<Song> getBestSongsByAuthorId(String id, int amount) {
+		try {
+			Author author = authorDAO.getAuthor(id);
+			List<Song> songs = author.getSongs();
+			Collections.sort(songs);
+			int max = songs.size() < amount ? songs.size() : amount;
+			return songs.subList(0, max);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Transactional
@@ -148,11 +158,31 @@ public class SongService {
 	}
 
 	@Transactional
-	public List<SongBeanEntity> getSongsByGenreId(String id) {
+	public List<SongBeanEntity> getSongsEntityByGenreId(String id) {
 		try {
-			List<SongBeanEntity> list = new ArrayList<>();
-			getAllSongs().stream().filter(e -> e.getGenreId() == id).forEach(e -> list.add(e));
-			return list;
+			return getAllSongs().stream().filter(e -> e.getGenreId().equals(id)).collect(Collectors.toList());
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public List<SongBeanEntity> getLimitedSongsEntityByGenreId(String id, int amount) {
+		try {
+			return getLimitedSongsByGenreId(id, amount).stream().map(f -> songToSongEntity(f)).collect(Collectors.toList());
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public List<Song> getLimitedSongsByGenreId(String id, int amount) {
+		try {
+			List<Song> songs = songDAO.getAllSongs();
+			List<Song> sortedSongs;
+			sortedSongs = songs.stream().filter(e -> e.getGenre().getId().equals(id)).collect(Collectors.toList());
+			int max = sortedSongs.size() < amount ? sortedSongs.size() : amount;
+			return sortedSongs.subList(0, max);
 		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
 		}

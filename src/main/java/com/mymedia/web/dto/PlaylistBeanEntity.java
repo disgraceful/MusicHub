@@ -6,6 +6,7 @@ public class PlaylistBeanEntity {
 	private String name;
 	private String consumerId;
 	private int songAmount;
+	private long rating;
 
 	public String getId() {
 		return id;
@@ -38,5 +39,15 @@ public class PlaylistBeanEntity {
 	public void setSongAmount(int songAmount) {
 		this.songAmount = songAmount;
 	}
+
+	public long getRating() {
+		return rating;
+	}
+
+	public void setRating(long rating) {
+		this.rating = rating;
+	}
+	
+	
 
 }

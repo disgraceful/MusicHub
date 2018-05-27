@@ -52,7 +52,7 @@ public class GenreController {
 	@GetMapping(value = "/{id}/songs")
 	public ResponseEntity<?> getSongsByGenreId(@PathVariable String id) {
 		try {
-			return new ResponseEntity<>(songService.getSongsByGenreId(id), HttpStatus.OK);
+			return new ResponseEntity<>(songService.getSongsEntityByGenreId(id), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}

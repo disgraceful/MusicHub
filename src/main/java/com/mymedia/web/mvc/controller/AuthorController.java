@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.AuthorBeanEntity;
+import com.mymedia.web.dto.PlaylistBeanEntity;
 import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.service.AlbumService;
 import com.mymedia.web.service.AuthorService;
+import com.mymedia.web.service.PlaylistService;
 import com.mymedia.web.service.SongService;
 
 @RestController
@@ -37,6 +39,9 @@ public class AuthorController {
 
 	@Autowired
 	private AlbumService albumService;
+	
+	@Autowired
+	private PlaylistService playlistService;
 
 	@GetMapping
 	public ResponseEntity<?> getAuthors() {
@@ -59,8 +64,18 @@ public class AuthorController {
 	@GetMapping(value="/{id}/popularsongs")
 	public ResponseEntity<List<SongBeanEntity>> getPopularSongs(@PathVariable String id) {
 		try {
-			List<SongBeanEntity>songs = songService.getBestSongsByAuthorId(id);
+			List<SongBeanEntity>songs = songService.getBestSongsEntityByAuthorId(id, 5);
 			return new ResponseEntity<>(songs, HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getCode());
+		}
+	}
+	
+	@GetMapping(value="/{id}/playlists")
+	public ResponseEntity<List<PlaylistBeanEntity>> getPlaylistsForAuthor(@PathVariable String id) {
+		try {
+			List<PlaylistBeanEntity>playlists = playlistService.generatePlaylistForAuthor(id);
+			return new ResponseEntity<>(playlists, HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getCode());
 		}
