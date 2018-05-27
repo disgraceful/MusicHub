@@ -96,6 +96,24 @@ public class SongService {
 	}
 
 	@Transactional
+	public List<SongBeanEntity> getBestSongsByAuthorId(String id) {
+		try {
+			Author author = authorDAO.getAuthor(id);
+			List<Song> songs = author.getSongs();
+			List<SongBeanEntity> list = new ArrayList<>();
+			Collections.sort(songs);
+			int max = songs.size() < 5 ? songs.size() : 5;
+			songs.subList(0, max).stream().forEach(e -> list.add(songToSongEntity(e)));
+			return list;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	@Transactional
 	public List<SongBeanEntity> getSongsByAuthorId(String id) {
 		try {
 			Author author = authorDAO.getAuthor(id);
@@ -230,6 +248,7 @@ public class SongService {
 		entity.setAlbumId(song.getAlbum().getId());
 		entity.setGenreId(song.getGenre().getId());
 		entity.setAlbumName(song.getAlbum().getName());
+		entity.setImgPath(song.getAlbum().getImgPath());
 		return entity;
 	}
 }

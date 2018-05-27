@@ -12,6 +12,7 @@ public class SongBeanEntity {
 	private String duration;
 	private String authorName;
 	private String albumName;
+	private String imgPath;
 
 	public String getId() {
 		return id;
@@ -93,4 +94,13 @@ public class SongBeanEntity {
 		this.albumName = albumName;
 	}
 
+	public String getImgPath() {
+		return imgPath;
+	}
+
+	public void setImgPath(String imgPath) {
+		this.imgPath = imgPath;
+	}
+
+	
 }

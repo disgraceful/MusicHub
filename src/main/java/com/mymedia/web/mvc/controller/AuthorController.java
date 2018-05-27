@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.AuthorBeanEntity;
+import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.service.AlbumService;
 import com.mymedia.web.service.AuthorService;
@@ -54,6 +55,18 @@ public class AuthorController {
 			return new ResponseEntity<>(exc.getCode());
 		}
 	}
+	
+	@GetMapping(value="/{id}/popularsongs")
+	public ResponseEntity<List<SongBeanEntity>> getPopularSongs(@PathVariable String id) {
+		try {
+			List<SongBeanEntity>songs = songService.getBestSongsByAuthorId(id);
+			return new ResponseEntity<>(songs, HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getCode());
+		}
+	}
+	
+	
 	@GetMapping(value = "/top")
 	public ResponseEntity<?> getTopAuthors() {
 		try {
