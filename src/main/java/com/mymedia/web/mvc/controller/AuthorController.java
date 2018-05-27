@@ -1,5 +1,7 @@
 package com.mymedia.web.mvc.controller;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,14 @@ public class AuthorController {
 		}
 	}
 
+	@GetMapping(value="/{id}/similar")
+	public ResponseEntity<List<AuthorBeanEntity>> getSimilarAuthors(@PathVariable String id) {
+		try {
+			return new ResponseEntity<>(authorService.getSimilarAuthors(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getCode());
+		}
+	}
 	@GetMapping(value = "/top")
 	public ResponseEntity<?> getTopAuthors() {
 		try {

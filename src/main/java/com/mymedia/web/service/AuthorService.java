@@ -1,10 +1,9 @@
 package com.mymedia.web.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,10 +14,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.dao.AuthorDAO;
+import com.mymedia.web.dao.GenreDAO;
 import com.mymedia.web.dao.SongDAO;
 import com.mymedia.web.dto.AuthorBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Author;
+import com.mymedia.web.mvc.model.Genre;
 import com.mymedia.web.mvc.model.Song;
 
 @Service
@@ -27,10 +28,13 @@ public class AuthorService {
 	private static final Logger LOG = LogManager.getLogger(AuthorService.class);
 
 	@Autowired
-	AuthorDAO authorDAO;
+	private AuthorDAO authorDAO;
 
 	@Autowired
-	SongDAO songDAO;
+	private SongDAO songDAO;
+
+	@Autowired
+	private GenreDAO genreDAO;
 
 	@Transactional
 	public List<AuthorBeanEntity> getTop10() {
@@ -83,6 +87,25 @@ public class AuthorService {
 			throw exc;
 		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to retrieve Author", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public List<AuthorBeanEntity> getSimilarAuthors(String id) {
+		try {
+			Author author = authorDAO.getAuthor(id);
+			Genre authorsGenre = authorDAO.getAuthor(id).getGenre();
+			List<Author> authors = authorDAO.getAllAuthors();	
+			authors.remove(author);
+			List<AuthorBeanEntity> authorEntities = authors.stream()
+					.filter(e->e.getGenre().getId().equals(authorsGenre.getId()))
+					.map(f->authorToAuthorEntity(f))
+					.collect(Collectors.toList());
+			return authorEntities;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Author", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

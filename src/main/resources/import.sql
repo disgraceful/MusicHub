@@ -5,6 +5,9 @@ INSERT INTO ROLES(ROLE_ID, NAME) VALUES("1", "PUBLISHER");
 INSERT INTO ROLES(ROLE_ID, NAME) VALUES("2", "CONSUMER");
 
 INSERT INTO AUTHORS (AUTHOR_ID, NAME, RATING, GENRE_ID, IMG_PATH) VALUES ("1","Arch Enemy",10,"1","http://localhost:8888/resources/ArchEnemy/Band.jpg");
+INSERT INTO AUTHORS (AUTHOR_ID, NAME, RATING, GENRE_ID, IMG_PATH) VALUES ("2","Sabaton",10,"1","http://localhost:8888/resources/Sabaton/Band.jpg");
+INSERT INTO AUTHORS (AUTHOR_ID, NAME, RATING, GENRE_ID, IMG_PATH) VALUES ("3","Powerwolf",10,"1","http://localhost:8888/resources/Powerwolf/Band.jpg");
+INSERT INTO AUTHORS (AUTHOR_ID, NAME, RATING, GENRE_ID, IMG_PATH) VALUES ("4","Manowar",10,"1","http://localhost:8888/resources/Manowar/Band.jpg");
 
 INSERT INTO ALBUMS (ALBUM_ID, NAME, AUTHOR_ID, RATING, RECORD_DATE, GENRE_ID, IMG_PATH)VALUES("1","Root of All Evil","1",15,"2011","1","http://localhost:8888/resources/ArchEnemy/RootOfAllEvil/Folder.jpg");
 INSERT INTO ALBUMS (ALBUM_ID, NAME, AUTHOR_ID, RATING, RECORD_DATE, GENRE_ID, IMG_PATH)VALUES("2","War Eternal","1",15,"2014","1","http://localhost:8888/resources/ArchEnemy/WarEternal/Folder.jpg");

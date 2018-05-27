@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.GenreBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
+import com.mymedia.web.service.AuthorService;
 import com.mymedia.web.service.GenreService;
 import com.mymedia.web.service.SongService;
 
@@ -29,7 +30,7 @@ public class GenreController {
 
 	@Autowired
 	private SongService songService;
-
+	
 	@GetMapping
 	public ResponseEntity<?> getGenres() {
 		try {
@@ -56,7 +57,7 @@ public class GenreController {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
 	}
-
+	
 	@PostMapping
 	public ResponseEntity<?> postGenre(@RequestBody GenreBeanEntity genre) {
 		return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
