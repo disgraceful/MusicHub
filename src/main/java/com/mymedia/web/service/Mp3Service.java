@@ -52,8 +52,6 @@ public class Mp3Service {
 
 			SongBeanEntity entity = new SongBeanEntity();
 			entity.setName(metadata.get("title"));
-			entity.setBirthDate(new SimpleDateFormat("dd/M/yyyy").format(new Date()));
-
 			entity.setDuration(parseDuration(metadata.get("xmpDM:duration")));
 			String genreName = metadata.get("xmpDM:genre");
 			Genre genre = genreService.getGenreByName(genreName);

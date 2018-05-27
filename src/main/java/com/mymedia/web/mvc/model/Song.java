@@ -32,10 +32,7 @@ public class Song  implements Comparable<Song>{
 	private String name;
 
 	@Column(name = "RATING", nullable = true)
-	private double rating;
-
-	@Column(name = "BIRTH_DATE")
-	private Date birthDate;
+	private long rating;
 
 	@ManyToOne
 	@JoinColumn(name = "GENRE_ID")
@@ -84,11 +81,11 @@ public class Song  implements Comparable<Song>{
 		this.album = album;
 	}
 
-	public double getRating() {
+	public long getRating() {
 		return rating;
 	}
 
-	public void setRating(double rating) {
+	public void setRating(long rating) {
 		this.rating = rating;
 	}
 
@@ -106,14 +103,6 @@ public class Song  implements Comparable<Song>{
 
 	public void setDuration(String duration) {
 		this.duration = duration;
-	}
-
-	public Date getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
 	}
 
 	public Genre getGenre() {

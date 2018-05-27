@@ -151,7 +151,7 @@ public class AlbumService {
 		return model.getName() == null;
 	}
 
-	public Album albumEntityToAlbum(AlbumBeanEntity entity) throws ParseException {
+	public Album albumEntityToAlbum(AlbumBeanEntity entity) {
 		Album album = new Album();
 		album.setId(entity.getId());
 		album.setName(entity.getName());

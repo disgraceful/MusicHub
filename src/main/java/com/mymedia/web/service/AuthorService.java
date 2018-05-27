@@ -149,7 +149,7 @@ public class AuthorService {
 		}
 	}
 
-	private Author authorEntityToAuthor(AuthorBeanEntity entity) throws ParseException {
+	private Author authorEntityToAuthor(AuthorBeanEntity entity) {
 		Author a = new Author();
 		a.setId(entity.getId());
 		a.setName(entity.getName());

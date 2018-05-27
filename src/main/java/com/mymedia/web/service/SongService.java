@@ -1,7 +1,5 @@
 package com.mymedia.web.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -207,11 +205,10 @@ public class SongService {
 		}
 	}
 
-	public Song songEntityToSong(SongBeanEntity entity) throws ParseException {
+	public Song songEntityToSong(SongBeanEntity entity) {
 		Song song = new Song();
 		song.setId(entity.getId());
 		song.setName(entity.getName());
-		song.setBirthDate(new SimpleDateFormat("dd/M/yyyy").parse(entity.getBirthDate()));
 		song.setRating(entity.getRating());
 		song.setDuration(entity.getDuration());
 		song.setUrl(entity.getUrl());
@@ -225,7 +222,6 @@ public class SongService {
 		SongBeanEntity entity = new SongBeanEntity();
 		entity.setId(song.getId());
 		entity.setName(song.getName());
-		entity.setBirthDate(new SimpleDateFormat("dd/M/yyyy").format(song.getBirthDate()));
 		entity.setRating(song.getRating());
 		entity.setDuration(song.getDuration());
 		entity.setUrl(song.getUrl());
@@ -233,6 +229,7 @@ public class SongService {
 		entity.setAuthorName(song.getAuthor().getName());
 		entity.setAlbumId(song.getAlbum().getId());
 		entity.setGenreId(song.getGenre().getId());
+		entity.setAlbumName(song.getAlbum().getName());
 		return entity;
 	}
 }

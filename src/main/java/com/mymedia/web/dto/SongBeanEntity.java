@@ -6,12 +6,12 @@ public class SongBeanEntity {
 	private String name;
 	private String albumId;
 	private String authorId;
-	private double rating;
-	private String birthDate;
+	private long rating;
 	private String genreId;
 	private String url;
 	private String duration;
 	private String authorName;
+	private String albumName;
 
 	public String getId() {
 		return id;
@@ -45,20 +45,12 @@ public class SongBeanEntity {
 		this.authorId = authorId;
 	}
 
-	public double getRating() {
+	public long getRating() {
 		return rating;
 	}
 
-	public void setRating(double rating) {
+	public void setRating(long rating) {
 		this.rating = rating;
-	}
-
-	public String getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(String birthDate) {
-		this.birthDate = birthDate;
 	}
 
 	public String getGenreId() {
@@ -91,6 +83,14 @@ public class SongBeanEntity {
 
 	public void setAuthorName(String authorName) {
 		this.authorName = authorName;
+	}
+
+	public String getAlbumName() {
+		return albumName;
+	}
+
+	public void setAlbumName(String albumName) {
+		this.albumName = albumName;
 	}
 
 }
