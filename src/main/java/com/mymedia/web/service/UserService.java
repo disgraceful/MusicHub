@@ -41,7 +41,6 @@ public class UserService {
 	@Transactional
 	public User createUser(GoogleLoginReqModel model) {
 		try {
-
 			User user = new User();
 			user.setGoogleId(model.getId());
 			user.setUsername(model.getUsername());
@@ -79,6 +78,7 @@ public class UserService {
 		}
 	}
 
+	
 	@Transactional
 	public User addRole(User user, String id) {
 		try {
@@ -126,11 +126,6 @@ public class UserService {
 	public User getByUsername(String username) {
 		try {
 			User user = userDAO.getUniqueUserByField("username", username);
-
-			if (user == null) {
-				throw new MusicHubGenericException("User with that name does not exist",
-						HttpStatus.INTERNAL_SERVER_ERROR);
-			}
 			return user;
 		} catch (MusicHubGenericException exc) {
 			throw exc;

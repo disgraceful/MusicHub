@@ -1,5 +1,7 @@
 package com.mymedia.web.mvc.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "USERS")
-public class User {
+public class User implements Serializable {
 	@Id
 	@Column(name = "USER_ID")
 	@GeneratedValue(generator = "uuid")

@@ -20,8 +20,10 @@ import com.mymedia.web.dto.AuthorBeanEntity;
 import com.mymedia.web.dto.PlaylistBeanEntity;
 import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
+import com.mymedia.web.mvc.model.Consumer;
 import com.mymedia.web.service.AlbumService;
 import com.mymedia.web.service.AuthorService;
+import com.mymedia.web.service.ConsumerService;
 import com.mymedia.web.service.PlaylistService;
 import com.mymedia.web.service.SongService;
 
@@ -43,6 +45,9 @@ public class AuthorController {
 	@Autowired
 	private PlaylistService playlistService;
 
+	@Autowired
+	private ConsumerService consumerService;
+	
 	@GetMapping
 	public ResponseEntity<?> getAuthors() {
 		try {
@@ -61,6 +66,15 @@ public class AuthorController {
 		}
 	}
 	
+	@GetMapping(value = "/{id}/musichub")
+	public ResponseEntity<?> killmePlease(@PathVariable String id) {
+		try {
+			PlaylistBeanEntity p = playlistService.generateBestOfPlaylistForAuthor(id);
+						return new ResponseEntity<>(p, HttpStatus.OK);
+		} catch (Exception exc) {
+			return new ResponseEntity<>(exc, HttpStatus.UNAUTHORIZED);
+		}
+	}
 	@GetMapping(value="/{id}/popularsongs")
 	public ResponseEntity<List<SongBeanEntity>> getPopularSongs(@PathVariable String id) {
 		try {
@@ -74,6 +88,7 @@ public class AuthorController {
 	@GetMapping(value="/{id}/playlists")
 	public ResponseEntity<List<PlaylistBeanEntity>> getPlaylistsForAuthor(@PathVariable String id) {
 		try {
+			LOG.info(id);
 			List<PlaylistBeanEntity>playlists = playlistService.generatePlaylistForAuthor(id);
 			return new ResponseEntity<>(playlists, HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {

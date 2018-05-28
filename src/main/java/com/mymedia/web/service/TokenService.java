@@ -44,7 +44,6 @@ public class TokenService {
 	public boolean verifyToken(String token) {
 		boolean a = verifyGoogleToken(token);
 		boolean b =verifyJWT(token);
-		LOG.info("google " + a + " jwt " + b);
 		return  a|| b;
 	}
 
@@ -106,7 +105,6 @@ public class TokenService {
 				user = userService
 						.userEntityToUser(userService.getUser(consumerService.createConsumer(model).getUserId()));
 			}
-			LOG.info(user.getEmail());
 			return user;
 
 		} catch (GeneralSecurityException | IOException e) {

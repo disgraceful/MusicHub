@@ -32,8 +32,6 @@ public class JwtAuthFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest servletRequest = (HttpServletRequest) request;
 		String authorization = servletRequest.getHeader("Authorization");
-		System.out.println("auth: " + authorization);
-
 		if (authorization != null) {
 			String token = authorization.replaceAll("Bearer ", "");
 			if (tokenService.verifyToken(token)) {

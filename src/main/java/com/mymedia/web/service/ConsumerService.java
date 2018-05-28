@@ -1,7 +1,5 @@
 package com.mymedia.web.service;
 
-import java.util.Optional;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ public class ConsumerService {
 	private ConsumerDAO consumerDAO;
 
 	private static final Logger LOG = LogManager.getLogger(ConsumerService.class);
-	
+
 	@Transactional
 	public ConsumerBeanEntity createConsumer(GoogleLoginReqModel model) {
 		try {
@@ -40,50 +38,86 @@ public class ConsumerService {
 			consumer.setImgPath(model.getAvatarPath());
 			consumer.setUser(user);
 			return consumerToConsumerEntity(consumerDAO.addConsumer(consumer));
-		}
-		catch(MusicHubGenericException exc){
+		} catch (MusicHubGenericException exc) {
 			throw exc;
-		}catch (Exception exc) {
+		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to register User", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@Transactional
-	public ConsumerBeanEntity createConsumer(CreateConsumerRequestModel model) {
+	public ConsumerBeanEntity createConsumerAsBeanEntity(CreateConsumerRequestModel model) {
+		try {
+			return consumerToConsumerEntity(createConsumer(model));
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to register User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public Consumer createConsumer(CreateConsumerRequestModel model) {
 		try {
 			User user = userService.createUser(model);
 			userService.addRole(user, "2");
 			Consumer consumer = new Consumer();
 			consumer.setUser(user);
 			consumer.setImgPath(model.getImgPath());
-			return consumerToConsumerEntity(consumerDAO.addConsumer(consumer));
-		}
-		catch(MusicHubGenericException exc){
+			return (consumerDAO.addConsumer(consumer));
+		} catch (MusicHubGenericException exc) {
 			throw exc;
-		}catch (Exception exc) {
+		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to register User", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@Transactional
-	public ConsumerBeanEntity getConsumerByUserId(String id) {
+	public Consumer createMusicHubUser() {
+		User musicHubUser = userService.getByUsername("musichub");
+		if (musicHubUser != null) {
+			LOG.info("gotem");
+			return getConsumerByUserId(musicHubUser.getId());
+		}
+		CreateConsumerRequestModel model = new CreateConsumerRequestModel();
+		model.setEmail("musichub@gmail.com");
+		model.setUsername("musichub");
+		model.setPassword("111");
+		model.setConfirmPassword("111");
+		model.setImgPath("");
+		return createConsumer(model);
+	}
+
+	@Transactional
+	public Consumer getConsumerByUserId(String id) {
 		try {
-			Consumer consumer = consumerDAO.getAllConsumers().stream().filter(e->e.getUser().getId().equals(id)).findAny().get();
-			System.out.println(consumer);
-			return consumerToConsumerEntity(consumer);
+			Consumer consumer = consumerDAO.getAllConsumers().stream().filter(e -> e.getUser().getId().equals(id))
+					.findAny().get();
+			return consumer;
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to get User", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@Transactional
-	public ConsumerBeanEntity getConsumerById(String id){
+	public ConsumerBeanEntity getConsumerEnitityByUserId(String id) {
+		try {
+			return consumerToConsumerEntity(getConsumerByUserId(id));
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public ConsumerBeanEntity getConsumerById(String id) {
 		try {
 			Consumer consumer = consumerDAO.getConsumer(id);
-					
-			if (consumer==null) {
+
+			if (consumer == null) {
 				throw new MusicHubGenericException("User with that id does not exist!", HttpStatus.NOT_FOUND);
 			}
 			return consumerToConsumerEntity(consumer);

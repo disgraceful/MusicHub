@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -21,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "SONGS")
-public class Song  implements Comparable<Song>{
+public class Song implements Comparable<Song> {
 
 	@Id
 	@Column(name = "SONG_ID")
@@ -52,7 +53,7 @@ public class Song  implements Comparable<Song>{
 	@JoinColumn(name = "AUTHOR_ID")
 	private Author author;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "SONG_PLAYLISTS", joinColumns = { @JoinColumn(name = "SONG_ID") }, inverseJoinColumns = {
 			@JoinColumn(name = "PLAYLIST_ID") })
 	private List<Playlist> playlists;
@@ -128,10 +129,10 @@ public class Song  implements Comparable<Song>{
 	public void setPlaylists(List<Playlist> playlists) {
 		this.playlists = playlists;
 	}
-	
+
 	@Override
 	public int compareTo(Song song) {
-		return (int)(song.getRating()-this.getRating());
+		return (int) (song.getRating() - this.getRating());
 	}
 
 }

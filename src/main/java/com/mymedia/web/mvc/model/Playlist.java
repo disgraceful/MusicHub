@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -32,7 +33,7 @@ public class Playlist {
 	@Column(name="RATING")
 	private long rating;
 
-	@ManyToMany(mappedBy = "playlists")
+	@ManyToMany(mappedBy = "playlists",fetch=FetchType.EAGER)
 	private List<Song> songs;
 	
 	

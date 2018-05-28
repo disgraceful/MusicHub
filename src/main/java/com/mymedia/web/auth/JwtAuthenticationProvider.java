@@ -20,7 +20,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String token = (String) authentication.getCredentials();
-		LOG.info("SOME TOKENM " + token);
 		User possibleProfile = tokenService.retrieveUser(token);
 		return new JwtAuthenticatedProfile(possibleProfile);
 
@@ -28,7 +27,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		System.out.println("supports " +JwtAuthToken.class.equals(authentication) + "_ " + authentication);
 		return JwtAuthToken.class.equals(authentication);
 	}
 

@@ -7,6 +7,7 @@ public class PlaylistBeanEntity {
 	private String consumerId;
 	private int songAmount;
 	private long rating;
+	private String imgPath;
 
 	public String getId() {
 		return id;
@@ -47,6 +48,15 @@ public class PlaylistBeanEntity {
 	public void setRating(long rating) {
 		this.rating = rating;
 	}
+
+	public String getImgPath() {
+		return imgPath;
+	}
+
+	public void setImgPath(String imgPath) {
+		this.imgPath = imgPath;
+	}
+	
 	
 	
 

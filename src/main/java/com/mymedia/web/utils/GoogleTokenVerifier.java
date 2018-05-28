@@ -19,14 +19,11 @@ public class GoogleTokenVerifier {
 	public static Payload verify(String idTokenString) throws GeneralSecurityException, IOException {
 		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(TRANSPORT, JSON_FACTORY)
 				.setAudience(Collections.singletonList(CLIENT_ID)).build();
-		System.out.println(idTokenString);
 		GoogleIdToken idToken = verifier.verify(idTokenString);
 		if (idToken != null) {
 			Payload payload = idToken.getPayload();
 			return payload;
-
 		} else {
-			System.out.println("Invalid ID token.");
 			return null;
 		}
 	}
