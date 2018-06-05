@@ -1,6 +1,7 @@
 package com.mymedia.web.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -72,7 +73,6 @@ public class PlaylistService {
 		try {
 			Consumer musicHubConsumer = consumerService.createMusicHubUser();
 			Author author = authorDAO.getAuthor(id);
-			LOG.info(author.getName());
 			String playlistName = "Best of " + author.getName();
 			Playlist playlist = playlistDAO.getUniquePlaylistByField("name", playlistName);
 			if (playlist != null) {
@@ -82,9 +82,10 @@ public class PlaylistService {
 			playlist.setName(playlistName);
 			playlist.setConsumer(musicHubConsumer);
 			playlist.setRating(30);
-			playlist.setSongs(songService.getBestSongsByAuthorId(id, 20));
-			Playlist p = playlistDAO.addPlaylist(playlist);
-			return playlistToPlaylistEntity(p);
+			playlist = playlistDAO.addPlaylist(playlist);
+			List<Song> songList = songService.getBestSongsByAuthorId(id, 20);
+			addSongList(songList, playlist);
+			return playlistToPlaylistEntity(playlist);
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -96,11 +97,8 @@ public class PlaylistService {
 	public PlaylistBeanEntity generatePlaylistByGenre(String id) {
 		try {
 			Author author = authorDAO.getAuthor(id);
-			LOG.info(author.getName());
 			Genre similarGenre = genreDAO.getGenre(author.getGenre().getId());
-			LOG.info(similarGenre.getName());
 			Consumer musicHubConsumer = consumerService.createMusicHubUser();
-			LOG.info(musicHubConsumer.getUser().getUsername());
 			String playlistName = "Similar to " + author.getName();
 			Playlist playlist = playlistDAO.getUniquePlaylistByField("name", playlistName);
 			if (playlist != null) {
@@ -110,9 +108,9 @@ public class PlaylistService {
 			playlist.setName(playlistName);
 			playlist.setConsumer(musicHubConsumer);
 			playlist.setRating(20);
-			playlist.setSongs(songService.getLimitedSongsByGenreId(similarGenre.getId(), 20));
-			playlist = playlistDAO.addPlaylist(playlist);
-			LOG.info(playlist.getName());
+			playlist =  playlistDAO.addPlaylist(playlist);
+			List<Song> songList = songService.getLimitedSongsByGenreId(similarGenre.getId(), 20);
+			addSongList(songList, playlist);
 			return playlistToPlaylistEntity(playlist);
 		} catch (MusicHubGenericException exc) {
 			throw exc;
@@ -180,6 +178,32 @@ public class PlaylistService {
 			return list;
 		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to get Playlist Collection", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public void addSongList(List<Song> songs, Playlist playlist) {
+		try {
+			playlist.setSongs(songs);
+			songs.forEach(e -> e.getPlaylists().add(playlist));
+			playlistDAO.updatePlaylist(playlist);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to add Song to Playlist", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public void addSong(Song song, Playlist playlist) {
+		try {
+			playlist.getSongs().add(song);
+			song.getPlaylists().add(playlist);
+			playlistDAO.updatePlaylist(playlist);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to add Song to Playlist", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

@@ -29,19 +29,17 @@ public class Playlist {
 
 	@Column(name = "PLAYLIST_NAME")
 	private String name;
-	
-	@Column(name="RATING")
+
+	@Column(name = "RATING")
 	private long rating;
 
-	@ManyToMany(mappedBy = "playlists",fetch=FetchType.EAGER)
+	@ManyToMany(mappedBy = "playlists", fetch = FetchType.EAGER)
 	private List<Song> songs;
-	
-	
- 
+
 	@ManyToOne
 	@JoinColumn(name = "CONSUMER_ID")
 	private Consumer consumer;
-	
+
 	public Playlist() {
 
 	}
@@ -85,7 +83,5 @@ public class Playlist {
 	public void setRating(long rating) {
 		this.rating = rating;
 	}
-	
-	
 
 }
