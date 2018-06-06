@@ -156,6 +156,19 @@ public class SongService {
 			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@Transactional
+	public List<SongBeanEntity> getTopSongsByGenreId(String id,int amount) {
+		try {
+			List<Song> songs = getLimitedSongsByGenreId(id, 1000);		
+			Collections.sort(songs);
+			int max = songs.size() < amount ? songs.size() : amount;
+			List<Song>topList = songs.subList(0,max);
+			return topList.stream().map(f -> songToSongEntity(f)).collect(Collectors.toList());
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Songs", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@Transactional
 	public List<SongBeanEntity> getSongsEntityByGenreId(String id) {

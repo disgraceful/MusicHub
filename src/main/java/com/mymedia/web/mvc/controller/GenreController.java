@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.GenreBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
+import com.mymedia.web.service.AlbumService;
 import com.mymedia.web.service.AuthorService;
 import com.mymedia.web.service.GenreService;
 import com.mymedia.web.service.SongService;
@@ -30,6 +31,9 @@ public class GenreController {
 
 	@Autowired
 	private SongService songService;
+	
+	@Autowired
+	private AlbumService albumService;
 	
 	@GetMapping
 	public ResponseEntity<?> getGenres() {
@@ -53,6 +57,33 @@ public class GenreController {
 	public ResponseEntity<?> getSongsByGenreId(@PathVariable String id) {
 		try {
 			return new ResponseEntity<>(songService.getSongsEntityByGenreId(id), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
+	}
+	
+	@GetMapping(value = "/{id}/songs/top")
+	public ResponseEntity<?> getTopSongsByGenre(@PathVariable String id) {
+		try {
+			return new ResponseEntity<>(songService.getTopSongsByGenreId(id, 15), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
+	}
+	
+	@GetMapping(value = "/{id}/albums/new")
+	public ResponseEntity<?> getNewAlbumsByGenre(@PathVariable String id) {
+		try {
+			return new ResponseEntity<>(albumService.getNewAlbumsByGenre(id, 15), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
+	}
+	
+	@GetMapping(value = "/{id}/albums/top")
+	public ResponseEntity<?> getTopAlbumsByGenre(@PathVariable String id) {
+		try {
+			return new ResponseEntity<>(albumService.getTopAlbumsByGenre(id, 15), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}

@@ -1,11 +1,9 @@
 package com.mymedia.web.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +19,7 @@ import com.mymedia.web.dao.GenreDAO;
 import com.mymedia.web.dto.AlbumBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Album;
+import com.mymedia.web.mvc.model.Genre;
 import com.mymedia.web.requestmodel.AlbumCreateRequestModel;
 
 @Service
@@ -33,7 +32,7 @@ public class AlbumService {
 
 	@Autowired
 	private AuthorDAO authorDAO;
-	
+
 	@Autowired
 	private GenreDAO genreDAO;
 
@@ -67,6 +66,64 @@ public class AlbumService {
 			int max = albums.size() < 10 ? albums.size() : 10;
 			albums.subList(0, max).stream().forEach(e -> list.add(albumToAlbumEntity(e)));
 			return list;
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to retrieve Top Albums", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public List<AlbumBeanEntity> getNewAlbumsByGenre(String id, int amount) {
+		try {
+			List<Album> albums = getAlbumsByGenre(id);
+			Collections.sort(albums,Album.albumComparator);
+			int max = albums.size() < amount? albums.size() : amount;
+			return albums.subList(0, max).stream().map(f->albumToAlbumEntity(f)).collect(Collectors.toList());
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to retrieve Top Albums", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@Transactional
+	public List<AlbumBeanEntity> getTopAlbumsByGenre(String id, int amount) {
+		try {
+			List<Album> albums = getAlbumsByGenre(id);
+			Collections.sort(albums);
+			int max = albums.size() < amount? albums.size() : amount;
+			return albums.subList(0, max).stream().map(f->albumToAlbumEntity(f)).collect(Collectors.toList());
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to retrieve Top Albums", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+	
+	
+	@Transactional
+	public List<AlbumBeanEntity> getAlbumsByGenreAsEntity(String id,int amount) {
+		try {
+			List<Album> albums = getAlbumsByGenre(id);
+			int max = albums.size() < amount? albums.size() : amount;
+			return albums.subList(0, max).stream().map(f->albumToAlbumEntity(f)).collect(Collectors.toList()); 
+			
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to retrieve Top Albums", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	@Transactional
+	public List<Album> getAlbumsByGenre(String id) {
+		try {
+			List<Album> albums = albumDAO.getAllAlbums();
+			List<Album>genreAlbums = albums.stream().filter(e->e.getGenre().getId().equals(id)).collect(Collectors.toList());
+			return genreAlbums;	
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -132,7 +189,7 @@ public class AlbumService {
 	public AlbumBeanEntity updateAlbum(AlbumBeanEntity entity) {
 		try {
 			return albumToAlbumEntity(albumDAO.updateAlbum(albumEntityToAlbum(entity)));
-		}  catch (Exception exc) {
+		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to update Album", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -141,8 +198,7 @@ public class AlbumService {
 	public void deleteAlbum(String id) {
 		try {
 			albumDAO.deleteAlbum(id);
-		}
-		 catch (Exception exc) {
+		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to delete Album", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -170,7 +226,7 @@ public class AlbumService {
 		entity.setRating(album.getRating());
 		entity.setAuthorId(album.getAuthor().getId());
 		entity.setAuthorName(album.getAuthor().getName());
-		entity.setSongAmount(album.getSongs()==null?0:album.getSongs().size());
+		entity.setSongAmount(album.getSongs() == null ? 0 : album.getSongs().size());
 		entity.setGenreId(album.getGenre().getId());
 		entity.setGenreName(album.getGenre().getName());
 		entity.setImgPath(album.getImgPath());

@@ -1,5 +1,6 @@
 package com.mymedia.web.mvc.model;
 
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -46,9 +47,9 @@ public class Album implements Comparable<Album> {
 	@OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
 	private List<Song> songs;
 
-	@Column(name="IMG_PATH")
+	@Column(name = "IMG_PATH")
 	private String imgPath;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -117,4 +118,15 @@ public class Album implements Comparable<Album> {
 	public int compareTo(Album album) {
 		return album.getRating() - this.getRating() > 0 ? 1 : -1;
 	}
+
+	public static Comparator<Album> albumComparator = new Comparator<Album>() {
+
+		public int compare(Album album1, Album album2) {
+			Integer date1 = Integer.parseInt(album1.recordDate);
+			Integer date2 = Integer.parseInt(album2.recordDate);
+
+			return date2.compareTo(date1);// 2017,2016....
+		}
+
+	};
 }
