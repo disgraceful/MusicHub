@@ -120,13 +120,10 @@ public class Album implements Comparable<Album> {
 	}
 
 	public static Comparator<Album> albumComparator = new Comparator<Album>() {
-
 		public int compare(Album album1, Album album2) {
 			Integer date1 = Integer.parseInt(album1.recordDate);
 			Integer date2 = Integer.parseInt(album2.recordDate);
-
 			return date2.compareTo(date1);// 2017,2016....
 		}
-
 	};
 }

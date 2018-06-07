@@ -6,7 +6,7 @@ INSERT INTO ROLES(ROLE_ID, NAME) VALUES("2", "CONSUMER");
 
 INSERT INTO AUTHORS (AUTHOR_ID, NAME, RATING, GENRE_ID, IMG_PATH) VALUES ("1","Arch Enemy",152,"1","http://localhost:8888/resources/ArchEnemy/Band.jpg");
 INSERT INTO AUTHORS (AUTHOR_ID, NAME, RATING, GENRE_ID, IMG_PATH) VALUES ("2","Sabaton",123,"1","http://localhost:8888/resources/Sabaton/Band.jpg");
-INSERT INTO AUTHORS (AUTHOR_ID, NAME, RATING, GENRE_ID, IMG_PATH) VALUES ("3","Powerwolf",156,"1","http://localhost:8888/resources/Powerwolf/Band.jpg");
+INSERT INTO AUTHORS (AUTHOR_ID, NAME, RATING, GENRE_ID, IMG_PATH) VALUES ("3","Powerwolf",156,"1","http://localhost:8888/resources/Powerwolf/Band.png");
 INSERT INTO AUTHORS (AUTHOR_ID, NAME, RATING, GENRE_ID, IMG_PATH) VALUES ("4","Manowar",189,"1","http://localhost:8888/resources/Manowar/Band.jpg");
 INSERT INTO AUTHORS (AUTHOR_ID, NAME, RATING, GENRE_ID, IMG_PATH) VALUES ("5","Unleash The Archers",112,"1","http://localhost:8888/resources/UnleashTheArchers/Band.jpg");
 
@@ -82,6 +82,30 @@ INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,
 INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("53","1:19","Set Flame To The Night",12,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",3,1,1);
 INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("54","3:21","Back To Back",3,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",3,1,1);
 INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("55","2:46","City Baby Attacked By Rats",6,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",3,1,1);
+
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("56","7:17","Awakening",9,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("57","3:56","Shadow Guide",13,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("58","4:02","Matriarch",10,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("59","5:54","Cleanse The Bloodlines",9,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("60","5:05","The Coward's Way",5,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("61","8:05","False Walls",6,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("62","5:37","Ten Thousands Against One",11,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("63","6:35","Earth And Ashes",8,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("64","5:46","Call Me Immortal",10,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("65","8:23","Apex",10,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("66","4:16","Queen Of The Reich",9,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",13,5,1);
+
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("67","1:47","Northern Passage",9,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",14,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("68","5:39","Frozen Steel",13,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",14,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("69","5:31","Hail of the Tide",10,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",14,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("70","6:25","Tonight We Ride",9,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",14,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("71","3:13","Test Your Metal",5,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",14,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("72","5:21","Crypt",6,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",14,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("73","6:53","No More Heroes",11,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",14,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("74","9:16","Dreamcrusher",8,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",14,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("75","5:28","Going Down Fighting",10,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",14,5,1);
+INSERT INTO SONGS(SONG_ID,SONG_DURATION,NAME,RATING,SONG_URL,ALBUM_ID,AUTHOR_ID,GENRE_ID)VALUES("76","6:00","Time Stands Still",10,"http://localhost:8888/resources/ArchEnemy/WillToPower/songname123.mp3",14,5,1);
+
 
 
 INSERT INTO USERS(USER_ID, EMAIL, GOOGLE_ID, USERNAME, PASSWORD, ROLE_ID) VALUES("1","noolic@gmail.com","000","123","123123","2");

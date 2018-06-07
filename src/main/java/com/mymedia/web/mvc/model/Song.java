@@ -1,6 +1,6 @@
 package com.mymedia.web.mvc.model;
 
-import java.util.Date;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -134,5 +134,4 @@ public class Song implements Comparable<Song> {
 	public int compareTo(Song song) {
 		return (int) (song.getRating() - this.getRating());
 	}
-
 }

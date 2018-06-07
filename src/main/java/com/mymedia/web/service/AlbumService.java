@@ -53,19 +53,42 @@ public class AlbumService {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
 	@Transactional
-	public List<AlbumBeanEntity> getTop10() {
+	public List<AlbumBeanEntity> getNewEntity(int amount) {
+		try {
+			
+			return getNew(amount).stream().map(f -> albumToAlbumEntity(f)).collect(Collectors.toList());
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to retrieve Top Albums", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@Transactional
+	public List<Album> getNew(int amount) {
 		try {
 			List<Album> albums = albumDAO.getAllAlbums();
-			if (albums.isEmpty()) {
-				throw new MusicHubGenericException("No Albums Found", HttpStatus.NO_CONTENT);
-			}
-			List<AlbumBeanEntity> list = new ArrayList<>();
+			Collections.sort(albums, Album.albumComparator);
+			int max = albums.size() < amount ? albums.size() : amount;
+			return albums.subList(0, max);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to retrieve Top Albums", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+
+	@Transactional
+	public List<AlbumBeanEntity> getTop(int amount) {
+		try {
+			List<Album> albums = albumDAO.getAllAlbums();
 			Collections.sort(albums);
-			int max = albums.size() < 10 ? albums.size() : 10;
-			albums.subList(0, max).stream().forEach(e -> list.add(albumToAlbumEntity(e)));
-			return list;
+			int max = albums.size() < amount ? albums.size() : amount;
+			return albums.subList(0, max).stream()
+					.map(f -> albumToAlbumEntity(f))
+					.collect(Collectors.toList());	
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -77,23 +100,23 @@ public class AlbumService {
 	public List<AlbumBeanEntity> getNewAlbumsByGenre(String id, int amount) {
 		try {
 			List<Album> albums = getAlbumsByGenre(id);
-			Collections.sort(albums,Album.albumComparator);
-			int max = albums.size() < amount? albums.size() : amount;
-			return albums.subList(0, max).stream().map(f->albumToAlbumEntity(f)).collect(Collectors.toList());
+			Collections.sort(albums, Album.albumComparator);
+			int max = albums.size() < amount ? albums.size() : amount;
+			return albums.subList(0, max).stream().map(f -> albumToAlbumEntity(f)).collect(Collectors.toList());
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
 			throw new MusicHubGenericException("Failed to retrieve Top Albums", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@Transactional
 	public List<AlbumBeanEntity> getTopAlbumsByGenre(String id, int amount) {
 		try {
 			List<Album> albums = getAlbumsByGenre(id);
 			Collections.sort(albums);
-			int max = albums.size() < amount? albums.size() : amount;
-			return albums.subList(0, max).stream().map(f->albumToAlbumEntity(f)).collect(Collectors.toList());
+			int max = albums.size() < amount ? albums.size() : amount;
+			return albums.subList(0, max).stream().map(f -> albumToAlbumEntity(f)).collect(Collectors.toList());
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -101,15 +124,14 @@ public class AlbumService {
 		}
 
 	}
-	
-	
+
 	@Transactional
-	public List<AlbumBeanEntity> getAlbumsByGenreAsEntity(String id,int amount) {
+	public List<AlbumBeanEntity> getAlbumsByGenreAsEntity(String id, int amount) {
 		try {
 			List<Album> albums = getAlbumsByGenre(id);
-			int max = albums.size() < amount? albums.size() : amount;
-			return albums.subList(0, max).stream().map(f->albumToAlbumEntity(f)).collect(Collectors.toList()); 
-			
+			int max = albums.size() < amount ? albums.size() : amount;
+			return albums.subList(0, max).stream().map(f -> albumToAlbumEntity(f)).collect(Collectors.toList());
+
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -122,8 +144,9 @@ public class AlbumService {
 	public List<Album> getAlbumsByGenre(String id) {
 		try {
 			List<Album> albums = albumDAO.getAllAlbums();
-			List<Album>genreAlbums = albums.stream().filter(e->e.getGenre().getId().equals(id)).collect(Collectors.toList());
-			return genreAlbums;	
+			List<Album> genreAlbums = albums.stream().filter(e -> e.getGenre().getId().equals(id))
+					.collect(Collectors.toList());
+			return genreAlbums;
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {

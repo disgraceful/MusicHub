@@ -31,6 +31,9 @@ public class SongService {
 	private static final Logger LOG = LogManager.getLogger(SongService.class);
 
 	@Autowired
+	AlbumService albumService;
+	
+	@Autowired
 	SongDAO songDAO;
 
 	@Autowired
@@ -61,7 +64,23 @@ public class SongService {
 			throw new MusicHubGenericException("Failed to get Song Collection", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
+	
+	@Transactional
+	public List<SongBeanEntity> getTrending(int amount) {
+		try {
+			List<Album> albums = albumService.getNew(3);
+			List<Song> songs = albums.stream().flatMap(f->f.getSongs().stream()).collect(Collectors.toList());
+			Collections.sort(songs);
+			int max = songs.size() < amount ? songs.size() : amount;
+			return songs.subList(0, max).stream().map(f->songToSongEntity(f)).collect(Collectors.toList());
+			
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Song Collection", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+		
 	@Transactional
 	public List<SongBeanEntity> getTop10() {
 		try {

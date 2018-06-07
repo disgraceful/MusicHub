@@ -46,6 +46,15 @@ public class SongController {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
 	}
+	
+	@GetMapping(value = "/trending")
+	public ResponseEntity<?> getTrendingSongs() {
+		try {
+			return new ResponseEntity<>(songService.getTrending(15), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
+	}
 
 	@GetMapping(value = "/top")
 	public ResponseEntity<?> getTopSongs() {

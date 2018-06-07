@@ -47,11 +47,19 @@ public class AlbumController {
 	@GetMapping(value = "/top")
 	public ResponseEntity<?> getTopAlbums() {
 		try {
-			return new ResponseEntity<>(albumService.getTop10(), HttpStatus.OK);
+			return new ResponseEntity<>(albumService.getTop(15), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
-
+	}
+	
+	@GetMapping(value="/new")
+	public ResponseEntity<?> getNewAlbums() {
+		try {
+			return new ResponseEntity<>(albumService.getNewEntity(15), HttpStatus.OK);
+		} catch (MusicHubGenericException exc) {
+			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
+		}
 	}
 
 	@GetMapping(value = "/{id}")
