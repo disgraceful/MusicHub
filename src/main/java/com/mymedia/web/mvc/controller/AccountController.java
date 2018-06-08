@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mymedia.web.dto.ConsumerBeanEntity;
+import com.mymedia.web.dto.PublisherBeanEntity;
 import com.mymedia.web.dto.UserBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Consumer;
@@ -106,8 +107,6 @@ public class AccountController {
 		}
 	}
 	
-	
-	
 	@GetMapping(value = "/account/consumer")
 	// @PreAuthorize("isFullyAuthenticated()")
 	public ResponseEntity<ConsumerBeanEntity> getLoggedConsumer() {
@@ -115,6 +114,18 @@ public class AccountController {
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			ConsumerBeanEntity consumer = consumerService.getConsumerEnitityByUserId(user.getId());
 			return new ResponseEntity<>(consumer, HttpStatus.OK);
+		} catch (Exception exc) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+	}
+	
+	@GetMapping(value = "/account/publisher")
+	// @PreAuthorize("isFullyAuthenticated()")
+	public ResponseEntity<PublisherBeanEntity> getLoggedPublisher() {
+		try {
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			PublisherBeanEntity publisher = publisherService.getPublisherEntityByUserId(user.getId());
+			return new ResponseEntity<>(publisher, HttpStatus.OK);
 		} catch (Exception exc) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}

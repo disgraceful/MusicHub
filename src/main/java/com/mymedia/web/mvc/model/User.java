@@ -31,7 +31,7 @@ public class User implements Serializable {
 	@Column(name = "EMAIL")
 	private String email;
 
-	@Column(name = "PASSWORD", unique = true)
+	@Column(name = "PASSWORD")
 	private String password;
 
 	@ManyToOne

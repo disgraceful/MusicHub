@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.dao.AuthorDAO;
-import com.mymedia.web.dao.GenreDAO;
+import com.mymedia.web.dao.PublisherDAO;
 import com.mymedia.web.dao.SongDAO;
 import com.mymedia.web.dto.AuthorBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
@@ -32,9 +32,23 @@ public class AuthorService {
 
 	@Autowired
 	private SongDAO songDAO;
-
+	
 	@Autowired
-	private GenreDAO genreDAO;
+	private PublisherDAO publisherDAO;
+
+	
+
+	@Transactional
+	public AuthorBeanEntity getAuthorByPublisherId(String id) {
+		try {
+			return authorToAuthorEntity(publisherDAO.getPublisher(id).getAuthor());
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to retrieve Top Author Collection",
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@Transactional
 	public List<AuthorBeanEntity> getTop10() {
@@ -95,11 +109,10 @@ public class AuthorService {
 		try {
 			Author author = authorDAO.getAuthor(id);
 			Genre authorsGenre = authorDAO.getAuthor(id).getGenre();
-			List<Author> authors = authorDAO.getAllAuthors();	
+			List<Author> authors = authorDAO.getAllAuthors();
 			authors.remove(author);
 			List<AuthorBeanEntity> authorEntities = authors.stream()
-					.filter(e->e.getGenre().getId().equals(authorsGenre.getId()))
-					.map(f->authorToAuthorEntity(f))
+					.filter(e -> e.getGenre().getId().equals(authorsGenre.getId())).map(f -> authorToAuthorEntity(f))
 					.collect(Collectors.toList());
 			return authorEntities;
 		} catch (MusicHubGenericException exc) {

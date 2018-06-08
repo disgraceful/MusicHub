@@ -51,14 +51,21 @@ public class PublisherService {
 	}
 
 	@Transactional
+	public PublisherBeanEntity getPublisherEntityByUserId(String id) {
+		try {
+			return publisherToPublisherEntity(getPublisherByUserId(id));
+					} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get Publisher", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@Transactional
 	public Publisher getPublisherByUserId(String id) {
 		try {
-			Optional<Publisher> publisherOpt = publisherDAO.getAllPublishers().stream()
-					.filter(e -> e.getUser().getId() == id).findFirst();
-			if (!publisherOpt.isPresent()) {
-				throw new MusicHubGenericException("User with that id does not exist!", HttpStatus.NOT_FOUND);
-			}
-			return publisherOpt.get();
+			return publisherDAO.getAllPublishers().stream().filter(e -> e.getUser().getId().equals(id))
+					.findFirst().get();
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -72,7 +79,7 @@ public class PublisherService {
 			User user = userService.createUser(model);
 			userService.addRole(user, "1");
 
-			if(!validatePublisherModel(model)){
+			if (!validatePublisherModel(model)) {
 				throw new MusicHubGenericException("Author name is invalid!", HttpStatus.BAD_REQUEST);
 			}
 			Author author = new Author();
@@ -89,9 +96,9 @@ public class PublisherService {
 			throw new MusicHubGenericException("Failed to create Publisher", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	private boolean validatePublisherModel(CreatePublisherRequestModel model){
-		return model.getAuthorName()==null||model.getAuthorName().trim().isEmpty()?false:true;
+
+	private boolean validatePublisherModel(CreatePublisherRequestModel model) {
+		return model.getAuthorName() == null || model.getAuthorName().trim().isEmpty() ? false : true;
 	}
 
 	private PublisherBeanEntity publisherToPublisherEntity(Publisher publisher) {
