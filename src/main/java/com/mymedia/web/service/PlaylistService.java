@@ -1,8 +1,8 @@
 package com.mymedia.web.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +18,7 @@ import com.mymedia.web.dao.ConsumerDAO;
 import com.mymedia.web.dao.GenreDAO;
 import com.mymedia.web.dao.PlaylistDAO;
 import com.mymedia.web.dao.SongDAO;
+import com.mymedia.web.dao.UserDAO;
 import com.mymedia.web.dto.PlaylistBeanEntity;
 import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
@@ -51,6 +52,9 @@ public class PlaylistService {
 	private AuthorDAO authorDAO;
 
 	@Autowired
+	private UserDAO userDAO;
+
+	@Autowired
 	private SongService songService;
 
 	@Transactional
@@ -69,7 +73,7 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public PlaylistBeanEntity generateBestOfPlaylistForAuthor(String id) {
+	private PlaylistBeanEntity generateBestOfPlaylistForAuthor(String id) {
 		try {
 			Consumer musicHubConsumer = consumerService.createMusicHubUser();
 			Author author = authorDAO.getAuthor(id);
@@ -94,7 +98,7 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public PlaylistBeanEntity generatePlaylistByGenre(String id) {
+	private PlaylistBeanEntity generatePlaylistByGenre(String id) {
 		try {
 			Author author = authorDAO.getAuthor(id);
 			Genre similarGenre = genreDAO.getGenre(author.getGenre().getId());
@@ -108,10 +112,24 @@ public class PlaylistService {
 			playlist.setName(playlistName);
 			playlist.setConsumer(musicHubConsumer);
 			playlist.setRating(20);
-			playlist =  playlistDAO.addPlaylist(playlist);
+			playlist = playlistDAO.addPlaylist(playlist);
 			List<Song> songList = songService.getLimitedSongsByGenreId(similarGenre.getId(), 20);
 			addSongList(songList, playlist);
 			return playlistToPlaylistEntity(playlist);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to create Playlist", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public List<SongBeanEntity> getSongsFromPlaylists() {
+		try {
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			List<Playlist> playlists = getPlaylistsByUserId(user.getId());
+			return playlists.stream().flatMap(f -> f.getSongs().stream()).map(e -> songService.songToSongEntity(e))
+					.collect(Collectors.toList());
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -154,15 +172,22 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public List<PlaylistBeanEntity> getPlaylistByUserId(String id) {
+	public List<PlaylistBeanEntity> getPlaylistEntitiesByUserId(String id) {
 		try {
-			Consumer consumer = consumerDAO.getConsumer(id);
-			if (consumer == null) {
-				throw new MusicHubGenericException("User with that id does not exist", HttpStatus.NOT_FOUND);
-			}
-			List<PlaylistBeanEntity> list = new ArrayList<>();
-			consumer.getPlaylsits().stream().forEach(e -> list.add(playlistToPlaylistEntity(e)));
-			return list;
+			return getPlaylistsByUserId(id).stream().map(f -> playlistToPlaylistEntity(f)).collect(Collectors.toList());
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get User Playlists", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public List<Playlist> getPlaylistsByUserId(String id) {
+		try {
+			userDAO.getUser(id);
+			Consumer consumer = consumerService.getConsumerByUserId(id);
+			return consumer.getPlaylsits();
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -299,7 +324,11 @@ public class PlaylistService {
 		entity.setConsumerId(playlist.getConsumer().getId());
 		entity.setSongAmount(playlist.getSongs() == null ? 0 : playlist.getSongs().size());
 		entity.setRating(playlist.getRating());
-		entity.setImgPath(playlist.getSongs().get(0).getAuthor().getImgPath());
+		if(playlist.getName().equals("Favorites")) {
+			entity.setImgPath("http://localhost:8888/resources/playlist.png");
+		}else {
+			entity.setImgPath(playlist.getSongs().get(0).getAuthor().getImgPath());
+		}
 		return entity;
 	}
 }

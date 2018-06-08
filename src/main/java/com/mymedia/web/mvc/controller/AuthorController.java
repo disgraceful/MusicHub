@@ -66,15 +66,6 @@ public class AuthorController {
 		}
 	}
 	
-	@GetMapping(value = "/{id}/musichub")
-	public ResponseEntity<?> killmePlease(@PathVariable String id) {
-		try {
-			PlaylistBeanEntity p = playlistService.generateBestOfPlaylistForAuthor(id);
-						return new ResponseEntity<>(p, HttpStatus.OK);
-		} catch (Exception exc) {
-			return new ResponseEntity<>(exc, HttpStatus.UNAUTHORIZED);
-		}
-	}
 	@GetMapping(value="/{id}/popularsongs")
 	public ResponseEntity<List<SongBeanEntity>> getPopularSongs(@PathVariable String id) {
 		try {
