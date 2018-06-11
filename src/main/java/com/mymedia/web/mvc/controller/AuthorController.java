@@ -45,9 +45,6 @@ public class AuthorController {
 	@Autowired
 	private PlaylistService playlistService;
 
-	@Autowired
-	private ConsumerService consumerService;
-	
 	@GetMapping
 	public ResponseEntity<?> getAuthors() {
 		try {

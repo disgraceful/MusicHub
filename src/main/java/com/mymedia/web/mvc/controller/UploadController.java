@@ -2,19 +2,15 @@ package com.mymedia.web.mvc.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,13 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
+import com.mymedia.web.mvc.model.Consumer;
 import com.mymedia.web.mvc.model.Publisher;
-import com.mymedia.web.mvc.model.Role;
 import com.mymedia.web.mvc.model.User;
-import com.mymedia.web.service.Mp3Service;
+import com.mymedia.web.service.ConsumerService;
+import com.mymedia.web.service.FileService;
 import com.mymedia.web.service.PublisherService;
 import com.mymedia.web.service.SongService;
-import com.mymedia.web.service.UserService;
 
 @RestController
 public class UploadController {
@@ -45,8 +41,26 @@ public class UploadController {
 	private PublisherService publisherService;
 
 	@Autowired
-	private Mp3Service mp3Service;
-
+	private FileService fileService;
+	
+	@Autowired
+	private ConsumerService consumerService;
+	
+	@PostMapping(value = "/upload/consumer/{id}")
+	public ResponseEntity<?> save(@RequestBody MultipartFile file, @PathVariable String id) {
+		try {
+			if (file.isEmpty()) {
+				throw new MusicHubGenericException("Uploaded file is not valid", HttpStatus.BAD_REQUEST);
+			}
+			Consumer consumer = consumerService.getConsumerByUserId(id);
+			String imagePath = fileService.saveConsumerImage(file, consumer.getUser().getUsername());
+			consumer.setImgPath(imagePath);
+			return new ResponseEntity<>(consumerService.updateConsumer(consumer), HttpStatus.OK);
+		} catch (Exception exc) {
+			return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	@PostMapping(value = "/upload/{albumId}")
 	public ResponseEntity<?> upload(@RequestBody MultipartFile file, @PathVariable String albumId) {
 		try {
@@ -65,7 +79,7 @@ public class UploadController {
 			fos.close();
 			LOG.info(musicFile.exists());
 			LOG.info(musicFile.getAbsolutePath());
-			SongBeanEntity entity = mp3Service.fileToSongBeanEntity(musicFile);
+			SongBeanEntity entity = fileService.fileToSongBeanEntity(musicFile);
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			
 			Publisher pub = publisherService.getPublisherByUserId(user.getId());

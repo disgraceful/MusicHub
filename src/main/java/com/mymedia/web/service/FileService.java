@@ -2,39 +2,62 @@ package com.mymedia.web.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URLDecoder;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tika.Tika;
-import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mymedia.web.dto.SongBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Genre;
 
 @Service
-public class Mp3Service {
+public class FileService {
 
-	private static final Logger LOG = LogManager.getLogger(Mp3Service.class);
+	private static final Logger LOG = LogManager.getLogger(FileService.class);
 	@Autowired
 	GenreService genreService;
 
 	@Autowired
 	SongService songService;
+	@Autowired
+	private ServletContext servletContext;
+
+	public String saveConsumerImage(MultipartFile file, String username) {
+		try {
+			if (file== null) {
+				return "";
+			}
+
+			String pathToServerDir = servletContext.getRealPath("WEB-INF/resources");
+			String consumerDir= pathToServerDir+"/consumer/"+username;
+			File serverDir = new File(consumerDir);
+			if(!serverDir.exists()) {
+				serverDir.mkdirs();
+			}
+			File imageFile = new File(consumerDir + "/" +  file.getOriginalFilename());
+			imageFile.createNewFile();
+			file.transferTo(imageFile);
+			return "http://localhost:8888/resources/consumer/" + username + "/" +  file.getOriginalFilename();
+		} catch (Exception e) {
+			throw new MusicHubGenericException("Failed to parse the file!", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	public SongBeanEntity fileToSongBeanEntity(File file) {
 		try {

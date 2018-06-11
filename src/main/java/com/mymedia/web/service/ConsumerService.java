@@ -26,6 +26,8 @@ public class ConsumerService {
 
 	@Autowired
 	private ConsumerDAO consumerDAO;
+	@Autowired
+	private FileService fileService;
 
 	private static final Logger LOG = LogManager.getLogger(ConsumerService.class);
 
@@ -63,7 +65,7 @@ public class ConsumerService {
 			userService.addRole(user, "2");
 			Consumer consumer = new Consumer();
 			consumer.setUser(user);
-			consumer.setImgPath(model.getImgPath());
+			
 			return (consumerDAO.addConsumer(consumer));
 		} catch (MusicHubGenericException exc) {
 			throw exc;
@@ -76,7 +78,6 @@ public class ConsumerService {
 	public Consumer createMusicHubUser() {
 		User musicHubUser = userService.getByUsername("musichub");
 		if (musicHubUser != null) {
-			LOG.info("gotem");
 			return getConsumerByUserId(musicHubUser.getId());
 		}
 		CreateConsumerRequestModel model = new CreateConsumerRequestModel();
@@ -84,7 +85,6 @@ public class ConsumerService {
 		model.setUsername("musichub");
 		model.setPassword("111");
 		model.setConfirmPassword("111");
-		model.setImgPath("");
 		return createConsumer(model);
 	}
 
@@ -116,7 +116,6 @@ public class ConsumerService {
 	public ConsumerBeanEntity getConsumerById(String id) {
 		try {
 			Consumer consumer = consumerDAO.getConsumer(id);
-
 			if (consumer == null) {
 				throw new MusicHubGenericException("User with that id does not exist!", HttpStatus.NOT_FOUND);
 			}
@@ -128,6 +127,18 @@ public class ConsumerService {
 		}
 	}
 
+	@Transactional
+	public ConsumerBeanEntity updateConsumer(Consumer consumer) {
+		try {
+			return consumerToConsumerEntity(consumerDAO.updateConsumer(consumer));		
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to get User", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
 	public static ConsumerBeanEntity consumerToConsumerEntity(Consumer consumer) {
 		ConsumerBeanEntity entity = new ConsumerBeanEntity();
 		entity.setId(consumer.getId());

@@ -39,7 +39,7 @@ public class User implements Serializable {
 	private Role role;
 
 	@NaturalId
-	@Column(name = "GOOGLE_ID", nullable = true, unique = true)
+	@Column(name = "GOOGLE_ID")
 	private String googleId;
 
 	public String getId() {

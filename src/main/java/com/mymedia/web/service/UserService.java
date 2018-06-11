@@ -2,7 +2,6 @@ package com.mymedia.web.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +21,7 @@ import com.mymedia.web.requestmodel.CreateUserRequestModel;
 import com.mymedia.web.requestmodel.GoogleLoginReqModel;
 import com.mymedia.web.requestmodel.LoginRequestModel;
 import com.mymedia.web.responsemodel.TokenResponseModel;
+import com.mymedia.web.utils.CryptUtils;
 
 @Service
 @EnableTransactionManagement
@@ -65,8 +65,9 @@ public class UserService {
 				user.setPassword(model.getPassword());
 				user.setEmail(model.getEmail());
 				user.setGoogleId("");
-				// user.setPassword(CryptUtils.generateHashSHA1(model.getPassword()));
+				//user.setPassword(CryptUtils.generateHashSHA1(model.getPassword()));
 				user.setUsername(model.getUsername());
+				user.setGoogleId(model.getEmail());
 				return userDAO.addUser(user);
 			} else {
 				throw new MusicHubGenericException("Passwords do not match", HttpStatus.BAD_REQUEST);
@@ -77,7 +78,6 @@ public class UserService {
 			throw new MusicHubGenericException("Failed to get User", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
 	
 	@Transactional
 	public User addRole(User user, String id) {
