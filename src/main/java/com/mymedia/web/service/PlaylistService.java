@@ -1,6 +1,7 @@
 package com.mymedia.web.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,12 +59,37 @@ public class PlaylistService {
 	private SongService songService;
 
 	@Transactional
+	public List<SongBeanEntity> getHistorySongs() {
+		try {
+			Playlist history = getHistoryPlaylist();
+			return history.getSongs().stream().map(f -> songService.songToSongEntity(f)).collect(Collectors.toList());
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to create Playlist", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public Playlist getHistoryPlaylist() {
+		try {
+
+			List<Playlist> playlists = getConsumerPlaylists();
+			return playlists.stream().filter(e -> e.getName().equals("History")).findFirst().get();
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to create Playlist", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
 	public List<PlaylistBeanEntity> generatePlaylistForAuthor(String id) {
 		try {
 			List<PlaylistBeanEntity> list = new ArrayList<>();
 			list.add(generateBestOfPlaylistForAuthor(id));
 			list.add(generatePlaylistByGenre(id));
-			LOG.info(list.size());
+
 			return list;
 		} catch (MusicHubGenericException exc) {
 			throw exc;
@@ -124,12 +150,23 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public List<SongBeanEntity> getSongsFromPlaylists() {
+	public List<SongBeanEntity> getSongsFromPlaylistsAsEntities() {
 		try {
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			List<Playlist> playlists = getPlaylistsByUserId(user.getId());
-			return playlists.stream().flatMap(f -> f.getSongs().stream()).map(e -> songService.songToSongEntity(e))
+			
+			return getSongsFromPlaylists().stream().map(e -> songService.songToSongEntity(e))
 					.collect(Collectors.toList());
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Failed to create Playlist", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	public List<Song> getSongsFromPlaylists() {
+		try {
+			List<Playlist> playlists = getConsumerPlaylists();
+			return playlists.stream().flatMap(f -> f.getSongs().stream()).collect(Collectors.toList());
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -172,9 +209,16 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public List<PlaylistBeanEntity> getPlaylistEntitiesByUserId(String id) {
+	public List<Playlist> getConsumerPlaylists() {
 		try {
-			return getPlaylistsByUserId(id).stream().map(f -> playlistToPlaylistEntity(f)).collect(Collectors.toList());
+			User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if (u == null) {
+				throw new MusicHubGenericException("Failed to authorize", HttpStatus.UNAUTHORIZED);
+			}
+			Consumer consumer = consumerService.getConsumerByUserId(u.getId());
+			List<Playlist> playlists = consumer.getPlaylsits();
+			playlists.remove(playlistDAO.getUniquePlaylistByField("name", "History"));
+			return playlists;
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -183,11 +227,9 @@ public class PlaylistService {
 	}
 
 	@Transactional
-	public List<Playlist> getPlaylistsByUserId(String id) {
+	public List<PlaylistBeanEntity> getConsumerPlaylistsAsEntities() {
 		try {
-			userDAO.getUser(id);
-			Consumer consumer = consumerService.getConsumerByUserId(id);
-			return consumer.getPlaylsits();
+			return getConsumerPlaylists().stream().map(f -> playlistToPlaylistEntity(f)).collect(Collectors.toList());
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -324,9 +366,9 @@ public class PlaylistService {
 		entity.setConsumerId(playlist.getConsumer().getId());
 		entity.setSongAmount(playlist.getSongs() == null ? 0 : playlist.getSongs().size());
 		entity.setRating(playlist.getRating());
-		if(playlist.getName().equals("Favorites")) {
+		if (playlist.getName().equals("Favorites")) {
 			entity.setImgPath("http://localhost:8888/resources/playlist.png");
-		}else {
+		} else {
 			entity.setImgPath(playlist.getSongs().get(0).getAuthor().getImgPath());
 		}
 		return entity;

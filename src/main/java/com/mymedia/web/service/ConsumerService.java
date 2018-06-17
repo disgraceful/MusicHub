@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mymedia.web.dao.ConsumerDAO;
+import com.mymedia.web.dao.PlaylistDAO;
 import com.mymedia.web.dao.UserDAO;
 import com.mymedia.web.dto.ConsumerBeanEntity;
 import com.mymedia.web.exceptions.MusicHubGenericException;
 import com.mymedia.web.mvc.model.Consumer;
+import com.mymedia.web.mvc.model.Playlist;
 import com.mymedia.web.mvc.model.User;
 import com.mymedia.web.requestmodel.CreateConsumerRequestModel;
 import com.mymedia.web.requestmodel.GoogleLoginReqModel;
@@ -27,7 +29,7 @@ public class ConsumerService {
 	@Autowired
 	private ConsumerDAO consumerDAO;
 	@Autowired
-	private FileService fileService;
+	private PlaylistDAO playlistDAO;
 
 	private static final Logger LOG = LogManager.getLogger(ConsumerService.class);
 
@@ -39,7 +41,9 @@ public class ConsumerService {
 			Consumer consumer = new Consumer();
 			consumer.setImgPath(model.getAvatarPath());
 			consumer.setUser(user);
-			return consumerToConsumerEntity(consumerDAO.addConsumer(consumer));
+			consumer = consumerDAO.addConsumer(consumer);
+			addPlaylistsToNewConsumer(consumer);			
+			return consumerToConsumerEntity(consumer);
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -65,8 +69,9 @@ public class ConsumerService {
 			userService.addRole(user, "2");
 			Consumer consumer = new Consumer();
 			consumer.setUser(user);
-			
-			return (consumerDAO.addConsumer(consumer));
+			consumer = consumerDAO.addConsumer(consumer);
+			addPlaylistsToNewConsumer(consumer);			
+			return (consumer);
 		} catch (MusicHubGenericException exc) {
 			throw exc;
 		} catch (Exception exc) {
@@ -74,6 +79,21 @@ public class ConsumerService {
 		}
 	}
 
+	@Transactional
+	public void addPlaylistsToNewConsumer(Consumer consumer) {
+		Playlist favorites = new Playlist();
+		favorites.setName("Favorites");
+		favorites.setConsumer(consumer);
+		favorites.setRating(0);
+		playlistDAO.addPlaylist(favorites);
+		
+		Playlist history = new Playlist();
+		favorites.setName("History");
+		favorites.setConsumer(consumer);
+		favorites.setRating(0);
+		playlistDAO.addPlaylist(history);
+	}
+	
 	@Transactional
 	public Consumer createMusicHubUser() {
 		User musicHubUser = userService.getByUsername("musichub");

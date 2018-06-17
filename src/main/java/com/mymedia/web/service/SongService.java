@@ -311,6 +311,7 @@ public class SongService {
 		entity.setGenreId(song.getGenre().getId());
 		entity.setAlbumName(song.getAlbum().getName());
 		entity.setImgPath(song.getAlbum().getImgPath());
+		entity.setGenreName(song.getGenre().getName());
 		return entity;
 	}
 }

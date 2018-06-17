@@ -20,23 +20,20 @@ public class ConsumerController {
 	@Autowired
 	private PlaylistService playlistService;
 
-	@GetMapping(value = "/{id}/playlists")
-	public ResponseEntity<?> getPlaylists(@PathVariable String id) {
+	@GetMapping(value = "/history")
+	public ResponseEntity<?> getHistory() {
 		try {
-			return new ResponseEntity<>(playlistService.getPlaylistEntitiesByUserId(id), HttpStatus.OK);
+			return new ResponseEntity<>(playlistService.getHistorySongs(), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
 	}
-	
+
 	@GetMapping(value = "/playlists")
 	public ResponseEntity<?> getPlaylists() {
 		try {
-			User u = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			if(u==null){
-				return new ResponseEntity<>("Authorization required", HttpStatus.UNAUTHORIZED);
-			}
-			return new ResponseEntity<>(playlistService.getPlaylistEntitiesByUserId(u.getId()), HttpStatus.OK);
+			
+			return new ResponseEntity<>(playlistService.getConsumerPlaylistsAsEntities(),HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}
@@ -45,7 +42,7 @@ public class ConsumerController {
 	@GetMapping(value = "/playlists/songs")
 	public ResponseEntity<?> getSongsFromUserPlaylists() {
 		try {
-			return new ResponseEntity<>(playlistService.getSongsFromPlaylists(), HttpStatus.OK);
+			return new ResponseEntity<>(playlistService.getSongsFromPlaylistsAsEntities(), HttpStatus.OK);
 		} catch (MusicHubGenericException exc) {
 			return new ResponseEntity<>(exc.getMessage(), exc.getCode());
 		}

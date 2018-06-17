@@ -36,8 +36,19 @@ public class AuthorService {
 	@Autowired
 	private PublisherDAO publisherDAO;
 
+	@Transactional
+	public Author getRandomAuthor() {
+		try {
+			List<Author> authors = authorDAO.getAllAuthors();
+			Collections.shuffle(authors);
+			return authors.get(0);
+		} catch (MusicHubGenericException exc) {
+			throw exc;
+		} catch (Exception exc) {
+			throw new MusicHubGenericException("Server error", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
-
 	@Transactional
 	public AuthorBeanEntity getAuthorByPublisherId(String id) {
 		try {

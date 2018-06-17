@@ -8,6 +8,7 @@ public class SongBeanEntity {
 	private String authorId;
 	private long rating;
 	private String genreId;
+	private String genreName;
 	private String url;
 	private String duration;
 	private String authorName;
@@ -100,6 +101,14 @@ public class SongBeanEntity {
 
 	public void setImgPath(String imgPath) {
 		this.imgPath = imgPath;
+	}
+
+	public String getGenreName() {
+		return genreName;
+	}
+
+	public void setGenreName(String genreName) {
+		this.genreName = genreName;
 	}
 
 	
