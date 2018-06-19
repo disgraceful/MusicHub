@@ -152,7 +152,7 @@ public class PlaylistService {
 	@Transactional
 	public List<SongBeanEntity> getSongsFromPlaylistsAsEntities() {
 		try {
-			
+
 			return getSongsFromPlaylists().stream().map(e -> songService.songToSongEntity(e))
 					.collect(Collectors.toList());
 		} catch (MusicHubGenericException exc) {
@@ -217,7 +217,7 @@ public class PlaylistService {
 			}
 			Consumer consumer = consumerService.getConsumerByUserId(u.getId());
 			List<Playlist> playlists = consumer.getPlaylsits();
-			playlists.remove(playlistDAO.getUniquePlaylistByField("name", "History"));
+			playlists.remove(0);
 			return playlists;
 		} catch (MusicHubGenericException exc) {
 			throw exc;
@@ -368,8 +368,12 @@ public class PlaylistService {
 		entity.setRating(playlist.getRating());
 		if (playlist.getName().equals("Favorites")) {
 			entity.setImgPath("http://localhost:8888/resources/playlist.png");
-		} else {
+		} else if (playlist.getConsumer().getUser().getUsername().equals("musichub")) {
 			entity.setImgPath(playlist.getSongs().get(0).getAuthor().getImgPath());
+		} else if (playlist.getSongs().isEmpty()) {
+			entity.setImgPath("http://localhost:8888/resources/playlist_cover.png");
+		} else {
+			entity.setImgPath(playlist.getSongs().get(0).getAlbum().getImgPath());
 		}
 		return entity;
 	}
